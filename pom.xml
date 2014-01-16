@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.cognifide.cq</groupId>
+	<artifactId>sling-query</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+	<name>sling-query</name>
+
+	<scm>
+		<connection>scm:git:https://gitlab.cognifide.com/tomasz.rekawek/sling-query.git</connection>
+		<developerConnection>scm:git:https://gitlab.cognifide.com/tomasz.rekawek/sling-query.git</developerConnection>
+		<url>https://gitlab.cognifide.com/tomasz.rekawek/sling-query</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<properties>
+		<!-- workaround for MNG-2216 -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
+		<!-- workaround for MRESOURCES-99 -->
+		<timestamp>${maven.build.timestamp}</timestamp>
+	</properties>
+
+	<organization>
+		<name>Cognifide Ltd.</name>
+		<url>http://www.cognifide.com</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>tomasz.rekawek</id>
+			<name>Tomasz Rekawek</name>
+			<email>tomasz.rekawek@example.com</email>
+			<organization>Cognifide</organization>
+		</developer>
+	</developers>
+
+	<!-- Repositories -->
+	<repositories>
+		<repository>
+			<id>cognifide-maven-public-repository</id>
+			<url>http://nexus.cognifide.com/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>cognifide-maven-private-repository</id>
+			<url>http://nexus.cognifide.com/content/groups/private</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>cognifide-maven-public-repository</id>
+			<url>http://nexus.cognifide.com/content/groups/public</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>cognifide-maven-private-repository</id>
+			<url>http://nexus.cognifide.com/content/groups/private</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<distributionManagement>
+		<repository>
+			<id>cognifide-internal-repository</id>
+			<name>Cognifide Internal Repository</name>
+			<url>http://nexus.cognifide.com/content/repositories/cognifide-internal</url>
+		</repository>
+	</distributionManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<!-- Fix for Eclipse build -->
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.felix</groupId>
+										<artifactId>maven-scr-plugin</artifactId>
+										<versionRange>[1.13.0,)</versionRange>
+										<goals>
+											<goal>scr</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<fork>true</fork>
+					<source>1.6</source>
+					<target>1.6</target>
+					<compilerVersion>1.6</compilerVersion>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.4.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Category>cq5</Bundle-Category>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+						<Export-Package>com.cognifide.sling.query.api*;version="${project.version}"</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- scr annotations - e.g. for generating OSGi component descriptors -->
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-scr-plugin</artifactId>
+				<version>1.13.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>scr</goal>
+						</goals>
+						<phase>process-classes</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0-alpha-2</version>
+				<configuration>
+					<files>
+						<file>${external.properties}</file>
+					</files>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.cognifide.cq</groupId>
+				<artifactId>platform</artifactId>
+				<version>5.5.0-r20120220</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<!-- scr annotations - for generating component descriptors only, not 
+				a platform dependency -->
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.annotations</artifactId>
+			<version>1.13.0</version>
+			<!-- this dependency is not required at runtime - compile scope would 
+				embed it in the package -->
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- sling -->
+		<dependency>
+			<groupId>org.apache.sling</groupId>
+			<artifactId>org.apache.sling.api</artifactId>
+		</dependency>
+	</dependencies>
+</project>
