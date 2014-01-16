@@ -183,7 +183,7 @@
 				a platform dependency -->
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
-			<version>1.13.0</version>
+			<version>1.9.6</version>
 			<!-- this dependency is not required at runtime - compile scope would 
 				embed it in the package -->
 			<scope>provided</scope>
