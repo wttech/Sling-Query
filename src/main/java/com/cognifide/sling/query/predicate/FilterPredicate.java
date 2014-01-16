@@ -23,16 +23,18 @@ public class FilterPredicate implements ResourcePredicate {
 	}
 
 	private void parseFilter(String filter) {
-		Pattern pattern = Pattern.compile("^[^\\[]]+");
+		Pattern pattern = Pattern.compile("^[^\\[]+");
 		Matcher matcher = pattern.matcher(filter);
 		if (matcher.find()) {
 			resourceType = matcher.group();
+		} else {
+			resourceType = "";
 		}
-		pattern = Pattern.compile("^\\[([\\]]+)\\]");
+		pattern = Pattern.compile("\\[([^\\]]+)\\]");
 		matcher = pattern.matcher(filter);
 		if (matcher.find(resourceType.length())) {
 			do {
-				String[] split = matcher.group().split("=");
+				String[] split = matcher.group(1).split("=");
 				if (split.length == 2) {
 					properties.add(new PropertyPredicate(split[0], split[1]));
 				}

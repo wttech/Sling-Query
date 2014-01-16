@@ -16,7 +16,12 @@ public class PropertyPredicate implements ResourcePredicate {
 
 	@Override
 	public boolean accepts(Resource resource) {
-		return value.equals(resource.getChild(path).adaptTo(String.class));
+		Resource property = resource.getChild(path);
+		if (property == null) {
+			return false;
+		} else {
+			return value.equals(property.adaptTo(String.class));
+		}
 	}
 
 	public String toString() {
