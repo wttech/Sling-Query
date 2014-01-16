@@ -11,7 +11,7 @@ import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.FilterPredicate;
 import com.cognifide.sling.query.Operation;
-import com.cognifide.sling.query.SlingIterator;
+import com.cognifide.sling.query.OperationIterator;
 import com.cognifide.sling.query.operation.ClosestOperation;
 import com.cognifide.sling.query.operation.ParentOperation;
 
@@ -52,6 +52,10 @@ public class SlingQuery implements Iterable<Resource> {
 
 	@Override
 	public Iterator<Resource> iterator() {
-		return new SlingIterator(operations, resources);
+		Iterator<Resource> iterator = resources.iterator();
+		for (Operation operation : operations) {
+			iterator = new OperationIterator(operation, iterator);
+		}
+		return iterator;
 	}
 }
