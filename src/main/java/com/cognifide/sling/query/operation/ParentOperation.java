@@ -1,12 +1,12 @@
 package com.cognifide.sling.query.operation;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.EmptyIterator;
 import com.cognifide.sling.query.Operation;
+import com.cognifide.sling.query.iterator.ArrayIterator;
 
 public class ParentOperation implements Operation {
 
@@ -16,7 +16,7 @@ public class ParentOperation implements Operation {
 		if (parent == null) {
 			return EmptyIterator.INSTANCE;
 		} else {
-			return Arrays.asList(parent).iterator();
+			return new ArrayIterator(parent);
 		}
 	}
 

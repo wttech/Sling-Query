@@ -9,24 +9,21 @@ import com.cognifide.sling.query.Operation;
 import com.cognifide.sling.query.ResourcePredicate;
 import com.cognifide.sling.query.iterator.ArrayIterator;
 
-public class ClosestOperation implements Operation {
+public class FilterOperation implements Operation {
 
 	private final ResourcePredicate predicate;
 
-	public ClosestOperation(ResourcePredicate predicate) {
+	public FilterOperation(ResourcePredicate predicate) {
 		this.predicate = predicate;
 	}
 
 	@Override
 	public Iterator<Resource> getResources(Resource resource) {
-		Resource current = resource;
-		do {
-			current = current.getParent();
-			if (current == null) {
-				return EmptyIterator.INSTANCE;
-			}
-		} while (!predicate.accepts(current));
-		return new ArrayIterator(current);
+		if (predicate.accepts(resource)) {
+			return new ArrayIterator(resource);
+		} else {
+			return EmptyIterator.INSTANCE;
+		}
 	}
 
 }

@@ -189,6 +189,12 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- commons -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+
 		<!-- sling -->
 		<dependency>
 			<groupId>org.apache.sling</groupId>

@@ -1,11 +1,12 @@
-package com.cognifide.sling.query;
+package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.apache.sling.api.resource.Resource;
 
-public class OperationIterator implements Iterator<Resource> {
+import com.cognifide.sling.query.Operation;
+
+public class OperationIterator extends AbstractResourceIterator {
 
 	private final Operation operation;
 
@@ -13,41 +14,13 @@ public class OperationIterator implements Iterator<Resource> {
 
 	private Iterator<Resource> operationIterator;
 
-	private Resource currentResource;
-
 	public OperationIterator(Operation operation, Iterator<Resource> parentIterator) {
 		this.operation = operation;
 		this.parentIterator = parentIterator;
 	}
 
 	@Override
-	public boolean hasNext() {
-		currentResource = getResource();
-		return currentResource != null;
-	}
-
-	@Override
-	public Resource next() {
-		Resource result;
-		if (currentResource != null) {
-			result = currentResource;
-			currentResource = null;
-		} else {
-			result = getResource();
-		}
-		if (result == null) {
-			throw new NoSuchElementException();
-		} else {
-			return result;
-		}
-	}
-
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
-	private Resource getResource() {
+	protected Resource getResource() {
 		if (operationIterator != null && operationIterator.hasNext()) {
 			return operationIterator.next();
 		}
