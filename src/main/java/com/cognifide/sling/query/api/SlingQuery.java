@@ -65,7 +65,7 @@ public class SlingQuery implements Iterable<Resource> {
 		operations.add(new FindOperation(new FilterPredicate(filter)));
 		return this;
 	}
-	
+
 	public SlingQuery find() {
 		find("");
 		return this;
