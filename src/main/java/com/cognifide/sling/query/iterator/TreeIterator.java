@@ -25,8 +25,8 @@ public class TreeIterator extends AbstractResourceIterator {
 	protected Resource getResource() {
 		while (currentIterator.hasNext()) {
 			Resource resource = currentIterator.next();
+			queue.add(resource);
 			if (predicate.accepts(resource)) {
-				queue.add(resource);
 				return resource;
 			}
 		}
