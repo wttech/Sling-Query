@@ -21,5 +21,4 @@ public class ChildrenOperation implements Operation {
 		Iterator<Resource> children = resource.listChildren();
 		return new FilteringIteratorWrapper(children, predicate);
 	}
-
 }

@@ -20,5 +20,4 @@ public class FindOperation implements Operation {
 	public Iterator<Resource> getResources(Resource resource) {
 		return new TreeIterator(resource, predicate);
 	}
-
 }
