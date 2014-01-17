@@ -16,6 +16,7 @@ import com.cognifide.sling.query.function.ClosestFunction;
 import com.cognifide.sling.query.function.FilterFunction;
 import com.cognifide.sling.query.function.FindFunction;
 import com.cognifide.sling.query.function.ParentFunction;
+import com.cognifide.sling.query.function.ParentsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.predicate.FilterPredicate;
 
@@ -85,6 +86,16 @@ public class SlingQuery implements Iterable<Resource> {
 
 	public SlingQuery slice(int from) {
 		function(new SliceFunction(from));
+		return this;
+	}
+
+	public SlingQuery parents(String filter) {
+		function(new ParentsFunction(new FilterPredicate(filter)));
+		return this;
+	}
+
+	public SlingQuery parents() {
+		parents("");
 		return this;
 	}
 
