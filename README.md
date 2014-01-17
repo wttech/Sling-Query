@@ -1,6 +1,6 @@
 # SlingQuery
 
-SlingQuery is a Sling resource tree traversal framework inspired by the [jQuery](http://api.jquery.com/category/traversing/). It doesn't use any JCR queries underneath.
+SlingQuery is a Sling resource tree traversal framework inspired by the [jQuery](http://api.jquery.com/category/traversing/tree-traversal/). It doesn't use any JCR queries underneath.
 
 Features:
 
