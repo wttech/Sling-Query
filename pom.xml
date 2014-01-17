@@ -218,5 +218,18 @@
 			<groupId>org.apache.sling</groupId>
 			<artifactId>org.apache.sling.api</artifactId>
 		</dependency>
+
+		<!-- jcr -->
+		<dependency>
+			<groupId>javax.jcr</groupId>
+			<artifactId>jcr</artifactId>
+		</dependency>
+
+		<!-- org.slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
