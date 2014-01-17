@@ -15,7 +15,7 @@ public final class IteratorFactory {
 	private IteratorFactory() {
 	}
 
-	public Iterator<Resource> getIterator(Function<?, ?> function, Iterator<Resource> parentIterator) {
+	public static Iterator<Resource> getIterator(Function<?, ?> function, Iterator<Resource> parentIterator) {
 		if (function instanceof ResourceToResourceFunction) {
 			return new ResourceTransformerIterator((ResourceToResourceFunction) function, parentIterator);
 		} else if (function instanceof ResourceToIteratorFunction) {

@@ -6,16 +6,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceProvider;
 
+import com.cognifide.sling.query.IteratorFactory;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
-import com.cognifide.sling.query.iterator.FunctionIterator;
+import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
 import com.cognifide.sling.query.function.FilterFunction;
 import com.cognifide.sling.query.function.FindFunction;
 import com.cognifide.sling.query.function.ParentFunction;
+import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.predicate.FilterPredicate;
 
 public class SlingQuery implements Iterable<Resource> {
@@ -32,12 +33,12 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	public SlingQuery parent() {
-		functions.add(new ParentFunction());
+		function(new ParentFunction());
 		return this;
 	}
 
 	public SlingQuery closest(String filter) {
-		functions.add(new ClosestFunction(new FilterPredicate(filter)));
+		function(new ClosestFunction(new FilterPredicate(filter)));
 		return this;
 	}
 
@@ -47,7 +48,7 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	public SlingQuery children(String filter) {
-		functions.add(new ChildrenFunction(new FilterPredicate(filter)));
+		function(new ChildrenFunction(new FilterPredicate(filter)));
 		return this;
 	}
 
@@ -63,7 +64,7 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	public SlingQuery find(String filter) {
-		functions.add(new FindFunction(new FilterPredicate(filter)));
+		function(new FindFunction(new FilterPredicate(filter)));
 		return this;
 	}
 
@@ -73,7 +74,32 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	public SlingQuery filter(ResourcePredicate predicate) {
-		functions.add(new FilterFunction(predicate));
+		function(new FilterFunction(predicate));
+		return this;
+	}
+
+	public SlingQuery slice(int from, int to) {
+		function(new SliceFunction(from, to));
+		return this;
+	}
+
+	public SlingQuery slice(int from) {
+		function(new SliceFunction(from));
+		return this;
+	}
+
+	public SlingQuery function(ResourceToIteratorFunction function) {
+		functions.add(function);
+		return this;
+	}
+
+	public SlingQuery function(IteratorToIteratorFunction function) {
+		functions.add(function);
+		return this;
+	}
+
+	public SlingQuery function(ResourceToResourceFunction function) {
+		functions.add(function);
 		return this;
 	}
 
@@ -81,12 +107,7 @@ public class SlingQuery implements Iterable<Resource> {
 	public Iterator<Resource> iterator() {
 		Iterator<Resource> iterator = resources.iterator();
 		for (Function<?, ?> function : functions) {
-			if (function instanceof ResourceProvider) {
-			} else if (function instanceof ResourceToIteratorFunction) {
-				iterator = new FunctionIterator((ResourceToIteratorFunction) function, iterator);
-			} else if (function instanceof IteratorToIteratorFunction) {
-				iterator = ((IteratorToIteratorFunction) function).apply(iterator);
-			}
+			iterator = IteratorFactory.getIterator(function, iterator);
 		}
 		return iterator;
 	}
