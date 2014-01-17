@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cognifide.cq</groupId>
 	<artifactId>sling-query</artifactId>
@@ -21,6 +24,10 @@
 		<maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
 		<!-- workaround for MRESOURCES-99 -->
 		<timestamp>${maven.build.timestamp}</timestamp>
+
+		<sling.url>http://localhost:4502</sling.url>
+		<sling.username>admin</sling.username>
+		<sling.password>admin</sling.password>
 	</properties>
 
 	<organization>
@@ -160,6 +167,17 @@
 					<files>
 						<file>${external.properties}</file>
 					</files>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.sling</groupId>
+				<artifactId>maven-sling-plugin</artifactId>
+				<version>2.0.4-incubator</version>
+				<configuration>
+					<bundleFileName>${project.build.directory}/${project.build.finalName}.jar</bundleFileName>
+					<user>${sling.username}</user>
+					<password>${sling.password}</password>
+					<slingUrl>${sling.url}</slingUrl>
 				</configuration>
 			</plugin>
 		</plugins>
