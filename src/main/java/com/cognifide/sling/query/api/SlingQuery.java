@@ -18,6 +18,7 @@ import com.cognifide.sling.query.function.FindFunction;
 import com.cognifide.sling.query.function.NextFunction;
 import com.cognifide.sling.query.function.ParentFunction;
 import com.cognifide.sling.query.function.ParentsFunction;
+import com.cognifide.sling.query.function.PrevFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.predicate.FilterPredicate;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
@@ -128,6 +129,36 @@ public class SlingQuery implements Iterable<Resource> {
 
 	public SlingQuery nextUntil(String until, String filter) {
 		function(new NextFunction(new FilterPredicate(filter), new FilterPredicate(until)));
+		return this;
+	}
+
+	public SlingQuery prev() {
+		prev("");
+		return this;
+	}
+
+	public SlingQuery prev(String filter) {
+		function(new PrevFunction(new FilterPredicate(filter)));
+		return this;
+	}
+
+	public SlingQuery prevAll() {
+		prevAll("");
+		return this;
+	}
+
+	public SlingQuery prevAll(String filter) {
+		function(new PrevFunction(new FilterPredicate(filter), new RejectingPredicate()));
+		return this;
+	}
+
+	public SlingQuery prevUntil(String until) {
+		prevUntil(until, "");
+		return this;
+	}
+
+	public SlingQuery prevUntil(String until, String filter) {
+		function(new PrevFunction(new FilterPredicate(filter), new FilterPredicate(until)));
 		return this;
 	}
 
