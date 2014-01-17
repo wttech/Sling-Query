@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.ResourcePredicate;
+import com.cognifide.sling.query.api.ResourcePredicate;
 
 public class FilteringIteratorWrapper extends AbstractResourceIterator {
 

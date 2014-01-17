@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.ResourcePredicate;
+import com.cognifide.sling.query.api.ResourcePredicate;
 
 public class TreeIterator extends AbstractResourceIterator {
 

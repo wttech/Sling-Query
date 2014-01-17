@@ -1,4 +1,4 @@
-package com.cognifide.sling.query;
+package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

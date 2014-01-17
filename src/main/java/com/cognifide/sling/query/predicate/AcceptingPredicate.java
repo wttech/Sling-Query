@@ -2,7 +2,7 @@ package com.cognifide.sling.query.predicate;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.ResourcePredicate;
+import com.cognifide.sling.query.api.ResourcePredicate;
 
 public class AcceptingPredicate implements ResourcePredicate {
 

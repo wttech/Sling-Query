@@ -1,4 +1,4 @@
-package com.cognifide.sling.query;
+package com.cognifide.sling.query.api;
 
 import org.apache.sling.api.resource.Resource;
 

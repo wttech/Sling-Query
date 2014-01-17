@@ -13,7 +13,7 @@ import org.apache.sling.api.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.sling.query.ResourcePredicate;
+import com.cognifide.sling.query.api.ResourcePredicate;
 
 public class FilterPredicate implements ResourcePredicate {
 
