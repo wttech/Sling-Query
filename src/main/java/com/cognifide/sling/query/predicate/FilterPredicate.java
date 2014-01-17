@@ -5,12 +5,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cognifide.sling.query.ResourcePredicate;
 
 public class FilterPredicate implements ResourcePredicate {
+
+	private static final Logger LOG = LoggerFactory.getLogger(FilterPredicate.class);
 
 	private String resourceType;
 
@@ -44,7 +51,7 @@ public class FilterPredicate implements ResourcePredicate {
 
 	@Override
 	public boolean accepts(Resource resource) {
-		if (StringUtils.isNotBlank(resourceType) && !resource.isResourceType(resourceType)) {
+		if (!isResourceType(resource, resourceType)) {
 			return false;
 		}
 		for (PropertyPredicate predicate : properties) {
@@ -53,5 +60,23 @@ public class FilterPredicate implements ResourcePredicate {
 			}
 		}
 		return true;
+	}
+
+	private static boolean isResourceType(Resource resource, String resourceType) {
+		if (StringUtils.isBlank(resourceType)) {
+			return true;
+		}
+		if (resource.isResourceType(resourceType)) {
+			return true;
+		}
+		Node node = resource.adaptTo(Node.class);
+		try {
+			if (node != null) {
+				return node.isNodeType(resourceType);
+			}
+		} catch (RepositoryException e) {
+			LOG.error("Can't check node type", e);
+		}
+		return false;
 	}
 }
