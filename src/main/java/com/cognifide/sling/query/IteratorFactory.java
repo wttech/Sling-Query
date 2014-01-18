@@ -7,9 +7,9 @@ import org.apache.sling.api.resource.Resource;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
+import com.cognifide.sling.query.api.function.ResourceToIteratorWrapperFunction;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 import com.cognifide.sling.query.iterator.FunctionIterator;
-import com.cognifide.sling.query.iterator.ResourceTransformerIterator;
 
 public final class IteratorFactory {
 	private IteratorFactory() {
@@ -17,7 +17,9 @@ public final class IteratorFactory {
 
 	public static Iterator<Resource> getIterator(Function<?, ?> function, Iterator<Resource> parentIterator) {
 		if (function instanceof ResourceToResourceFunction) {
-			return new ResourceTransformerIterator((ResourceToResourceFunction) function, parentIterator);
+			ResourceToIteratorFunction wrappingFunction = new ResourceToIteratorWrapperFunction(
+					(ResourceToResourceFunction) function);
+			return new FunctionIterator(wrappingFunction, parentIterator);
 		} else if (function instanceof ResourceToIteratorFunction) {
 			return new FunctionIterator((ResourceToIteratorFunction) function, parentIterator);
 		} else if (function instanceof IteratorToIteratorFunction) {
