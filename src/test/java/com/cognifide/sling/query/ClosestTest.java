@@ -26,4 +26,10 @@ public class ClosestTest {
 		SlingQuery query = $(tree.getChild(PATH)).closest("cq:Undefined");
 		assertEmptyIterator(query.iterator());
 	}
+
+	@Test
+	public void testClosestOnRoot() {
+		SlingQuery query = $(tree).closest("cq:Page");
+		assertEmptyIterator(query.iterator());
+	}
 }
