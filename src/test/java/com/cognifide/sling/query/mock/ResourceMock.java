@@ -105,4 +105,9 @@ public class ResourceMock implements Resource {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public String toString() {
+		return String.format("ResourceMock[%s]", name);
+	}
+
 }
