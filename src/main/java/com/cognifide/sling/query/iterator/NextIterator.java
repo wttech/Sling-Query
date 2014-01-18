@@ -8,16 +8,13 @@ import com.cognifide.sling.query.api.ResourcePredicate;
 
 public class NextIterator extends AbstractResourceIterator {
 
-	private final ResourcePredicate predicate;
-
 	private final ResourcePredicate until;
 
 	private final Iterator<Resource> nextResources;
 
 	private boolean finished;
 
-	public NextIterator(ResourcePredicate predicate, ResourcePredicate until, Resource resource) {
-		this.predicate = predicate;
+	public NextIterator(ResourcePredicate until, Resource resource) {
 		this.until = until;
 		this.nextResources = rewindedIterator(resource);
 		this.finished = false;
@@ -34,12 +31,10 @@ public class NextIterator extends AbstractResourceIterator {
 				finished = true;
 				return null;
 			}
-			if (predicate.accepts(resource)) {
-				if (until == null) {
-					finished = true;
-				}
-				return resource;
+			if (until == null) {
+				finished = true;
 			}
+			return resource;
 		}
 		return null;
 	}

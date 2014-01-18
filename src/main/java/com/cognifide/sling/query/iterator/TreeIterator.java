@@ -6,18 +6,13 @@ import java.util.LinkedList;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
-
 public class TreeIterator extends AbstractResourceIterator {
-
-	private final ResourcePredicate predicate;
 
 	private final Deque<Resource> queue = new LinkedList<Resource>();
 
 	private Iterator<Resource> currentIterator;
 
-	public TreeIterator(Resource root, ResourcePredicate predicate) {
-		this.predicate = predicate;
+	public TreeIterator(Resource root) {
 		this.currentIterator = root.listChildren();
 	}
 
@@ -26,9 +21,7 @@ public class TreeIterator extends AbstractResourceIterator {
 		while (currentIterator.hasNext()) {
 			Resource resource = currentIterator.next();
 			queue.add(resource);
-			if (predicate.accepts(resource)) {
-				return resource;
-			}
+			return resource;
 		}
 
 		if (!queue.isEmpty()) {

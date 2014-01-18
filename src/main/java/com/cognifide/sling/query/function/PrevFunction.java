@@ -13,17 +13,9 @@ import com.cognifide.sling.query.iterator.EmptyIterator;
 
 public class PrevFunction implements ResourceToIteratorFunction {
 
-	private final ResourcePredicate predicate;
-
 	private final ResourcePredicate until;
 
-	public PrevFunction(ResourcePredicate predicate) {
-		this.predicate = predicate;
-		this.until = null;
-	}
-
-	public PrevFunction(ResourcePredicate predicate, ResourcePredicate until) {
-		this.predicate = predicate;
+	public PrevFunction(ResourcePredicate until) {
 		this.until = until;
 	}
 
@@ -31,7 +23,6 @@ public class PrevFunction implements ResourceToIteratorFunction {
 	public Iterator<Resource> apply(Resource resource) {
 		List<Resource> prevSiblings = getSiblingsBeforeMe(resource);
 		prevSiblings = subListAfterLast(prevSiblings, until);
-		filterResourceList(prevSiblings, predicate);
 		if (prevSiblings.isEmpty()) {
 			return EmptyIterator.INSTANCE;
 		}
@@ -68,15 +59,4 @@ public class PrevFunction implements ResourceToIteratorFunction {
 		}
 		return resources;
 	}
-
-	private static void filterResourceList(List<Resource> resources, ResourcePredicate predicate) {
-		Iterator<Resource> iterator = resources.iterator();
-		while (iterator.hasNext()) {
-			Resource r = iterator.next();
-			if (!predicate.accepts(r)) {
-				iterator.remove();
-			}
-		}
-	}
-
 }

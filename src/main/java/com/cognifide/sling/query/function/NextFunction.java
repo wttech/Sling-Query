@@ -10,23 +10,14 @@ import com.cognifide.sling.query.iterator.NextIterator;
 
 public class NextFunction implements ResourceToIteratorFunction {
 
-	private final ResourcePredicate predicate;
-
 	private final ResourcePredicate until;
 
-	public NextFunction(ResourcePredicate predicate) {
-		this.predicate = predicate;
-		this.until = null;
-	}
-
-	public NextFunction(ResourcePredicate predicate, ResourcePredicate until) {
-		this.predicate = predicate;
+	public NextFunction(ResourcePredicate until) {
 		this.until = until;
 	}
 
 	@Override
 	public Iterator<Resource> apply(Resource resource) {
-		return new NextIterator(predicate, until, resource);
+		return new NextIterator(until, resource);
 	}
-
 }
