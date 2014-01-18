@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.sling.api.resource.Resource;
 import org.junit.Assert;
@@ -45,7 +44,7 @@ public final class TestUtils {
 	}
 
 	public static void assertResourceListEquals(Iterator<Resource> iterator, String... names) {
-		Set<String> namesSet = new HashSet<String>(Arrays.asList(names));
+		List<String> namesSet = new LinkedList<String>(Arrays.asList(names));
 		while (iterator.hasNext()) {
 			Resource resource = iterator.next();
 			if (!namesSet.remove(resource.getName())) {
