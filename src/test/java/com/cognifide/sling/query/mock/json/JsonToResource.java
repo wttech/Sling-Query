@@ -34,11 +34,7 @@ public final class JsonToResource {
 			}
 		}
 
-		String resourceType = properties.get("jcr:primaryType");
-		if (properties.containsKey("sling:resourceType")) {
-			resourceType = properties.get("sling:resourceType");
-		}
-		ResourceMock resource = new ResourceMock(parent, name, resourceType);
+		ResourceMock resource = new ResourceMock(parent, name);
 		for (Entry<String, String> entry : properties.entrySet()) {
 			resource.setProperty(entry.getKey(), entry.getValue());
 		}

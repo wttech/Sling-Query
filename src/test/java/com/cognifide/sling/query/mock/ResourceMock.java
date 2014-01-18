@@ -13,17 +13,14 @@ public class ResourceMock implements Resource {
 
 	private final String name;
 
-	private final String resourceType;
-
 	private final Map<String, Resource> children;
 
 	private final Map<String, String> properties;
 
 	private final Resource parent;
 
-	public ResourceMock(Resource parent, String name, String resourceType) {
+	public ResourceMock(Resource parent, String name) {
 		this.name = name;
-		this.resourceType = resourceType;
 		this.parent = parent;
 		this.children = new LinkedHashMap<String, Resource>();
 		this.properties = new LinkedHashMap<String, String>();
@@ -77,12 +74,18 @@ public class ResourceMock implements Resource {
 
 	@Override
 	public boolean isResourceType(String resourceType) {
-		return this.resourceType.equals(resourceType);
+		return StringUtils.isNotBlank(resourceType)
+				&& (resourceType.equals(properties.get("sling:resourceType")) || resourceType
+						.equals(properties.get("jcr:primaryType")));
 	}
 
 	@Override
 	public String getResourceType() {
-		return resourceType;
+		if (properties.containsKey("sling:resourceType")) {
+			return properties.get("sling:resourceType");
+		} else {
+			return properties.get("jcr:primaryType");
+		}
 	}
 
 	@Override
