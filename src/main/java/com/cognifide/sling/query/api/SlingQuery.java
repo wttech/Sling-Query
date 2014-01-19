@@ -16,6 +16,7 @@ import com.cognifide.sling.query.function.NextFunction;
 import com.cognifide.sling.query.function.ParentFunction;
 import com.cognifide.sling.query.function.ParentsFunction;
 import com.cognifide.sling.query.function.PrevFunction;
+import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.predicate.FilterPredicate;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
@@ -54,8 +55,7 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	public SlingQuery siblings(String filter) {
-		parent();
-		children(filter);
+		function(new SiblingsFunction(), filter);
 		return this;
 	}
 
