@@ -10,6 +10,7 @@ import org.apache.sling.api.resource.Resource;
 import com.cognifide.sling.query.Operation;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
+import com.cognifide.sling.query.function.HasFunction;
 import com.cognifide.sling.query.function.IdentityFunction;
 import com.cognifide.sling.query.function.FindFunction;
 import com.cognifide.sling.query.function.LastFunction;
@@ -86,6 +87,11 @@ public class SlingQuery implements Iterable<Resource> {
 
 	public SlingQuery function(Function<?, ?> function, String selector) {
 		operations.add(new Operation(function, selector));
+		return this;
+	}
+
+	public SlingQuery has(String selector) {
+		function(new HasFunction(new Selector(selector).getPredicate()), "");
 		return this;
 	}
 
