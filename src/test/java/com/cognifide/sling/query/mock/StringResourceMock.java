@@ -34,7 +34,11 @@ public class StringResourceMock implements Resource {
 
 	@Override
 	public String getPath() {
-		throw new UnsupportedOperationException();
+		if (parent == null) {
+			return "";
+		} else {
+			return String.format("%s/%s", parent.getPath(), name);
+		}
 	}
 
 	@Override
@@ -54,12 +58,12 @@ public class StringResourceMock implements Resource {
 
 	@Override
 	public Resource getChild(String relPath) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String getResourceType() {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -69,7 +73,7 @@ public class StringResourceMock implements Resource {
 
 	@Override
 	public boolean isResourceType(String resourceType) {
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

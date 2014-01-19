@@ -90,7 +90,11 @@ public class ResourceMock implements Resource {
 
 	@Override
 	public String getPath() {
-		throw new UnsupportedOperationException();
+		if (parent == null) {
+			return "";
+		} else {
+			return String.format("%s/%s", parent.getPath(), name);
+		}
 	}
 
 	@Override
