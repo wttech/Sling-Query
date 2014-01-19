@@ -38,8 +38,8 @@ public class Selector {
 
 		Matcher m = RESOURCE_TYPE.matcher(selectorString);
 		if (m.find()) {
-			offset = m.end();
-			resourceType = m.group();
+			resourceType = parseResourceType(m.group());
+			offset = resourceType.length() - 1;
 		}
 		m = ATTRIBUTE.matcher(selectorString);
 		if (m.find(offset)) {
@@ -60,6 +60,18 @@ public class Selector {
 				functions.add(new ParsedSelectorFunction(functionId, argument));
 			} while (m.find());
 		}
+	}
+
+	private static String parseResourceType(String resourceType) {
+		if (StringUtils.contains(resourceType, '/')) {
+			if (StringUtils.contains(resourceType, ":")) {
+				return StringUtils.substringBefore(resourceType, ":");
+			}
+		} else if (StringUtils.countMatches(resourceType, ":") > 1) {
+			String[] split = StringUtils.split(resourceType, ':');
+			return String.format("%s:%s", split[0], split[1]);
+		}
+		return resourceType;
 	}
 
 	public ResourcePredicate getPredicate() {

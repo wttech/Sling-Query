@@ -10,6 +10,12 @@ public enum SelectorFunction {
 			int index = Integer.parseInt(argument);
 			return new SliceFunction(index, index);
 		}
+	},
+	FIRST {
+		@Override
+		public IteratorToIteratorFunction getFunction(String argument) {
+			return new SliceFunction(0, 0);
+		}
 	};
 
 	public abstract IteratorToIteratorFunction getFunction(String argument);
