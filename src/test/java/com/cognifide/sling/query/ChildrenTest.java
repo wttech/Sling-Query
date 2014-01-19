@@ -30,4 +30,10 @@ public class ChildrenTest {
 		SlingQuery query = $(tree.getChild("jcr:content")).children();
 		assertEmptyIterator(query.iterator());
 	}
+
+	@Test
+	public void testLeafChildren() {
+		SlingQuery query = $(tree.getChild("jcr:content")).children();
+		assertEmptyIterator(query.iterator());
+	}
 }
