@@ -17,7 +17,6 @@ class ParsedSelectorFunction {
 	}
 
 	public ParsedSelectorFunction(String functionString) {
-		System.out.println(functionString);
 		String functionName = functionString;
 		String rawArgument = null;
 		if (functionString.contains("(")) {
