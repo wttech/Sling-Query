@@ -40,12 +40,12 @@ public class NextIterator extends AbstractResourceIterator {
 	}
 
 	private Iterator<Resource> rewindedIterator(Resource resource) {
-		Iterator<Resource> siblings = resource.getParent().listChildren();
 		String resourceName = resource.getName();
+		Iterator<Resource> siblings = resource.getParent().listChildren();
 		while (siblings.hasNext()) {
 			Resource sibling = siblings.next();
-			if (!sibling.getName().equals(resourceName)) {
-				continue;
+			if (sibling.getName().equals(resourceName)) {
+				break;
 			}
 		}
 		return siblings;
