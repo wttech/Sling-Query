@@ -1,5 +1,6 @@
 package com.cognifide.sling.query.selector;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -10,15 +11,34 @@ class ParsedSelectorFunction {
 
 	private final String argument;
 
-	public ParsedSelectorFunction(String functionId, String argument) {
-		this.function = SelectorFunction.valueOf(functionId.toUpperCase());
+	public ParsedSelectorFunction(String functionName, String argument) {
+		this.function = SelectorFunction.valueOf(functionName.toUpperCase());
 		this.argument = argument;
+	}
+
+	public ParsedSelectorFunction(String functionString) {
+		System.out.println(functionString);
+		String functionName = StringUtils.substringAfter(functionString, ":");
+		String rawArgument = null;
+		if (functionName.contains("(")) {
+			functionName = StringUtils.substringBefore(functionName, "(");
+			rawArgument = StringUtils.substringAfter(functionString, "(");
+			rawArgument = StringUtils.substringBeforeLast(rawArgument, ")");
+		}
+		function = SelectorFunction.valueOf(functionName.toUpperCase());
+		argument = rawArgument;
 	}
 
 	public Function<?, ?> function() {
 		return function.getFunction(argument);
 	}
 
+	@Override
+	public String toString() {
+		return String.format("Function[%s,%s]", function.name(), argument);
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
@@ -33,6 +53,7 @@ class ParsedSelectorFunction {
 		return new EqualsBuilder().append(function, rhs.function).append(argument, rhs.argument).isEquals();
 	}
 
+	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(function).append(argument).toHashCode();
 	}

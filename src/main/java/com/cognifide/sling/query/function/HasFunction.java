@@ -6,10 +6,10 @@ import java.util.LinkedList;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 
-public class HasFunction implements Function<Resource, Resource> {
+public class HasFunction implements ResourceToResourceFunction {
 
 	private final ResourcePredicate predicate;
 

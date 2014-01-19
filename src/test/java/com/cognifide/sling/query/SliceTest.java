@@ -1,6 +1,7 @@
 package com.cognifide.sling.query;
 
 import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -30,6 +31,30 @@ public class SliceTest {
 	public void testSliceOne() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children().slice(2, 2);
 		assertResourceListEquals(query.iterator(), "configvalue_0");
+	}
+
+	@Test
+	public void testEq() {
+		SlingQuery query = $(tree.getChild(PAR_PATH)).children().eq(2);
+		assertResourceListEquals(query.iterator(), "configvalue_0");
+	}
+
+	@Test
+	public void testEqOnEmpty() {
+		SlingQuery query = $().eq(0);
+		assertEmptyIterator(query.iterator());
+	}
+
+	@Test
+	public void testFirst() {
+		SlingQuery query = $(tree.getChild(PAR_PATH)).children().first();
+		assertResourceListEquals(query.iterator(), "richtext");
+	}
+
+	@Test
+	public void testFirstOnEmpty() {
+		SlingQuery query = $().first();
+		assertEmptyIterator(query.iterator());
 	}
 
 	@Test

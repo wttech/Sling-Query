@@ -1,5 +1,6 @@
 package com.cognifide.sling.query.predicate;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.sling.api.resource.Resource;
@@ -7,18 +8,24 @@ import org.apache.sling.api.resource.Resource;
 import com.cognifide.sling.query.api.ResourcePredicate;
 
 public class PropertyPredicate implements ResourcePredicate {
-	private final String path;
+	private final String key;
 
 	private final String value;
 
-	public PropertyPredicate(String path, String value) {
-		this.path = path;
+	public PropertyPredicate(String property) {
+		String[] split = StringUtils.split(StringUtils.substringBetween(property, "[", "]"), "=");
+		this.key = split[0];
+		this.value = split[1];
+	}
+
+	public PropertyPredicate(String key, String value) {
+		this.key = key;
 		this.value = value;
 	}
 
 	@Override
 	public boolean accepts(Resource resource) {
-		Resource property = resource.getChild(path);
+		Resource property = resource.getChild(key);
 		if (property == null) {
 			return false;
 		} else {
@@ -27,7 +34,7 @@ public class PropertyPredicate implements ResourcePredicate {
 	}
 
 	public String toString() {
-		return String.format("PropertyPredicate[%s=%s]", path, value);
+		return String.format("PropertyPredicate[%s=%s]", key, value);
 	}
 
 	public boolean equals(Object obj) {
@@ -41,10 +48,10 @@ public class PropertyPredicate implements ResourcePredicate {
 			return false;
 		}
 		PropertyPredicate rhs = (PropertyPredicate) obj;
-		return new EqualsBuilder().append(path, rhs.path).append(value, rhs.value).isEquals();
+		return new EqualsBuilder().append(key, rhs.key).append(value, rhs.value).isEquals();
 	}
 
 	public int hashCode() {
-		return new HashCodeBuilder().append(path).append(value).toHashCode();
+		return new HashCodeBuilder().append(key).append(value).toHashCode();
 	}
 }

@@ -47,6 +47,12 @@ public class SelectorTest {
 	}
 
 	@Test
+	public void parseFunctionWithFilter() {
+		Selector selector = new Selector(":has([key=value])");
+		Assert.assertEquals(Arrays.asList(f("has", "[key=value]")), selector.getFunctions());
+	}
+
+	@Test
 	public void parseFunctionWithoutArgument() {
 		Selector selector = new Selector(":first");
 		Assert.assertEquals(Arrays.asList(f("first", null)), selector.getFunctions());
