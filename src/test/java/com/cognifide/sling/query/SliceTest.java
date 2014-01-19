@@ -1,7 +1,7 @@
 package com.cognifide.sling.query;
 
-import static com.cognifide.sling.query.api.SlingQuery.$;
 import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
 import org.junit.Test;
