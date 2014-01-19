@@ -4,10 +4,10 @@ import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.Function;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.ArrayIterator;
 
-public class LastFunction implements Function<Iterator<Resource>, Iterator<Resource>> {
+public class LastFunction implements IteratorToIteratorFunction {
 
 	@Override
 	public Iterator<Resource> apply(Iterator<Resource> input) {
