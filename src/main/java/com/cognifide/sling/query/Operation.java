@@ -13,26 +13,34 @@ import com.cognifide.sling.query.selector.Selector;
 public class Operation {
 	private final Function<?, ?> function;
 
+	private final Selector selector;
+
 	private final ResourcePredicate predicate;
 
-	public Operation(Function<?, ?> function, String filter) {
+	public Operation(Function<?, ?> function, String selector) {
 		this.function = function;
-		if (StringUtils.isBlank(filter)) {
+		if (StringUtils.isBlank(selector)) {
+			this.selector = null;
 			this.predicate = null;
 		} else {
-			this.predicate = new Selector(filter).getPredicate();
+			this.selector = new Selector(selector);
+			this.predicate = this.selector.getPredicate();
 		}
 	}
 
 	public Operation(Function<?, ?> function, ResourcePredicate predicate) {
 		this.function = function;
 		this.predicate = predicate;
+		this.selector = null;
 	}
 
 	public Iterator<Resource> getIterator(Iterator<Resource> iterator) {
 		Iterator<Resource> newIterator = IteratorFactory.getIterator(function, iterator);
 		if (predicate != null) {
 			newIterator = new FilteringIteratorWrapper(newIterator, predicate);
+		}
+		if (selector != null) {
+			newIterator = selector.wrapWithFilters(newIterator);
 		}
 		return newIterator;
 	}

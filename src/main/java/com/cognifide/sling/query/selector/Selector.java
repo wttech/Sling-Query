@@ -1,11 +1,13 @@
 package com.cognifide.sling.query.selector;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.api.ResourcePredicate;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
@@ -44,5 +46,9 @@ public class Selector {
 
 	public ResourcePredicate getPredicate() {
 		return new SelectorFilterPredicate(resourceType, properties);
+	}
+
+	public Iterator<Resource> wrapWithFilters(Iterator<Resource> iterator) {
+		return iterator;
 	}
 }
