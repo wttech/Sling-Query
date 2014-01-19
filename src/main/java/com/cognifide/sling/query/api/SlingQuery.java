@@ -80,11 +80,20 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	public SlingQuery slice(int from, int to) {
+		if (from < 0) {
+			throw new IndexOutOfBoundsException();
+		}
+		if (from > to) {
+			throw new IllegalArgumentException();
+		}
 		function(new SliceFunction(from, to), "");
 		return this;
 	}
 
 	public SlingQuery slice(int from) {
+		if (from < 0) {
+			throw new IndexOutOfBoundsException();
+		}
 		function(new SliceFunction(from), "");
 		return this;
 	}
