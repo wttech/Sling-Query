@@ -12,6 +12,7 @@ import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
 import com.cognifide.sling.query.function.IdentityFunction;
 import com.cognifide.sling.query.function.FindFunction;
+import com.cognifide.sling.query.function.LastFunction;
 import com.cognifide.sling.query.function.NextFunction;
 import com.cognifide.sling.query.function.ParentFunction;
 import com.cognifide.sling.query.function.ParentsFunction;
@@ -34,14 +35,13 @@ public class SlingQuery implements Iterable<Resource> {
 		this.resources = Arrays.asList(resources);
 	}
 
-	public SlingQuery parent() {
-		function(new ParentFunction(), "");
-		return this;
-	}
-
-	public SlingQuery closest(String selector) {
-		function(new ClosestFunction(new Selector(selector).getPredicate()), "");
-		return this;
+	@Override
+	public Iterator<Resource> iterator() {
+		Iterator<Resource> iterator = resources.iterator();
+		for (Operation operation : operations) {
+			iterator = operation.getIterator(iterator);
+		}
+		return iterator;
 	}
 
 	public SlingQuery children() {
@@ -54,23 +54,13 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery siblings(String selector) {
-		function(new SiblingsFunction(), selector);
+	public SlingQuery closest(String selector) {
+		function(new ClosestFunction(new Selector(selector).getPredicate()), "");
 		return this;
 	}
 
-	public SlingQuery siblings() {
-		siblings("");
-		return this;
-	}
-
-	public SlingQuery find(String selector) {
-		function(new FindFunction(), selector);
-		return this;
-	}
-
-	public SlingQuery find() {
-		find("");
+	public SlingQuery eq(int index) {
+		slice(index, index);
 		return this;
 	}
 
@@ -79,32 +69,28 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery slice(int from, int to) {
-		if (from < 0) {
-			throw new IndexOutOfBoundsException();
-		}
-		if (from > to) {
-			throw new IllegalArgumentException();
-		}
-		function(new SliceFunction(from, to), "");
+	public SlingQuery find() {
+		find("");
 		return this;
 	}
 
-	public SlingQuery slice(int from) {
-		if (from < 0) {
-			throw new IndexOutOfBoundsException();
-		}
-		function(new SliceFunction(from), "");
+	public SlingQuery find(String selector) {
+		function(new FindFunction(), selector);
 		return this;
 	}
 
-	public SlingQuery parents(String selector) {
-		function(new ParentsFunction(), selector);
+	public SlingQuery first() {
+		eq(0);
 		return this;
 	}
 
-	public SlingQuery parents() {
-		parents("");
+	public SlingQuery function(Function<?, ?> function, String selector) {
+		operations.add(new Operation(function, selector));
+		return this;
+	}
+
+	public SlingQuery last() {
+		function(new LastFunction(), "");
 		return this;
 	}
 
@@ -138,6 +124,21 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
+	public SlingQuery parent() {
+		function(new ParentFunction(), "");
+		return this;
+	}
+
+	public SlingQuery parents() {
+		parents("");
+		return this;
+	}
+
+	public SlingQuery parents(String selector) {
+		function(new ParentsFunction(), selector);
+		return this;
+	}
+
 	public SlingQuery prev() {
 		prev("");
 		return this;
@@ -168,17 +169,32 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery function(Function<?, ?> function, String selector) {
-		operations.add(new Operation(function, selector));
+	public SlingQuery siblings() {
+		siblings("");
 		return this;
 	}
 
-	@Override
-	public Iterator<Resource> iterator() {
-		Iterator<Resource> iterator = resources.iterator();
-		for (Operation operation : operations) {
-			iterator = operation.getIterator(iterator);
+	public SlingQuery siblings(String selector) {
+		function(new SiblingsFunction(), selector);
+		return this;
+	}
+
+	public SlingQuery slice(int from) {
+		if (from < 0) {
+			throw new IndexOutOfBoundsException();
 		}
-		return iterator;
+		function(new SliceFunction(from), "");
+		return this;
+	}
+
+	public SlingQuery slice(int from, int to) {
+		if (from < 0) {
+			throw new IndexOutOfBoundsException();
+		}
+		if (from > to) {
+			throw new IllegalArgumentException();
+		}
+		function(new SliceFunction(from, to), "");
+		return this;
 	}
 }
