@@ -1,6 +1,7 @@
 package com.cognifide.sling.query.function;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,9 +36,14 @@ public class PrevFunction implements ResourceToIteratorFunction {
 	}
 
 	private static List<Resource> getSiblingsBeforeMe(Resource resource) {
+		Resource parent = resource.getParent();
+		if (parent == null) {
+			return Collections.emptyList();
+		}
+
 		String resourceName = resource.getName();
 		List<Resource> prevResources = new ArrayList<Resource>();
-		Iterator<Resource> siblings = resource.getParent().listChildren();
+		Iterator<Resource> siblings = parent.listChildren();
 		while (siblings.hasNext()) {
 			Resource sibling = siblings.next();
 			if (sibling.getName().equals(resourceName)) {
