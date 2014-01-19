@@ -8,7 +8,7 @@ import org.apache.sling.api.resource.Resource;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.ResourcePredicate;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
-import com.cognifide.sling.query.predicate.FilterPredicate;
+import com.cognifide.sling.query.selector.Selector;
 
 public class Operation {
 	private final Function<?, ?> function;
@@ -20,7 +20,7 @@ public class Operation {
 		if (StringUtils.isBlank(filter)) {
 			this.predicate = null;
 		} else {
-			this.predicate = new FilterPredicate(filter);
+			this.predicate = new Selector(filter).getPredicate();
 		}
 	}
 

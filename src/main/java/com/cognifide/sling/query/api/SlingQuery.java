@@ -18,8 +18,8 @@ import com.cognifide.sling.query.function.ParentsFunction;
 import com.cognifide.sling.query.function.PrevFunction;
 import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
-import com.cognifide.sling.query.predicate.FilterPredicate;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
+import com.cognifide.sling.query.selector.Selector;
 
 public class SlingQuery implements Iterable<Resource> {
 	private final List<Operation> operations = new ArrayList<Operation>();
@@ -39,8 +39,8 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery closest(String filter) {
-		function(new ClosestFunction(new FilterPredicate(filter)), filter);
+	public SlingQuery closest(String selector) {
+		function(new ClosestFunction(new Selector(selector).getPredicate()), "");
 		return this;
 	}
 
@@ -49,13 +49,13 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery children(String filter) {
-		function(new ChildrenFunction(), filter);
+	public SlingQuery children(String selector) {
+		function(new ChildrenFunction(), selector);
 		return this;
 	}
 
-	public SlingQuery siblings(String filter) {
-		function(new SiblingsFunction(), filter);
+	public SlingQuery siblings(String selector) {
+		function(new SiblingsFunction(), selector);
 		return this;
 	}
 
@@ -64,8 +64,8 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery find(String filter) {
-		function(new FindFunction(), filter);
+	public SlingQuery find(String selector) {
+		function(new FindFunction(), selector);
 		return this;
 	}
 
@@ -98,8 +98,8 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery parents(String filter) {
-		function(new ParentsFunction(), filter);
+	public SlingQuery parents(String selector) {
+		function(new ParentsFunction(), selector);
 		return this;
 	}
 
@@ -113,8 +113,8 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery next(String filter) {
-		function(new NextFunction(null), filter);
+	public SlingQuery next(String selector) {
+		function(new NextFunction(null), selector);
 		return this;
 	}
 
@@ -123,8 +123,8 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery nextAll(String filter) {
-		function(new NextFunction(new RejectingPredicate()), filter);
+	public SlingQuery nextAll(String selector) {
+		function(new NextFunction(new RejectingPredicate()), selector);
 		return this;
 	}
 
@@ -133,8 +133,8 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery nextUntil(String until, String filter) {
-		function(new NextFunction(new FilterPredicate(until)), filter);
+	public SlingQuery nextUntil(String until, String selector) {
+		function(new NextFunction(new Selector(until).getPredicate()), selector);
 		return this;
 	}
 
@@ -143,8 +143,8 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery prev(String filter) {
-		function(new PrevFunction(null), filter);
+	public SlingQuery prev(String selector) {
+		function(new PrevFunction(null), selector);
 		return this;
 	}
 
@@ -153,8 +153,8 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery prevAll(String filter) {
-		function(new PrevFunction(new RejectingPredicate()), filter);
+	public SlingQuery prevAll(String selector) {
+		function(new PrevFunction(new RejectingPredicate()), selector);
 		return this;
 	}
 
@@ -163,13 +163,13 @@ public class SlingQuery implements Iterable<Resource> {
 		return this;
 	}
 
-	public SlingQuery prevUntil(String until, String filter) {
-		function(new PrevFunction(new FilterPredicate(until)), filter);
+	public SlingQuery prevUntil(String until, String selector) {
+		function(new PrevFunction(new Selector(until).getPredicate()), selector);
 		return this;
 	}
 
-	public SlingQuery function(Function<?, ?> function, String filter) {
-		operations.add(new Operation(function, filter));
+	public SlingQuery function(Function<?, ?> function, String selector) {
+		operations.add(new Operation(function, selector));
 		return this;
 	}
 
