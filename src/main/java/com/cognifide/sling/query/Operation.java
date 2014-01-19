@@ -40,7 +40,7 @@ public class Operation {
 			newIterator = new FilteringIteratorWrapper(newIterator, predicate);
 		}
 		if (selector != null) {
-			newIterator = selector.wrapWithFilters(newIterator);
+			newIterator = selector.applySelectorFunctions(newIterator);
 		}
 		return newIterator;
 	}
