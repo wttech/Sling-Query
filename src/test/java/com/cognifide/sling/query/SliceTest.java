@@ -39,6 +39,13 @@ public class SliceTest {
 				"configvalue_1", "configvalue_2");
 	}
 
+	@Test
+	public void testSliceAllBigTo() {
+		SlingQuery query = $(tree.getChild(PAR_PATH)).children().slice(0, 10);
+		assertResourceListEquals(query.iterator(), "richtext", "configvalue", "configvalue_0",
+				"configvalue_1", "configvalue_2");
+	}
+
 	@Test(expected = IndexOutOfBoundsException.class)
 	public void testSliceNegativeFrom() {
 		$(tree.getChild(PAR_PATH)).children().slice(-1);
