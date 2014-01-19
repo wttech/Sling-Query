@@ -20,6 +20,6 @@ Sample code:
 		.children("cq:PageContent")
 		.find("foundation/components/image");
 
-	for (Resource resource : collection) {
+	for (Resource resource : query) {
     	...
 	}
