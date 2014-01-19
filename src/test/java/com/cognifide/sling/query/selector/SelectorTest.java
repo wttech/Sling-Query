@@ -53,6 +53,12 @@ public class SelectorTest {
 	}
 
 	@Test
+	public void parseNestedFunction() {
+		Selector selector = new Selector(":not(:has(cq:Page))");
+		Assert.assertEquals(Arrays.asList(f("not", ":has(cq:Page)")), selector.getFunctions());
+	}
+
+	@Test
 	public void parseFunctionWithoutArgument() {
 		Selector selector = new Selector(":first");
 		Assert.assertEquals(Arrays.asList(f("first", null)), selector.getFunctions());

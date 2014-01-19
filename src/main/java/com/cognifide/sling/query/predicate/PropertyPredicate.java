@@ -13,7 +13,7 @@ public class PropertyPredicate implements ResourcePredicate {
 	private final String value;
 
 	public PropertyPredicate(String property) {
-		String[] split = StringUtils.split(StringUtils.substringBetween(property, "[", "]"), "=");
+		String[] split = StringUtils.split(property, "=");
 		this.key = split[0];
 		this.value = split[1];
 	}

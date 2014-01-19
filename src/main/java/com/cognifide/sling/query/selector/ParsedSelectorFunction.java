@@ -18,10 +18,10 @@ class ParsedSelectorFunction {
 
 	public ParsedSelectorFunction(String functionString) {
 		System.out.println(functionString);
-		String functionName = StringUtils.substringAfter(functionString, ":");
+		String functionName = functionString;
 		String rawArgument = null;
-		if (functionName.contains("(")) {
-			functionName = StringUtils.substringBefore(functionName, "(");
+		if (functionString.contains("(")) {
+			functionName = StringUtils.substringBefore(functionString, "(");
 			rawArgument = StringUtils.substringAfter(functionString, "(");
 			rawArgument = StringUtils.substringBeforeLast(rawArgument, ")");
 		}

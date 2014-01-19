@@ -4,62 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SelectorParser {
-	private enum State {
-		START, RESOURCE_TYPE, RESOURCE_TYPE_WITH_SLASHES, ATTRIBUTE, FUNCTION, FUNCTION_ARGUMENT
-	}
+	private final List<String> attributes = new ArrayList<String>();
+
+	private final List<String> functions = new ArrayList<String>();
+
+	private State state;
+
+	private StringBuilder builder;
 
 	private String resourceType;
 
-	private List<String> attributes = new ArrayList<String>();
-
-	private List<String> functions = new ArrayList<String>();
+	private int parentCount = 0;
 
 	public void parse(String selectorString) {
-		State state = State.START;
-		StringBuilder builder = new StringBuilder();
+		state = State.START;
+		builder = new StringBuilder();
 		for (char c : selectorString.toCharArray()) {
-			if (state == State.START && Character.isAlphabetic(c)) {
-				state = State.RESOURCE_TYPE;
-			} else if (state == State.RESOURCE_TYPE && c == '/') {
-				state = State.RESOURCE_TYPE_WITH_SLASHES;
-			} else if (state == State.RESOURCE_TYPE && c == '[') {
-				state = State.ATTRIBUTE;
-				resourceType = builder.toString();
-				builder = new StringBuilder();
-			} else if (state == State.RESOURCE_TYPE && c == ':') {
-				state = State.RESOURCE_TYPE_WITH_SLASHES;
-			} else if (state == State.RESOURCE_TYPE_WITH_SLASHES && c == '[') {
-				state = State.ATTRIBUTE;
-				resourceType = builder.toString();
-				builder = new StringBuilder();
-			} else if (state == State.START && c == '[') {
-				state = State.ATTRIBUTE;
-			} else if (state == State.RESOURCE_TYPE_WITH_SLASHES && c == ':') {
-				state = State.FUNCTION;
-				resourceType = builder.toString();
-				builder = new StringBuilder();
-			} else if (state == State.ATTRIBUTE && c == ']') {
-				state = State.START;
-				attributes.add(builder.append(']').toString());
-				builder = new StringBuilder();
-				continue;
-			} else if (state == State.START && c == ':') {
-				state = State.FUNCTION;
-			} else if (state == State.FUNCTION && c == ':') {
-				functions.add(builder.toString());
-				builder = new StringBuilder();
-			} else if (state == State.FUNCTION && c == '(') {
-				state = State.FUNCTION_ARGUMENT;
-			} else if (state == State.FUNCTION_ARGUMENT && c == ')') {
-				state = State.FUNCTION;
-			}
-			builder.append(c);
+			state.process(this, c);
 		}
-		if (state == State.RESOURCE_TYPE || state == State.RESOURCE_TYPE_WITH_SLASHES) {
-			resourceType = builder.toString();
-		} else if (state == State.FUNCTION) {
-			functions.add(builder.toString());
-		}
+		state.process(this, (char) 0);
 	}
 
 	public String getResourceType() {
@@ -72,5 +35,106 @@ public class SelectorParser {
 
 	public List<String> getFunctions() {
 		return functions;
+	}
+
+	private enum State {
+		START {
+			@Override
+			protected void process(SelectorParser context, char c) {
+				if (Character.isAlphabetic(c)) {
+					context.state = State.RESOURCE_TYPE;
+					context.builder.append(c);
+				} else if (c == '[') {
+					context.state = State.ATTRIBUTE;
+				} else if (c == ':') {
+					context.state = State.FUNCTION;
+				} else {
+					context.builder.append(c);
+				}
+			}
+		},
+		RESOURCE_TYPE {
+			@Override
+			protected void process(SelectorParser context, char c) {
+				if (c == '/') {
+					context.state = State.RESOURCE_TYPE_WITH_SLASHES;
+					context.builder.append(c);
+				} else if (c == '[') {
+					context.state = State.ATTRIBUTE;
+					context.resourceType = context.builder.toString();
+					context.builder = new StringBuilder();
+				} else if (c == ':') {
+					context.state = State.RESOURCE_TYPE_WITH_SLASHES;
+					context.builder.append(c);
+				} else if (c == 0) {
+					context.resourceType = context.builder.toString();
+				} else {
+					context.builder.append(c);
+				}
+			}
+		},
+		RESOURCE_TYPE_WITH_SLASHES {
+			@Override
+			protected void process(SelectorParser context, char c) {
+				if (c == '[') {
+					context.state = State.ATTRIBUTE;
+					context.resourceType = context.builder.toString();
+					context.builder = new StringBuilder();
+				} else if (c == ':') {
+					context.state = State.FUNCTION;
+					context.resourceType = context.builder.toString();
+					context.builder = new StringBuilder();
+				} else if (c == 0) {
+					context.resourceType = context.builder.toString();
+				} else {
+					context.builder.append(c);
+				}
+			}
+		},
+		ATTRIBUTE {
+			@Override
+			protected void process(SelectorParser context, char c) {
+				if (c == ']') {
+					context.state = State.START;
+					context.attributes.add(context.builder.toString());
+					context.builder = new StringBuilder();
+				} else if (c == 0) {
+					context.attributes.add(context.builder.toString());
+				} else {
+					context.builder.append(c);
+				}
+			}
+		},
+		FUNCTION {
+			@Override
+			protected void process(SelectorParser context, char c) {
+				if (c == ':') {
+					context.functions.add(context.builder.toString());
+					context.builder = new StringBuilder();
+				} else if (c == '(') {
+					context.state = State.FUNCTION_ARGUMENT;
+					context.parentCount++;
+					context.builder.append(c);
+				} else if (c == 0) {
+					context.functions.add(context.builder.toString());
+				} else {
+					context.builder.append(c);
+				}
+			}
+		},
+		FUNCTION_ARGUMENT {
+			@Override
+			protected void process(SelectorParser context, char c) {
+				if (c == ')') {
+					if (--context.parentCount == 0) {
+						context.state = State.FUNCTION;
+					}
+				} else if (c == '(') {
+					context.parentCount++;
+				}
+				context.builder.append(c);
+			}
+		};
+		protected abstract void process(SelectorParser context, char c);
 	}
 }
