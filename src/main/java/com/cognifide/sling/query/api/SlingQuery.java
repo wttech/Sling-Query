@@ -21,6 +21,7 @@ import com.cognifide.sling.query.function.PrevFunction;
 import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
+import com.cognifide.sling.query.selector.NotFunction;
 import com.cognifide.sling.query.selector.Selector;
 
 public class SlingQuery implements Iterable<Resource> {
@@ -36,6 +37,11 @@ public class SlingQuery implements Iterable<Resource> {
 		this.resources = Arrays.asList(resources);
 	}
 
+	private SlingQuery(SlingQuery original) {
+		this.operations.addAll(original.operations);
+		this.resources = new ArrayList<Resource>(original.resources);
+	}
+
 	@Override
 	public Iterator<Resource> iterator() {
 		Iterator<Resource> iterator = resources.iterator();
@@ -46,151 +52,126 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	public SlingQuery children() {
-		children("");
-		return this;
+		return children("");
 	}
 
 	public SlingQuery children(String selector) {
-		function(new ChildrenFunction(), selector);
-		return this;
+		return function(new ChildrenFunction(), selector);
 	}
 
 	public SlingQuery closest(String selector) {
-		function(new ClosestFunction(new Selector(selector).getPredicate()), "");
-		return this;
+		return function(new ClosestFunction(new Selector(selector).getPredicate()), "");
 	}
 
 	public SlingQuery eq(int index) {
-		slice(index, index);
-		return this;
+		return slice(index, index);
 	}
 
 	public SlingQuery filter(ResourcePredicate predicate) {
-		operations.add(new Operation(new IdentityFunction(), predicate));
-		return this;
+		return addOperation(new Operation(new IdentityFunction(), predicate));
 	}
 
 	public SlingQuery find() {
-		find("");
-		return this;
+		return find("");
 	}
 
 	public SlingQuery find(String selector) {
-		function(new FindFunction(), selector);
-		return this;
+		return function(new FindFunction(), selector);
 	}
 
 	public SlingQuery first() {
-		eq(0);
-		return this;
+		return eq(0);
 	}
 
 	public SlingQuery function(Function<?, ?> function, String selector) {
-		operations.add(new Operation(function, selector));
-		return this;
+		return addOperation(new Operation(function, selector));
 	}
 
 	public SlingQuery has(String selector) {
-		function(new HasFunction(new Selector(selector).getPredicate()), "");
-		return this;
+		return function(new HasFunction(new Selector(selector).getPredicate()), "");
 	}
 
 	public SlingQuery last() {
-		function(new LastFunction(), "");
-		return this;
+		return function(new LastFunction(), "");
 	}
 
 	public SlingQuery next() {
-		next("");
-		return this;
+		return next("");
 	}
 
 	public SlingQuery next(String selector) {
-		function(new NextFunction(null), selector);
-		return this;
+		return function(new NextFunction(null), selector);
 	}
 
 	public SlingQuery nextAll() {
-		nextAll("");
-		return this;
+		return nextAll("");
 	}
 
 	public SlingQuery nextAll(String selector) {
-		function(new NextFunction(new RejectingPredicate()), selector);
-		return this;
+		return function(new NextFunction(new RejectingPredicate()), selector);
 	}
 
 	public SlingQuery nextUntil(String until) {
-		nextUntil(until, "");
-		return this;
+		return nextUntil(until, "");
 	}
 
 	public SlingQuery nextUntil(String until, String selector) {
-		function(new NextFunction(new Selector(until).getPredicate()), selector);
-		return this;
+		return function(new NextFunction(new Selector(until).getPredicate()), selector);
+	}
+
+	public SlingQuery not(String selector) {
+		return function(new NotFunction(new Selector(selector)), "");
 	}
 
 	public SlingQuery parent() {
-		function(new ParentFunction(), "");
-		return this;
+		return function(new ParentFunction(), "");
 	}
 
 	public SlingQuery parents() {
-		parents("");
-		return this;
+		return parents("");
 	}
 
 	public SlingQuery parents(String selector) {
-		function(new ParentsFunction(), selector);
-		return this;
+		return function(new ParentsFunction(), selector);
 	}
 
 	public SlingQuery prev() {
-		prev("");
-		return this;
+		return prev("");
 	}
 
 	public SlingQuery prev(String selector) {
-		function(new PrevFunction(null), selector);
-		return this;
+		return function(new PrevFunction(null), selector);
 	}
 
 	public SlingQuery prevAll() {
-		prevAll("");
-		return this;
+		return prevAll("");
 	}
 
 	public SlingQuery prevAll(String selector) {
-		function(new PrevFunction(new RejectingPredicate()), selector);
-		return this;
+		return function(new PrevFunction(new RejectingPredicate()), selector);
 	}
 
 	public SlingQuery prevUntil(String until) {
-		prevUntil(until, "");
-		return this;
+		return prevUntil(until, "");
 	}
 
 	public SlingQuery prevUntil(String until, String selector) {
-		function(new PrevFunction(new Selector(until).getPredicate()), selector);
-		return this;
+		return function(new PrevFunction(new Selector(until).getPredicate()), selector);
 	}
 
 	public SlingQuery siblings() {
-		siblings("");
-		return this;
+		return siblings("");
 	}
 
 	public SlingQuery siblings(String selector) {
-		function(new SiblingsFunction(), selector);
-		return this;
+		return function(new SiblingsFunction(), selector);
 	}
 
 	public SlingQuery slice(int from) {
 		if (from < 0) {
 			throw new IndexOutOfBoundsException();
 		}
-		function(new SliceFunction(from), "");
-		return this;
+		return function(new SliceFunction(from), "");
 	}
 
 	public SlingQuery slice(int from, int to) {
@@ -200,7 +181,12 @@ public class SlingQuery implements Iterable<Resource> {
 		if (from > to) {
 			throw new IllegalArgumentException();
 		}
-		function(new SliceFunction(from, to), "");
-		return this;
+		return function(new SliceFunction(from, to), "");
+	}
+
+	private SlingQuery addOperation(Operation o) {
+		SlingQuery newQuery = new SlingQuery(this);
+		newQuery.operations.add(o);
+		return newQuery;
 	}
 }
