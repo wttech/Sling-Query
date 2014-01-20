@@ -56,6 +56,16 @@ Methods can be chained to create more complex query. Eg. following code will ret
 
     $(resource).children().last();
     
+#### Laziness
+
+All operations are lazy (except `prev()` and sometimes `not()`). It means that `SlingQuery` won't read resources until it's actually necessary. Example:
+
+    $(resource).children().children().first();
+
+`children().children()` construnction means that we want to read all grand-children of the given resource. However, the last method limits the output to the first found resource. As a result, `SlingQuery` won't iterate over all children and grand-children, it will simply take the first child of the `resource` and return its first child.
+
+#### Immutability
+
 `SlingQuery` object is immutable and each operation creates a new one. We can "freeze" some collection before performing more operations on it:
 
     SlingQuery children = $(resource).children();
@@ -63,11 +73,9 @@ Methods can be chained to create more complex query. Eg. following code will ret
     for (Resource child : children) { /* will display all children */ }
     for (Resource child : firstChild) { /* will display the first child */ }
 
-Some operations may take an additional `String` parameter that defines a filtering.
-
 ### Selectors
 
-Selector is a String that could be used to define resource type, resource attributes and additional modifiers. Example selector could look like this:
+Some operations may take an additional string selector parameter that defines a filtering. Selector could be used to define resource type, resource attributes and additional modifiers. Example selector could look like this:
 
     "cq:Page"
     
