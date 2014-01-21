@@ -16,8 +16,8 @@ public class ResourceToIteratorWrapperFunction implements ResourceToIteratorFunc
 	}
 
 	@Override
-	public Iterator<Resource> apply(Resource resource) {
-		Resource result = wrappedFunction.apply(resource);
+	public Iterator<Resource> apply(Resource input) {
+		Resource result = wrappedFunction.apply(input);
 		if (result == null) {
 			return EmptyIterator.INSTANCE;
 		} else {

@@ -8,6 +8,6 @@ import com.cognifide.sling.query.api.Function;
 
 public interface ResourceToIteratorFunction extends Function<Resource, Iterator<Resource>> {
 
-	Iterator<Resource> apply(Resource resource);
+	Iterator<Resource> apply(Resource input);
 
 }

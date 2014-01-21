@@ -6,6 +6,6 @@ import com.cognifide.sling.query.api.Function;
 
 public interface ResourceToResourceFunction extends Function<Resource, Resource> {
 
-	Resource apply(Resource resource);
+	Resource apply(Resource input);
 
 }
