@@ -16,6 +16,8 @@ public class SelectorParser {
 
 	private int parentCount = 0;
 
+	private int squareParentCount = 0;
+
 	public void parse(String selectorString) {
 		state = State.START;
 		builder = new StringBuilder();
@@ -45,6 +47,7 @@ public class SelectorParser {
 					context.state = State.RESOURCE_TYPE;
 					context.builder.append(c);
 				} else if (c == '[') {
+					context.squareParentCount++;
 					context.state = State.ATTRIBUTE;
 				} else if (c == ':') {
 					context.state = State.FUNCTION;
@@ -60,6 +63,7 @@ public class SelectorParser {
 					context.state = State.RESOURCE_TYPE_WITH_SLASHES;
 					context.builder.append(c);
 				} else if (c == '[') {
+					context.squareParentCount++;
 					context.state = State.ATTRIBUTE;
 					context.resourceType = context.builder.toString();
 					context.builder = new StringBuilder();
@@ -77,6 +81,7 @@ public class SelectorParser {
 			@Override
 			protected void process(SelectorParser context, char c) {
 				if (c == '[') {
+					context.squareParentCount++;
 					context.state = State.ATTRIBUTE;
 					context.resourceType = context.builder.toString();
 					context.builder = new StringBuilder();
@@ -95,9 +100,11 @@ public class SelectorParser {
 			@Override
 			protected void process(SelectorParser context, char c) {
 				if (c == ']') {
-					context.state = State.START;
-					context.attributes.add(context.builder.toString());
-					context.builder = new StringBuilder();
+					if (--context.squareParentCount == 0) {
+						context.state = State.START;
+						context.attributes.add(context.builder.toString());
+						context.builder = new StringBuilder();
+					}
 				} else if (c == 0) {
 					context.attributes.add(context.builder.toString());
 				} else {
