@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.cognifide.sling.query.predicate.PropertyPredicate;
-import com.cognifide.sling.query.selector.parser.ParsedSelectorFunction;
+import com.cognifide.sling.query.selector.parser.SelectorFunction;
 
 public class SelectorTest {
 	@Test
@@ -135,7 +135,7 @@ public class SelectorTest {
 		return new PropertyPredicate(key, value);
 	}
 
-	private static ParsedSelectorFunction f(String functionId, String argument) {
-		return new ParsedSelectorFunction(functionId, argument);
+	private static SelectorFunction f(String functionId, String argument) {
+		return new SelectorFunction(functionId, argument);
 	}
 }

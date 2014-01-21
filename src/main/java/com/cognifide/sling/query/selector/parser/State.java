@@ -8,7 +8,7 @@ public enum State {
 				context.setState(State.RESOURCE_TYPE);
 				context.append(c);
 			} else if (c == '[') {
-				context.squareParentCount++;
+				context.increaseSquareParentheses();
 				context.setState(State.ATTRIBUTE);
 			} else if (c == ':') {
 				context.setState(State.FUNCTION);
@@ -24,7 +24,7 @@ public enum State {
 				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
 				context.append(c);
 			} else if (c == '[') {
-				context.squareParentCount++;
+				context.increaseSquareParentheses();
 				context.setState(State.ATTRIBUTE);
 				context.setResourceType();
 			} else if (c == ':') {
@@ -41,7 +41,7 @@ public enum State {
 		@Override
 		public void process(ParserContext context, char c) {
 			if (c == '[') {
-				context.squareParentCount++;
+				context.increaseSquareParentheses();
 				context.setState(State.ATTRIBUTE);
 				context.setResourceType();
 			} else if (c == ':') {
@@ -58,7 +58,7 @@ public enum State {
 		@Override
 		public void process(ParserContext context, char c) {
 			if (c == ']') {
-				if (--context.squareParentCount == 0) {
+				if (context.decreaseSquareParentheses() == 0) {
 					context.setState(State.START);
 					context.addAttribute();
 				}
@@ -75,9 +75,9 @@ public enum State {
 			if (c == ':') {
 				context.addFunction();
 			} else if (c == '(') {
+				context.setFunctionName();
 				context.setState(State.FUNCTION_ARGUMENT);
-				context.parentCount++;
-				context.append(c);
+				context.increaseParentheses();
 			} else if (c == 0) {
 				context.addFunction();
 			} else {
@@ -89,13 +89,18 @@ public enum State {
 		@Override
 		public void process(ParserContext context, char c) {
 			if (c == ')') {
-				if (--context.parentCount == 0) {
-					context.setState(State.FUNCTION);
+				if (context.decreaseParentheses() == 0) {
+					context.addFunction();
+					context.setState(START);
+				} else {
+					context.append(c);
 				}
 			} else if (c == '(') {
-				context.parentCount++;
+				context.increaseParentheses();
+				context.append(c);
+			} else {
+				context.append(c);
 			}
-			context.append(c);
 		}
 	};
 	public abstract void process(ParserContext context, char c);

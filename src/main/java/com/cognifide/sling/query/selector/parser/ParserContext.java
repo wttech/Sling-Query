@@ -3,10 +3,12 @@ package com.cognifide.sling.query.selector.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParserContext {
-	private final List<String> attributes = new ArrayList<String>();
+import com.cognifide.sling.query.predicate.PropertyPredicate;
 
-	private final List<String> functions = new ArrayList<String>();
+public class ParserContext {
+	private final List<PropertyPredicate> attributes = new ArrayList<PropertyPredicate>();
+
+	private final List<SelectorFunction> functions = new ArrayList<SelectorFunction>();
 
 	private State state = State.START;
 
@@ -14,15 +16,17 @@ public class ParserContext {
 
 	private String resourceType;
 
-	int parentCount = 0;
+	private String currentFunctionName;
 
-	int squareParentCount = 0;
+	private int parenthesesCount = 0;
 
-	public List<String> getAttributes() {
+	private int squareParenthesesCount = 0;
+
+	public List<PropertyPredicate> getAttributes() {
 		return attributes;
 	}
 
-	public List<String> getFunctions() {
+	public List<SelectorFunction> getFunctions() {
 		return functions;
 	}
 
@@ -34,18 +38,46 @@ public class ParserContext {
 		return state;
 	}
 
+	void increaseParentheses() {
+		parenthesesCount++;
+	}
+
+	int decreaseParentheses() {
+		return --parenthesesCount;
+	}
+
+	void increaseSquareParentheses() {
+		squareParenthesesCount++;
+	}
+
+	int decreaseSquareParentheses() {
+		return --squareParenthesesCount;
+	}
+
 	void setResourceType() {
 		resourceType = builder.toString();
 		builder = new StringBuilder();
 	}
 
 	void addAttribute() {
-		attributes.add(builder.toString());
+		attributes.add(new PropertyPredicate(builder.toString()));
+		builder = new StringBuilder();
+	}
+
+	void setFunctionName() {
+		currentFunctionName = builder.toString();
 		builder = new StringBuilder();
 	}
 
 	void addFunction() {
-		functions.add(builder.toString());
+		SelectorFunction function;
+		if (currentFunctionName == null) {
+			function = new SelectorFunction(builder.toString(), null);
+		} else {
+			function = new SelectorFunction(currentFunctionName, builder.toString());
+			currentFunctionName = null;
+		}
+		functions.add(function);
 		builder = new StringBuilder();
 	}
 

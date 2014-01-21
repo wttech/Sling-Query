@@ -1,32 +1,19 @@
 package com.cognifide.sling.query.selector.parser;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.cognifide.sling.query.api.Function;
-import com.cognifide.sling.query.selector.SelectorFunction;
+import com.cognifide.sling.query.selector.FunctionType;
 
-public class ParsedSelectorFunction {
-	private final SelectorFunction function;
+public class SelectorFunction {
+	private final FunctionType function;
 
 	private final String argument;
 
-	public ParsedSelectorFunction(String functionName, String argument) {
-		this.function = SelectorFunction.valueOf(functionName.toUpperCase());
+	public SelectorFunction(String functionName, String argument) {
+		this.function = FunctionType.valueOf(functionName.toUpperCase());
 		this.argument = argument;
-	}
-
-	public ParsedSelectorFunction(String functionString) {
-		String functionName = functionString;
-		String rawArgument = null;
-		if (functionString.contains("(")) {
-			functionName = StringUtils.substringBefore(functionString, "(");
-			rawArgument = StringUtils.substringAfter(functionString, "(");
-			rawArgument = StringUtils.substringBeforeLast(rawArgument, ")");
-		}
-		function = SelectorFunction.valueOf(functionName.toUpperCase());
-		argument = rawArgument;
 	}
 
 	public Function<?, ?> function() {
@@ -49,7 +36,7 @@ public class ParsedSelectorFunction {
 		if (obj.getClass() != getClass()) {
 			return false;
 		}
-		ParsedSelectorFunction rhs = (ParsedSelectorFunction) obj;
+		SelectorFunction rhs = (SelectorFunction) obj;
 		return new EqualsBuilder().append(function, rhs.function).append(argument, rhs.argument).isEquals();
 	}
 

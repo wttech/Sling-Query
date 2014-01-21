@@ -10,7 +10,7 @@ import org.apache.sling.api.resource.Resource;
 import com.cognifide.sling.query.IteratorFactory;
 import com.cognifide.sling.query.api.ResourcePredicate;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
-import com.cognifide.sling.query.selector.parser.ParsedSelectorFunction;
+import com.cognifide.sling.query.selector.parser.SelectorFunction;
 import com.cognifide.sling.query.selector.parser.ParserContext;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
 
@@ -20,7 +20,7 @@ public class Selector {
 
 	private List<PropertyPredicate> properties = new ArrayList<PropertyPredicate>();
 
-	private List<ParsedSelectorFunction> functions = new ArrayList<ParsedSelectorFunction>();
+	private List<SelectorFunction> functions = new ArrayList<SelectorFunction>();
 
 	public Selector(String selectorString) {
 		if (StringUtils.isNotBlank(selectorString)) {
@@ -31,12 +31,8 @@ public class Selector {
 	private void parseSelector(String selectorString) {
 		ParserContext context = SelectorParser.parse(selectorString);
 		resourceType = context.getResourceType();
-		for (String attribute : context.getAttributes()) {
-			properties.add(new PropertyPredicate(attribute));
-		}
-		for (String function : context.getFunctions()) {
-			functions.add(new ParsedSelectorFunction(function));
-		}
+		properties.addAll(context.getAttributes());
+		functions.addAll(context.getFunctions());
 	}
 
 	public ResourcePredicate getPredicate() {
@@ -45,7 +41,7 @@ public class Selector {
 
 	public Iterator<Resource> applySelectorFunctions(Iterator<Resource> iterator) {
 		Iterator<Resource> wrappedIterator = iterator;
-		for (ParsedSelectorFunction function : functions) {
+		for (SelectorFunction function : functions) {
 			wrappedIterator = IteratorFactory.getIterator(function.function(), wrappedIterator);
 		}
 		return wrappedIterator;
@@ -59,7 +55,7 @@ public class Selector {
 		return properties;
 	}
 
-	List<ParsedSelectorFunction> getFunctions() {
+	List<SelectorFunction> getFunctions() {
 		return functions;
 	}
 

@@ -9,7 +9,7 @@ import com.cognifide.sling.query.function.HasFunction;
 import com.cognifide.sling.query.function.LastFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 
-public enum SelectorFunction {
+public enum FunctionType {
 	EQ {
 		@Override
 		public Function<?, ?> getFunction(String argument) {
