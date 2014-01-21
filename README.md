@@ -4,7 +4,7 @@ SlingQuery is a Sling resource tree traversal tool inspired by the [jQuery](http
 
 ## Introduction
 
-Recommended way to find resources in the Sling repository is to use tree-traversal methods, like `listChildren()` and `getParent()` rather than JCR queries. The latter are great for listing resources with given properties, but we can't leverage the repository tree structure with such queries. On the other hand, using tree-traversal method is quite verbose. Consider following code that takes an resource and returns it first ancestor being `cq:Page` with given `jcr:content/cq:template` attribute:
+Recommended way to find resources in the Sling repository is using tree-traversal methods, like `listChildren()` and `getParent()` rather than JCR queries. The latter are great for listing resources with given properties, but we can't leverage the repository tree structure with such queries. On the other hand, using tree-traversal method is quite verbose. Consider following code that takes an resource and returns it first ancestor being `cq:Page` with given `jcr:content/cq:template` attribute:
 
     Resource resource = ...;
     while ((resource = resource.getParent()) != null) {
@@ -20,7 +20,7 @@ Recommended way to find resources in the Sling repository is to use tree-travers
         // we've found appropriate ancestor
     }
 
-SlingQuery is a tool that helps to create such queries in a more concise way. Above code could be written as:
+SlingQuery is a tool that helps creating such queries in a more concise way. Above code could be written as:
 
     $(resource).closest("cq:Page[jcr:content/cq:template=my/template]")
 
@@ -48,7 +48,7 @@ will replace each resource with its direct parent. If some resource is a reposit
 
     $(resource1, resource2).children();
     
-Resulting object will contain direct children of both resource1 and resource2 objects. There are also methods that doesn't add any new resources, but removes existing:
+Resulting object will contain direct children of both `resource1` and `resource2` objects. There are also methods that doesn't add any new resources, but removes existing:
 
     $(resource1, resource2).first();
     
@@ -58,11 +58,11 @@ Methods can be chained to create more complex query. Eg. following code will ret
     
 #### Laziness
 
-All operations are lazy (except `prev()` and sometimes `not()`). It means that `SlingQuery` won't read resources until it's actually necessary. Example:
+All operations are lazy (except `prev()` and sometimes `not()`). It means that `SlingQuery` won't read any resources until it's actually necessary. Example:
 
     $(resource).children().children().first();
 
-`children().children()` construnction means that we want to read all grand-children of the given resource. However, the last method limits the output to the first found resource. As a result, `SlingQuery` won't iterate over all children and grand-children, it will simply take the first child of the `resource` and return its first child.
+`children().children()` construction reads all grand-children of the given resource. However, the last method limits the output to the first found resource. As a result, `SlingQuery` won't iterate over all children and grand-children, but it will simply take the first child of the `resource` and return its first child.
 
 #### Immutability
 
@@ -93,7 +93,7 @@ And finally, you could add some modifiers at the end:
 
 Above resources will find `cq:Page` children of the resource, using template `my/template` and return not all of them, but only those with even indices (eg. if matching children of the `resource` are `page_0`, `page_1` and `page_2`, only the first and the last will be returned).
 
-All parts of the selector are optional. In fact, an empty string (`""`) is a valid selector, accepting all resources. However, the order (resource type, attributes in square brackets and modifiers) has to be followed. Example selectors:
+All parts of the selector are optional. In fact, an empty string (`""`) is a valid selector, accepting all resources. However, the defined order (resource type, attributes in square brackets and modifiers) has to be followed. Example selectors:
 
     "myapp/components/richtext" // resource type
     "myapp/components/richtext:first" // resource type with modifier
@@ -101,3 +101,169 @@ All parts of the selector are optional. In fact, an empty string (`""`) is a val
     ":even" // modifier
     ":even:not(:first)" // two modifiers, the second one is nested
 
+## Method list
+
+### `$(Resource... resources)`
+
+Create a new SlingQuery object, using passed resources as an initial collection. Example:
+
+    $(resource); // a simple SlingQuery collection containing one resource
+
+### `.children([selector])`
+
+Get list of the children for each resource in the collection. Pass `selector` to filter children. Example:
+
+    $(resource).children("cq:Page"); // get all page children of the resource
+    $(resource).children().children(); // get all grand-children of the resource
+
+### `.closest(selector)`
+
+For each resource in the collection, return the first element matching the selector testing the resource itself and traversing up its ancestors. Example:
+
+    $(resource).closest("cq:Page"); // find containing page, like PageManager#getContainingPage
+    // let's assume that someCqPageResource is a cq:Page
+    $(someCqPageResource).closest("cq:Page"); // return the same resource
+
+### `.eq(index)`
+
+Reduce resource collection to the one resource at the given 0-based index. Example:
+
+    $(resource0, resource1, resource2).eq(1); // return resource1
+    $(resource).children().eq(0); // return first child of the resource
+
+### `.filter(predicate)`
+
+Filter resource collection using given predicate object.
+
+	final Calendar someTimeAgo = Calendar.getInstance();
+	someTimeAgo.add(Calendar.HOUR, -5);
+
+	// get children pages modified in the last 5 hours
+	SlingQuery query = $(resource).children("cq:Page").filter(new ResourcePredicate() {
+		@Override
+		public boolean accepts(Resource resource) {
+			return resource.adaptTo(Page.class).getLastModified().after(someTimeAgo);
+		}
+	});
+
+### `.find([selector])`
+
+For each resource in collection use [breadth-first search](http://en.wikipedia.org/wiki/Breadth-first_search) to return all its descendants. Please notice that invoking this method on a resource being a root of a large subtree may and will cause performance problems.
+
+	$(resource).find("cq:Page"); // find all descendant pages
+
+### `.first()`
+
+Filter resource collection to the first element. Equivalent to `.eq(0)` or `.slice(0, 0)`.
+
+    $(resource).siblings().first(); // get the first sibling of the current resource
+
+### `.function(function, selector)`
+
+This method allows to process resource collection using custom function and then filter the results by a selector string. First parameter has to implement one of the interfaces:
+
+* `ResourceToResourceFunction`,
+* `ResourceToIteratorFunction`,
+* `IteratorToIteratorFunction`.
+
+Example:
+
+	// eager (not-lazy) way to reverse the collection order
+	$(...).function(new IteratorToIteratorFunction() {
+		public Iterator<Resource> apply(Iterator<Resource> input) {
+			List<Resource> resources = new ArrayList<Resource>();
+			while (input.hasNext()) {
+				resources.add(input.next());
+			}
+			Collections.reverse(resources);
+			return resources.iterator();
+		}
+	}, ""); // empty selector to accept all resources
+
+### `.has(selector)`
+
+Pick such resources from the collection that have descendant matching the selector. Example:
+
+    $(...).children('cq:Page').has(foundation/components/richtext) // find children pages containing some richtext component
+
+### `.last()`
+
+Filter resource collection to the last element.
+
+    $(resource).siblings().last(); // get the last sibling of the current resource
+
+### `.next([selector])`
+
+Return the next sibling for each resource in the collection and optionally filter it by a selector. If the selector is given, but the sibling doesn't match it, empty collection will be returned.
+
+    // let's assume that resource have 3 children: child1, child2 and child3
+    $(resource).children().first().next(); // return child2
+
+### `.nextAll([selector])`
+
+Return all following siblings for each resource in the collection, optionally filtering them by a selector.
+
+    // let's assume that resource have 3 children: child1, child2 and child3
+    $(resource).children().first().nextAll(); // return child2 and child3
+
+### `.nextUntil(selector[, filter])`
+
+Return all following siblings for each resource in the collection up to, but not including, resource matched by a selector.
+
+    // let's assume that resource have 4 children: child1, child2, child3 and child4
+    // additionaly, child4 has property jcr:title=Page
+    $(resource).children().first().nextUntil("[jcr:title=Page]"); // return child2 and child3
+
+### `.not(selector)`
+
+Remove elements from the collection. This function will evaluate the collection eagerly (=will create an ArrayList with the whole collection) if the selector contains some modifiers (functions starting with colon, like `:first` or `:eq(2)`).
+
+    $(resource).children().not("cq:Page"); // remove all cq:Pages from the collection
+    $(resource).children().not(":first").not(":last"); // remove the first and the last element of the collection
+
+### `.parent()`
+
+Replace each element in the collection with its parent.
+
+    $(resource).find("cq:PageContent[jcr:title=My page]:first").parent(); // find the parent of the first `cq:PageContent` resource with given attribute in the subtree
+    
+### `.parents([selector])`
+
+For each element in the collection find its all ancestor, optionally filtere by a selector.
+
+    ($resource).parents("cq:Page"); // create page breacrumbs for the given resources
+    
+### `.prev([selector])`
+
+Return the previous sibling for each resource in the collection and optionally filter it by a selector. If the selector is given, but the sibling doesn't match it, empty collection will be returned.
+
+    // let's assume that resource have 3 children: child1, child2 and child3
+    $(resource).children().last().prev(); // return child2
+
+### `.prevAll([selector])`
+
+Return all preceding siblings for each resource in the collection, optionally filtering them by a selector.
+
+    // let's assume that resource have 3 children: child1, child2 and child3
+    $(resource).children().last().prevAll(); // return child1 and child2
+
+### `.prevUntil(selector[, filter])`
+
+Return all preceding siblings for each resource in the collection up to, but not including, resource matched by a selector.
+
+    // let's assume that resource have 4 children: child1, child2, child3 and child4
+    // additionaly, child1 has property jcr:title=Page
+    $(resource).children().last().prevUntil("[jcr:title=Page]"); // return child2 and child3
+
+### `.siblings([selector])`
+
+Return siblings for the given resources, optionally filtered by a selector.
+
+    $(resource).closest("cq:Page").siblings("cq:Page"); // return all sibling pages
+
+### `.slice(from[, to])`
+
+Reduce the collection to a subcollection specified by a given range. Both `from` and `to` are inclusive and 0-based indices. If the `to` parameter is not specified, the whole subcollection starting with `from` will be returned.
+
+    // let's assume that resource have 4 children: child1, child2, child3 and child4
+    $(resource).children().slice(1, 2); // return child1 and child2
