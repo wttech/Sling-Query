@@ -18,9 +18,9 @@
 	<name>sling-query</name>
 
 	<scm>
-		<connection>scm:git:https://gitlab.cognifide.com/tomasz.rekawek/sling-query.git</connection>
-		<developerConnection>scm:git:https://gitlab.cognifide.com/tomasz.rekawek/sling-query.git</developerConnection>
-		<url>https://gitlab.cognifide.com/tomasz.rekawek/sling-query</url>
+		<connection>scm:git:https://github.com/Cognifide/Sling-Query.git</connection>
+		<developerConnection>scm:git:https://github.com/Cognifide/Sling-Query.git</developerConnection>
+		<url>https://github.com/Cognifide/Sling-Query</url>
 		<tag>HEAD</tag>
 	</scm>
 
