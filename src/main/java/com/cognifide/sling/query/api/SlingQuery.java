@@ -15,13 +15,13 @@ import com.cognifide.sling.query.function.IdentityFunction;
 import com.cognifide.sling.query.function.FindFunction;
 import com.cognifide.sling.query.function.LastFunction;
 import com.cognifide.sling.query.function.NextFunction;
+import com.cognifide.sling.query.function.NotFunction;
 import com.cognifide.sling.query.function.ParentFunction;
 import com.cognifide.sling.query.function.ParentsFunction;
 import com.cognifide.sling.query.function.PrevFunction;
 import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
-import com.cognifide.sling.query.selector.NotFunction;
 import com.cognifide.sling.query.selector.Selector;
 
 public class SlingQuery implements Iterable<Resource> {

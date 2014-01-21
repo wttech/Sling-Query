@@ -7,6 +7,7 @@ import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 import com.cognifide.sling.query.function.EvenFunction;
 import com.cognifide.sling.query.function.HasFunction;
 import com.cognifide.sling.query.function.LastFunction;
+import com.cognifide.sling.query.function.NotFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 
 public enum FunctionType {

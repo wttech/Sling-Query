@@ -1,4 +1,4 @@
-package com.cognifide.sling.query.selector;
+package com.cognifide.sling.query.function;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,6 +9,7 @@ import org.apache.sling.api.resource.Resource;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
+import com.cognifide.sling.query.selector.Selector;
 
 public class NotFunction implements IteratorToIteratorFunction {
 

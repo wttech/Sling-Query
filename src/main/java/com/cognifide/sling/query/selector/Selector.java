@@ -55,7 +55,7 @@ public class Selector {
 		return properties;
 	}
 
-	List<SelectorFunction> getFunctions() {
+	public List<SelectorFunction> getFunctions() {
 		return functions;
 	}
 
