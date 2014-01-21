@@ -1,12 +1,13 @@
-package com.cognifide.sling.query.selector;
+package com.cognifide.sling.query.selector.parser;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.cognifide.sling.query.api.Function;
+import com.cognifide.sling.query.selector.SelectorFunction;
 
-class ParsedSelectorFunction {
+public class ParsedSelectorFunction {
 	private final SelectorFunction function;
 
 	private final String argument;

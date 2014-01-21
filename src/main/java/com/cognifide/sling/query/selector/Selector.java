@@ -10,6 +10,9 @@ import org.apache.sling.api.resource.Resource;
 import com.cognifide.sling.query.IteratorFactory;
 import com.cognifide.sling.query.api.ResourcePredicate;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
+import com.cognifide.sling.query.selector.parser.ParsedSelectorFunction;
+import com.cognifide.sling.query.selector.parser.ParserContext;
+import com.cognifide.sling.query.selector.parser.SelectorParser;
 
 public class Selector {
 
@@ -21,18 +24,17 @@ public class Selector {
 
 	public Selector(String selectorString) {
 		if (StringUtils.isNotBlank(selectorString)) {
-			parseFilter(selectorString);
+			parseSelector(selectorString);
 		}
 	}
 
-	private void parseFilter(String selectorString) {
-		SelectorParser parser = new SelectorParser();
-		parser.parse(selectorString);
-		resourceType = parser.getResourceType();
-		for (String attribute : parser.getAttributes()) {
+	private void parseSelector(String selectorString) {
+		ParserContext context = SelectorParser.parse(selectorString);
+		resourceType = context.getResourceType();
+		for (String attribute : context.getAttributes()) {
 			properties.add(new PropertyPredicate(attribute));
 		}
-		for (String function : parser.getFunctions()) {
+		for (String function : context.getFunctions()) {
 			functions.add(new ParsedSelectorFunction(function));
 		}
 	}

@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.cognifide.sling.query.predicate.PropertyPredicate;
+import com.cognifide.sling.query.selector.parser.ParsedSelectorFunction;
 
 public class SelectorTest {
 	@Test
