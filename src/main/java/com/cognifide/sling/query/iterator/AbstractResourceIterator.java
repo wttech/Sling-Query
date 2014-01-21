@@ -11,24 +11,20 @@ public abstract class AbstractResourceIterator implements Iterator<Resource> {
 
 	@Override
 	public boolean hasNext() {
-		currentResource = getResource();
+		if (currentResource == null) {
+			currentResource = getResource();
+		}
 		return currentResource != null;
 	}
 
 	@Override
 	public Resource next() {
-		Resource result;
-		if (currentResource != null) {
-			result = currentResource;
-			currentResource = null;
-		} else {
-			result = getResource();
-		}
-		if (result == null) {
+		if (!hasNext()) {
 			throw new NoSuchElementException();
-		} else {
-			return result;
 		}
+		Resource result = currentResource;
+		currentResource = null;
+		return result;
 	}
 
 	@Override
