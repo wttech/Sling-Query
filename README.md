@@ -192,6 +192,14 @@ Filter resource collection to the last element.
 
     $(resource).siblings().last(); // get the last sibling of the current resource
 
+### `.map(Class<T> clazz)`
+
+Transform the whole collection to a new `Iterable<T>` object, invoking `adaptTo(clazz)` method on each resource. If some resource can't be adapted to the class (eg. `adaptTo()` returns `null`), it will be skipped. Example:
+
+    for (Page page : $(resource).parents("cq:Page").map(Page.class)) {
+        // display breadcrumbs
+    }
+
 ### `.next([selector])`
 
 Return the next sibling for each resource in the collection and optionally filter it by a selector. If the selector is given, but the sibling doesn't match it, empty collection will be returned.
