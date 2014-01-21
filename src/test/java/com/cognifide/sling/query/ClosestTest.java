@@ -30,6 +30,6 @@ public class ClosestTest {
 	@Test
 	public void testClosestOnRoot() {
 		SlingQuery query = $(tree).closest("cq:Page");
-		assertEmptyIterator(query.iterator());
+		assertResourceListEquals(query.iterator(), "/");
 	}
 }

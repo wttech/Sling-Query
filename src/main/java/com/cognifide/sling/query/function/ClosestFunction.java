@@ -16,9 +16,9 @@ public class ClosestFunction implements ResourceToResourceFunction {
 	@Override
 	public Resource apply(Resource resource) {
 		Resource current = resource;
-		do {
+		while (current != null && !predicate.accepts(current)) {
 			current = current.getParent();
-		} while (current != null && !predicate.accepts(current));
+		}
 		return current;
 	}
 }
