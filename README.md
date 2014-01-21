@@ -34,7 +34,7 @@ SlingQuery is inspired by the jQuery framework. jQuery is the source of method n
 
     $(resource1, resource2, resource3)
     
-Above method creates new a `SlingQuery` object that consists of 3 resources. This object implements `Iterable<Resource>` interface, so can be used in foreach statements directly:
+Above method creates a new `SlingQuery` object that consists of 3 resources. This object implements `Iterable<Resource>` interface, so can be used in foreach statements directly:
 
     for (Resource resource in $(...)) { }
     
@@ -95,8 +95,8 @@ Above resources will find `cq:Page` children of the resource, using template `my
 
 All parts of the selector are optional. In fact, an empty string (`""`) is a valid selector, accepting all resources. However, the defined order (resource type, attributes in square brackets and modifiers) has to be followed. Example selectors:
 
-    "myapp/components/richtext" // resource type
-    "myapp/components/richtext:first" // resource type with modifier
+    "foundation/components/richtext" // resource type
+    "foundation/components/richtext:first" // resource type with modifier
     "[property=value][property2=value2]" // two attributes
     ":even" // modifier
     ":even:not(:first)" // two modifiers, the second one is nested
@@ -267,3 +267,99 @@ Reduce the collection to a subcollection specified by a given range. Both `from`
 
     // let's assume that resource have 4 children: child1, child2, child3 and child4
     $(resource).children().slice(1, 2); // return child1 and child2
+
+## Selector
+
+Selector consists of three parts:
+
+### Resource type
+
+Resource type, which could be a `sling:resourceType`, like `foundation/components/richtext` or the underlying JCR node type, like `cq:Page` or `nt:unstructured`. In the latter case, SlingQuery takes types hierarchy into consideration (eg. `nt:base` matches everything). JCR mixin types could be used as well.
+
+### Attributes
+
+After the resource type (or instead of it) one could pass a number of filtering attributes. Each attribute has following form: `[property=value]`. Passing multiple attributes will match only those resources that have all of them set. Property name could contain `/`. In this case property will be taken from the child resource, eg.:
+
+    $(resource).children("cq:Page[jcr:content/jcr:title=My title]")
+    
+will return only children of type `cq:Page` that have subresource called `jcr:content` with property `jcr:title` set to `My title`.
+
+### Modifiers
+
+At the end of the selector one could define any number of modifiers that will be used to filter out the resources matched by the resource type and attributes. Each modifier starts with colon, some of them accepts a parameter set in parentheses. Example:
+
+    $(resource).children("cq:Page:first");
+    $(resource).children("cq:Page:eq(0)"); // the same
+    $(resource).children(":first"); // modifier can be used alone
+
+It is important that modifier filters out subcollection created for each node, before it is merged. Eg.:, there is a difference between:
+
+    $(resource1, resource2).children().first();
+
+and
+
+    $(resource1, resource2).children(":first");
+    
+In the first case we create a new collection consisting of children of the `resource1` and `resource2` and then we get the first element of the merged collection. On the other hand, the second example takes *first child* of each resource and creates a collection from them.
+
+## Modifier list
+
+### `:eq(index)`
+
+Reduce the set of matched elements to the one at the specified 0-based index. Example:
+
+    $(...).find("foundation/components/richtext:eq(2)"); // find the third richtext in the subtree
+
+### `:even`
+
+Reduce the set of matched elements to those which indexes are even numbers:
+
+    $(...).children("cq:Page:even"); // get even children pages for each resource in the collection
+
+### `:first`
+
+Reduce the set of matched elements to the first one:
+
+    $(...).find("foundation/components/richtext:first"); // find the first richtext in the subtree
+
+### `:gt(index)`
+
+Reduce the set of matched elements to those which indexes are greater than the argument:
+
+    $(...).children("cq:Page:gt(2)"); // filter out first 3 pages
+
+### `:has(selector)`
+
+Reduce the set of the matched elements to those which have descendant matching the selector:
+
+    $(...).children("cq:Page:has(foundation/components/richtext)]"); // get children pages containing richtext component
+
+### `:last`
+
+Reduce the set of matched elements to the last one:
+
+    $(...).children("cq:Page:last"); // find the last child page for each resource
+
+### `:lt(index)`
+
+Reduce the set of matched elements to those which indexes are lesser than the argument:
+
+    $(...).children("cq:Page:lt(3)"); // get first 3 matches
+
+### `:not(selector)`
+
+Reduce the set of matched elements to those which doesn't match the selector. The selector may contain other modifiers as well, however in this case the function will be evaluated eagerly:
+
+    $(...).children(":not(:parent)"); // resources that doesn't contain any children
+
+### `:odd`
+
+Reduce the set of matched elements to those which indexes are odd numbers:
+
+    $(...).children("cq:Page:odd"); // get odd children pages for each resource in the collection
+
+### `:parent`
+
+Reduce the set of the matched elements to those which have any descendant resource.
+
+    $(...).children(":parent]"); // get children resources containing any resource
