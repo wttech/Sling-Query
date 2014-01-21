@@ -1,13 +1,10 @@
 package com.cognifide.sling.query.function;
 
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.api.ResourcePredicate;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
+import com.cognifide.sling.query.iterator.TreeIterator;
 
 public class HasFunction implements ResourceToResourceFunction {
 
@@ -19,16 +16,10 @@ public class HasFunction implements ResourceToResourceFunction {
 
 	@Override
 	public Resource apply(Resource input) {
-		Deque<Resource> deque = new LinkedList<Resource>();
-		deque.add(input);
-		while (!deque.isEmpty()) {
-			Iterator<Resource> children = deque.poll().listChildren();
-			while (children.hasNext()) {
-				Resource child = children.next();
-				if (predicate.accepts(child)) {
-					return input;
-				}
-				deque.add(child);
+		TreeIterator iterator = new TreeIterator(input);
+		while (iterator.hasNext()) {
+			if (predicate.accepts(iterator.next())) {
+				return input;
 			}
 		}
 		return null;
