@@ -21,6 +21,7 @@ import com.cognifide.sling.query.function.ParentsFunction;
 import com.cognifide.sling.query.function.PrevFunction;
 import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
+import com.cognifide.sling.query.iterator.AdaptToIterator;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
 import com.cognifide.sling.query.selector.Selector;
 
@@ -93,6 +94,15 @@ public class SlingQuery implements Iterable<Resource> {
 
 	public SlingQuery last() {
 		return function(new LastFunction(), "");
+	}
+
+	public <T> Iterable<T> map(final Class<? extends T> clazz) {
+		return new Iterable<T>() {
+			@Override
+			public Iterator<T> iterator() {
+				return new AdaptToIterator<T>(SlingQuery.this.iterator(), clazz);
+			}
+		};
 	}
 
 	public SlingQuery next() {
