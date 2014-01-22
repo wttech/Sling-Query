@@ -1,9 +1,11 @@
-package com.cognifide.sling.query.api.function;
+package com.cognifide.sling.query;
 
 import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
 
+import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
+import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 import com.cognifide.sling.query.iterator.ArrayIterator;
 import com.cognifide.sling.query.iterator.EmptyIterator;
 

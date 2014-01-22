@@ -7,7 +7,6 @@ import org.apache.sling.api.resource.Resource;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
-import com.cognifide.sling.query.api.function.ResourceToIteratorWrapperFunction;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 import com.cognifide.sling.query.iterator.FunctionIterator;
 
