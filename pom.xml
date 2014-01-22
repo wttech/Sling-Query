@@ -16,6 +16,15 @@
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<name>sling-query</name>
+	<description>jQuery-inspired repository traversal tool for Sling</description>
+	<url>https://github.com/Cognifide/Sling-Query</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<scm>
 		<connection>scm:git:https://github.com/Cognifide/Sling-Query.git</connection>
@@ -46,7 +55,7 @@
 		<developer>
 			<id>tomasz.rekawek</id>
 			<name>Tomasz Rekawek</name>
-			<email>tomasz.rekawek@example.com</email>
+			<email>tomasz.rekawek@cognifide.com</email>
 			<organization>Cognifide</organization>
 		</developer>
 	</developers>
