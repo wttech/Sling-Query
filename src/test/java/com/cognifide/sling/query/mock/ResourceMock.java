@@ -67,9 +67,14 @@ public class ResourceMock implements Resource {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <AdapterType> AdapterType adaptTo(Class<AdapterType> type) {
-		return null;
+		if (type.isAssignableFrom(Map.class)) {
+			return (AdapterType) properties;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
