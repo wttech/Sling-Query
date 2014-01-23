@@ -4,8 +4,8 @@ public enum State {
 	START {
 		@Override
 		public void process(ParserContext context, char c) {
-			if (Character.isAlphabetic(c)) {
-				context.setState(State.RESOURCE_TYPE);
+			if (c == '/') {
+				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
 				context.append(c);
 			} else if (c == '[') {
 				context.increaseSquareParentheses();
@@ -13,7 +13,19 @@ public enum State {
 			} else if (c == ':') {
 				context.setState(State.FUNCTION);
 			} else {
+				context.setState(State.RESOURCE_TYPE);
 				context.append(c);
+			}
+		}
+	},
+	IDLE {
+		@Override
+		public void process(ParserContext context, char c) {
+			if (c == '[') {
+				context.increaseSquareParentheses();
+				context.setState(State.ATTRIBUTE);
+			} else if (c == ':') {
+				context.setState(State.FUNCTION);
 			}
 		}
 	},
@@ -59,7 +71,7 @@ public enum State {
 		public void process(ParserContext context, char c) {
 			if (c == ']') {
 				if (context.decreaseSquareParentheses() == 0) {
-					context.setState(State.START);
+					context.setState(State.IDLE);
 					context.addAttribute();
 				}
 			} else if (c == 0) {
@@ -91,7 +103,7 @@ public enum State {
 			if (c == ')') {
 				if (context.decreaseParentheses() == 0) {
 					context.addFunction();
-					context.setState(START);
+					context.setState(IDLE);
 				} else {
 					context.append(c);
 				}
