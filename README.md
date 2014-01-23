@@ -3,6 +3,16 @@
 
 SlingQuery is a Sling resource tree traversal tool inspired by the [jQuery](http://api.jquery.com/category/traversing/tree-traversal/).
 
+## Installation
+
+Add following Maven dependency to your `pom.xml`:
+
+	<dependency>
+		<groupId>com.cognifide.cq</groupId>
+		<artifactId>sling-query</artifactId>
+		<version>0.1.0</version>
+	</dependency>
+
 ## Introduction
 
 Recommended way to find resources in the Sling repository is using tree-traversal methods, like `listChildren()` and `getParent()` rather than JCR queries. The latter are great for listing resources with given properties, but we can't leverage the repository tree structure with such queries. On the other hand, using tree-traversal method is quite verbose. Consider following code that takes an resource and returns it first ancestor being `cq:Page` with given `jcr:content/cq:template` attribute:
