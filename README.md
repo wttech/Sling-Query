@@ -29,6 +29,14 @@ Dollar sign is a static method that takes the resource array and creates SlingQu
 
 SlingQuery is inspired by the jQuery framework. jQuery is the source of method names, selector string syntax and the dollar sign method used as a collection constructor.
 
+## Features
+
+* useful [operations](https://github.com/Cognifide/Sling-Query/wiki/Method-list) to traverse the resource tree,
+* flexible [filtering syntax](https://github.com/Cognifide/Sling-Query/wiki/Selector-syntax),
+* lazy evaluation of the query result,
+* `SlingQuery` object is immutable (thread-safe),
+* fluent, friendly, jQuery-like API.
+
 ## Installation
 
 Add following Maven dependency to your `pom.xml`:
