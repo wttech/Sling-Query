@@ -45,7 +45,7 @@ public enum FunctionType {
 	HAS {
 		@Override
 		public Function<?, ?> getFunction(String selector) {
-			return new HasFunction(new Selector(selector).getPredicate());
+			return new HasFunction(new Selector(selector).asPredicate());
 		}
 	},
 	PARENT {

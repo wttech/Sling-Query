@@ -1,24 +1,33 @@
 package com.cognifide.sling.query.function;
 
+import java.util.Iterator;
+
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
-import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
+import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
+import com.cognifide.sling.query.iterator.ArrayIterator;
+import com.cognifide.sling.query.iterator.EmptyIterator;
+import com.cognifide.sling.query.selector.Selector;
 
-public class ClosestFunction implements ResourceToResourceFunction {
+public class ClosestFunction implements ResourceToIteratorFunction {
 
-	private final ResourcePredicate predicate;
+	private final Selector selector;
 
-	public ClosestFunction(ResourcePredicate predicate) {
-		this.predicate = predicate;
+	public ClosestFunction(Selector selector) {
+		this.selector = selector;
 	}
 
 	@Override
-	public Resource apply(Resource resource) {
+	public Iterator<Resource> apply(Resource resource) {
 		Resource current = resource;
-		while (current != null && !predicate.accepts(current)) {
+		while (current != null) {
+			Iterator<Resource> iterator = new ArrayIterator(current);
+			iterator = selector.apply(iterator);
+			if (iterator.hasNext()) {
+				return iterator;
+			}
 			current = current.getParent();
 		}
-		return current;
+		return EmptyIterator.INSTANCE;
 	}
 }

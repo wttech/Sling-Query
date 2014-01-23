@@ -1,66 +1,40 @@
 package com.cognifide.sling.query.selector;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.IteratorFactory;
 import com.cognifide.sling.query.api.ResourcePredicate;
-import com.cognifide.sling.query.predicate.PropertyPredicate;
-import com.cognifide.sling.query.selector.parser.SelectorFunction;
-import com.cognifide.sling.query.selector.parser.ParserContext;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+import com.cognifide.sling.query.predicate.FunctionPredicate;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
 import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
-public class Selector {
+public class Selector implements IteratorToIteratorFunction {
 
-	private String resourceType;
-
-	private List<PropertyPredicate> properties = new ArrayList<PropertyPredicate>();
-
-	private List<SelectorFunction> functions = new ArrayList<SelectorFunction>();
+	private final List<SelectorSegment> segments;
 
 	public Selector(String selectorString) {
-		if (StringUtils.isNotBlank(selectorString)) {
-			parseSelector(selectorString);
+		if (StringUtils.isBlank(selectorString)) {
+			segments = Collections.emptyList();
+		} else {
+			segments = SelectorParser.parse(selectorString).getSegments();
 		}
 	}
 
-	private void parseSelector(String selectorString) {
-		ParserContext context = SelectorParser.parse(selectorString);
-		if (!context.getSegments().isEmpty()) {
-			SelectorSegment segment = context.getSegments().get(0);
-			resourceType = segment.getResourceType();
-			properties.addAll(segment.getAttributes());
-			functions.addAll(segment.getFunctions());
+	@Override
+	public Iterator<Resource> apply(Iterator<Resource> input) {
+		Iterator<Resource> iterator = input;
+		for (SelectorSegment segment : segments) {
+			iterator = segment.apply(iterator);
 		}
+		return iterator;
 	}
 
-	public ResourcePredicate getPredicate() {
-		return new SelectorFilterPredicate(resourceType, properties);
+	public ResourcePredicate asPredicate() {
+		return new FunctionPredicate(this);
 	}
-
-	public Iterator<Resource> applySelectorFunctions(Iterator<Resource> iterator) {
-		Iterator<Resource> wrappedIterator = iterator;
-		for (SelectorFunction function : functions) {
-			wrappedIterator = IteratorFactory.getIterator(function.function(), wrappedIterator);
-		}
-		return wrappedIterator;
-	}
-
-	String getResourceType() {
-		return resourceType;
-	}
-
-	List<PropertyPredicate> getProperties() {
-		return properties;
-	}
-
-	public List<SelectorFunction> getFunctions() {
-		return functions;
-	}
-
 }

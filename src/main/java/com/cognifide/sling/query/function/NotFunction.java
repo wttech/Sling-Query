@@ -7,8 +7,6 @@ import java.util.List;
 import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
-import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
-import com.cognifide.sling.query.predicate.RejectingPredicate;
 import com.cognifide.sling.query.selector.Selector;
 
 public class NotFunction implements IteratorToIteratorFunction {
@@ -20,26 +18,24 @@ public class NotFunction implements IteratorToIteratorFunction {
 	}
 
 	@Override
-	public Iterator<Resource> apply(Iterator<Resource> iterator) {
-		if (selector.getFunctions().isEmpty()) {
-			return new FilteringIteratorWrapper(iterator, new RejectingPredicate(selector.getPredicate()));
-		} else {
-			List<Resource> list = new ArrayList<Resource>();
-			while (iterator.hasNext()) {
-				list.add(iterator.next());
+	public Iterator<Resource> apply(Iterator<Resource> input) {
+		List<Resource> list = iteratorToList(input);
+		List<Resource> matching = iteratorToList(selector.apply(list.iterator()));
+
+		Iterator<Resource> iterator = list.iterator();
+		while (iterator.hasNext()) {
+			if (matching.contains(iterator.next())) {
+				iterator.remove();
 			}
-			Iterator<Resource> rejected = selector.applySelectorFunctions(list.iterator());
-			List<String> rejectedPaths = new ArrayList<String>();
-			while (rejected.hasNext()) {
-				rejectedPaths.add(rejected.next().getPath());
-			}
-			Iterator<Resource> listIterator = list.iterator();
-			while (listIterator.hasNext()) {
-				if (rejectedPaths.contains(listIterator.next().getPath())) {
-					listIterator.remove();
-				}
-			}
-			return list.iterator();
 		}
+		return list.iterator();
+	}
+
+	private static List<Resource> iteratorToList(Iterator<Resource> iterator) {
+		List<Resource> list = new ArrayList<Resource>();
+		while (iterator.hasNext()) {
+			list.add(iterator.next());
+		}
+		return list;
 	}
 }

@@ -7,127 +7,129 @@ import org.junit.Test;
 
 import com.cognifide.sling.query.predicate.PropertyPredicate;
 import com.cognifide.sling.query.selector.parser.SelectorFunction;
+import com.cognifide.sling.query.selector.parser.SelectorParser;
+import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
 public class SelectorTest {
 	@Test
 	public void parseResourceType() {
-		Selector selector = new Selector("my/resource/type");
+		SelectorSegment selector = getFirstSegment("my/resource/type");
 		Assert.assertEquals(selector.getResourceType(), "my/resource/type");
 	}
 
 	@Test
 	public void parseProperty() {
-		Selector selector = new Selector("[key=value]");
-		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getProperties());
+		SelectorSegment selector = getFirstSegment("[key=value]");
+		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getAttributes());
 	}
 
 	@Test
 	public void parseProperties() {
-		Selector selector = new Selector("[key=value][key2=value2]");
-		Assert.assertEquals(Arrays.asList(pp("key", "value"), pp("key2", "value2")), selector.getProperties());
+		SelectorSegment selector = getFirstSegment("[key=value][key2=value2]");
+		Assert.assertEquals(Arrays.asList(pp("key", "value"), pp("key2", "value2")), selector.getAttributes());
 	}
 
 	@Test
 	public void parseResourceTypeAndProperty() {
-		Selector selector = new Selector("my/resource/type[key=value]");
-		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getProperties());
+		SelectorSegment selector = getFirstSegment("my/resource/type[key=value]");
+		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getAttributes());
 		Assert.assertEquals(selector.getResourceType(), "my/resource/type");
 	}
 
 	@Test
 	public void parseResourceTypeAndProperties() {
-		Selector selector = new Selector("my/resource/type[key=value][key2=value2]");
-		Assert.assertEquals(Arrays.asList(pp("key", "value"), pp("key2", "value2")), selector.getProperties());
+		SelectorSegment selector = getFirstSegment("my/resource/type[key=value][key2=value2]");
+		Assert.assertEquals(Arrays.asList(pp("key", "value"), pp("key2", "value2")), selector.getAttributes());
 		Assert.assertEquals(selector.getResourceType(), "my/resource/type");
 	}
 
 	@Test
 	public void parseFunction() {
-		Selector selector = new Selector(":eq(12)");
+		SelectorSegment selector = getFirstSegment(":eq(12)");
 		Assert.assertEquals(Arrays.asList(f("eq", "12")), selector.getFunctions());
 	}
 
 	@Test
 	public void parseFunctionWithFilter() {
-		Selector selector = new Selector(":has([key=value])");
+		SelectorSegment selector = getFirstSegment(":has([key=value])");
 		Assert.assertEquals(Arrays.asList(f("has", "[key=value]")), selector.getFunctions());
 	}
 
 	@Test
 	public void parseNestedFunction() {
-		Selector selector = new Selector(":not(:has(cq:Page))");
+		SelectorSegment selector = getFirstSegment(":not(:has(cq:Page))");
 		Assert.assertEquals(Arrays.asList(f("not", ":has(cq:Page)")), selector.getFunctions());
 	}
 
 	@Test
 	public void parseFunctionWithoutArgument() {
-		Selector selector = new Selector(":first");
+		SelectorSegment selector = getFirstSegment(":first");
 		Assert.assertEquals(Arrays.asList(f("first", null)), selector.getFunctions());
 	}
 
 	@Test
 	public void parseFunctions() {
-		Selector selector = new Selector(":eq(12):first");
+		SelectorSegment selector = getFirstSegment(":eq(12):first");
 		Assert.assertEquals(Arrays.asList(f("eq", "12"), f("first", null)), selector.getFunctions());
 	}
 
 	@Test
 	public void parsePrimaryTypeAndFunction() {
-		Selector selector = new Selector("cq:Page:first");
+		SelectorSegment selector = getFirstSegment("cq:Page:first");
 		Assert.assertEquals(selector.getResourceType(), "cq:Page");
 		Assert.assertEquals(Arrays.asList(f("first", null)), selector.getFunctions());
 	}
 
 	@Test
 	public void parsePrimaryTypeAndFunctions() {
-		Selector selector = new Selector("cq:Page:first:eq(12)");
+		SelectorSegment selector = getFirstSegment("cq:Page:first:eq(12)");
 		Assert.assertEquals(selector.getResourceType(), "cq:Page");
 		Assert.assertEquals(Arrays.asList(f("first", null), f("eq", "12")), selector.getFunctions());
 	}
 
 	@Test
 	public void parseResourceTypeAndFunction() {
-		Selector selector = new Selector("my/resource/type:first");
+		SelectorSegment selector = getFirstSegment("my/resource/type:first");
 		Assert.assertEquals(selector.getResourceType(), "my/resource/type");
 		Assert.assertEquals(Arrays.asList(f("first", null)), selector.getFunctions());
 	}
 
 	@Test
 	public void parseResourceTypeAndFunctions() {
-		Selector selector = new Selector("my/resource/type:first:eq(12)");
+		SelectorSegment selector = getFirstSegment("my/resource/type:first:eq(12)");
 		Assert.assertEquals(selector.getResourceType(), "my/resource/type");
 		Assert.assertEquals(Arrays.asList(f("first", null), f("eq", "12")), selector.getFunctions());
 	}
 
 	@Test
 	public void parseResourceTypeAndPropertyAndFunction() {
-		Selector selector = new Selector("my/resource/type[key=value]:first");
+		SelectorSegment selector = getFirstSegment("my/resource/type[key=value]:first");
 		Assert.assertEquals(selector.getResourceType(), "my/resource/type");
-		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getProperties());
+		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getAttributes());
 		Assert.assertEquals(Arrays.asList(f("first", null)), selector.getFunctions());
 	}
 
 	@Test
 	public void parseResourceTypeAndPropertiesAndFunction() {
-		Selector selector = new Selector("my/resource/type[key=value][key2=value2]:first");
+		SelectorSegment selector = getFirstSegment("my/resource/type[key=value][key2=value2]:first");
 		Assert.assertEquals(selector.getResourceType(), "my/resource/type");
-		Assert.assertEquals(Arrays.asList(pp("key", "value"), pp("key2", "value2")), selector.getProperties());
+		Assert.assertEquals(Arrays.asList(pp("key", "value"), pp("key2", "value2")), selector.getAttributes());
 		Assert.assertEquals(Arrays.asList(f("first", null)), selector.getFunctions());
 	}
 
 	@Test
 	public void parseResourceTypeAndPropertyAndFunctions() {
-		Selector selector = new Selector("my/resource/type[key=value]:first:eq(12)");
+		SelectorSegment selector = getFirstSegment("my/resource/type[key=value]:first:eq(12)");
 		Assert.assertEquals(selector.getResourceType(), "my/resource/type");
-		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getProperties());
+		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getAttributes());
 		Assert.assertEquals(Arrays.asList(f("first", null), f("eq", "12")), selector.getFunctions());
 	}
 
 	@Test
 	public void parseResourceTypeAndPropertiesAndFunctions() {
-		Selector selector = new Selector("my/resource/type[key=value][key2=value2]:first:eq(12)");
+		SelectorSegment selector = getFirstSegment("my/resource/type[key=value][key2=value2]:first:eq(12)");
 		Assert.assertEquals(selector.getResourceType(), "my/resource/type");
-		Assert.assertEquals(Arrays.asList(pp("key", "value"), pp("key2", "value2")), selector.getProperties());
+		Assert.assertEquals(Arrays.asList(pp("key", "value"), pp("key2", "value2")), selector.getAttributes());
 		Assert.assertEquals(Arrays.asList(f("first", null), f("eq", "12")), selector.getFunctions());
 	}
 
@@ -137,5 +139,9 @@ public class SelectorTest {
 
 	private static SelectorFunction f(String functionId, String argument) {
 		return new SelectorFunction(functionId, argument);
+	}
+
+	private static SelectorSegment getFirstSegment(String selector) {
+		return SelectorParser.parse(selector).getSegments().get(0);
 	}
 }

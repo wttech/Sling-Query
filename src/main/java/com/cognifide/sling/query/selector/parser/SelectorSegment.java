@@ -1,11 +1,19 @@
 package com.cognifide.sling.query.selector.parser;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import com.cognifide.sling.query.predicate.PropertyPredicate;
+import org.apache.sling.api.resource.Resource;
 
-public class SelectorSegment {
+import com.cognifide.sling.query.IteratorFactory;
+import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
+import com.cognifide.sling.query.predicate.PropertyPredicate;
+import com.cognifide.sling.query.selector.SelectorFilterPredicate;
+
+public class SelectorSegment implements IteratorToIteratorFunction {
 	private final String resourceType;
 
 	private final List<PropertyPredicate> attributes;
@@ -35,5 +43,15 @@ public class SelectorSegment {
 
 	public char getHierarchyOperator() {
 		return hierarchyOperator;
+	}
+
+	@Override
+	public Iterator<Resource> apply(Iterator<Resource> input) {
+		ResourcePredicate filter = new SelectorFilterPredicate(resourceType, attributes);
+		Iterator<Resource> iterator = new FilteringIteratorWrapper(input, filter);
+		for (SelectorFunction f : functions) {
+			iterator = IteratorFactory.getIterator(f.function(), iterator);
+		}
+		return iterator;
 	}
 }
