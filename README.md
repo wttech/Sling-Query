@@ -84,7 +84,7 @@ It will match all resources with the given resource type. Example:
 
     $(resource).children("cq:Page")
     
-will return only children with `cq:Page` resource type. You could also filter these resources definining any number of attributes in the square brackets:
+will return only children with `cq:Page` resource type. You could also filter these resources defining any number of attributes in the square brackets:
 
     $(resource).children("cq:Page[jcr:title=Some title][jcr:description=Some desc]")
 
@@ -238,9 +238,9 @@ Replace each element in the collection with its parent.
     
 ### `.parents([selector])`
 
-For each element in the collection find its all ancestor, optionally filtere by a selector.
+For each element in the collection find its all ancestor, optionally filtered them by a selector.
 
-    ($resource).parents("cq:Page"); // create page breacrumbs for the given resources
+    ($resource).parents("cq:Page"); // create page breadcrumbs for the given resources
 
 ### `.parentsUntil(selector[, filter])`
 
@@ -267,7 +267,7 @@ Return all preceding siblings for each resource in the collection, optionally fi
 Return all preceding siblings for each resource in the collection up to, but not including, resource matched by a selector.
 
     // let's assume that resource have 4 children: child1, child2, child3 and child4
-    // additionaly, child1 has property jcr:title=Page
+    // additionally, child1 has property jcr:title=Page
     $(resource).children().last().prevUntil("[jcr:title=Page]"); // return child2 and child3
 
 ### `.siblings([selector])`
@@ -278,7 +278,7 @@ Return siblings for the given resources, optionally filtered by a selector.
 
 ### `.slice(from[, to])`
 
-Reduce the collection to a subcollection specified by a given range. Both `from` and `to` are inclusive and 0-based indices. If the `to` parameter is not specified, the whole subcollection starting with `from` will be returned.
+Reduce the collection to a sub-collection specified by a given range. Both `from` and `to` are inclusive and 0-based indices. If the `to` parameter is not specified, the whole sub-collection starting with `from` will be returned.
 
     // let's assume that resource have 4 children: child1, child2, child3 and child4
     $(resource).children().slice(1, 2); // return child1 and child2
@@ -297,7 +297,7 @@ After the resource type (or instead of it) one could pass a number of filtering 
 
     $(resource).children("cq:Page[jcr:content/jcr:title=My title]")
     
-will return only children of type `cq:Page` that have subresource called `jcr:content` with property `jcr:title` set to `My title`.
+will return only children of type `cq:Page` that have sub-resource called `jcr:content` with property `jcr:title` set to `My title`.
 
 ### Modifiers
 
@@ -307,7 +307,7 @@ At the end of the selector one could define any number of modifiers that will be
     $(resource).children("cq:Page:eq(0)"); // the same
     $(resource).children(":first"); // modifier can be used alone
 
-It is important that modifier filters out subcollection created for each node, before it is merged. Eg.:, there is a difference between:
+It is important that modifier filters out sub-collection created for each node, before it is merged. Eg.:, there is a difference between:
 
     $(resource1, resource2).children().first();
 
