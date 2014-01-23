@@ -241,7 +241,7 @@ For each element in the collection find its all ancestor, optionally filtere by 
 
     ($resource).parents("cq:Page"); // create page breacrumbs for the given resources
 
-### `.parentsUntil(predicate[, selector])`
+### `.parentsUntil(selector[, filter])`
 
 For each element in the collection find all of its ancestors until the predicate is met, optionally filter by a selector.
 
