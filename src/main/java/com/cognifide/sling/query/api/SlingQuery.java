@@ -302,7 +302,15 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery parents(String selector) {
-		return function(new ParentsFunction(), selector);
+		return function(new ParentsFunction(new RejectingPredicate()), selector);
+	}
+
+	public SlingQuery parentsUntil(String until) {
+		return function(new ParentsFunction(new Selector(until).getPredicate()), "");
+	}
+
+	public SlingQuery parentsUntil(String until, String selector) {
+		return function(new ParentsFunction(new Selector(until).getPredicate()), selector);
 	}
 
 	/**

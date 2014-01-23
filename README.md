@@ -240,6 +240,12 @@ Replace each element in the collection with its parent.
 For each element in the collection find its all ancestor, optionally filtere by a selector.
 
     ($resource).parents("cq:Page"); // create page breacrumbs for the given resources
+
+### `.parentsUntil(selector[, filter])`
+
+For each element in the collection find all of its ancestors until the predicate is met, optionally filter by a selector.
+
+    ($currentResource).parents("cq:Page"); // create page breadcrumbs for the given resources within a site
     
 ### `.prev([selector])`
 
