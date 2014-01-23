@@ -378,3 +378,7 @@ Reduce the set of matched elements to those which indexes are odd numbers:
 Reduce the set of the matched elements to those which have any descendant resource.
 
     $(...).children(":parent]"); // get children resources containing any resource
+
+## External resources
+
+* See the [Apache Sling website](http://sling.apache.org/) for the Sling reference documentation. Apache Sling, Apache and Sling are trademarks of the [Apache Software Foundation](http://apache.org).
