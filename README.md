@@ -245,7 +245,7 @@ For each element in the collection find its all ancestor, optionally filtere by 
 
 For each element in the collection find all of its ancestors until the predicate is met, optionally filter by a selector.
 
-    ($currentResource).parents("cq:Page"); // create page breadcrumbs for the given resources within a site
+    ($currentResource).parentsUntil("cq:Page"); // find all ancestor components on the current page
     
 ### `.prev([selector])`
 
