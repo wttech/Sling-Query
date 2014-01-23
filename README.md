@@ -5,7 +5,7 @@ SlingQuery is a Sling resource tree traversal tool inspired by the [jQuery](http
 
 ## Introduction
 
-Recommended way to find resources in the Sling repository is using tree-traversal methods, like `listChildren()` and `getParent()` rather than JCR queries. The latter are great for listing resources with given properties, but we can't leverage the repository tree structure with such queries. On the other hand, using tree-traversal method is quite verbose. Consider following code that takes an resource and returns it first ancestor being `cq:Page` with given `jcr:content/cq:template` attribute:
+Recommended way to find resources in the Sling repository is using tree-traversal methods, like `listChildren()` and `getParent()` rather than JCR queries. The latter are great for listing resources with given properties, but we can't leverage the repository tree structure with such queries. On the other hand, using tree-traversal method is quite verbose. Consider following code that takes an resource and returns its first ancestor, being `cq:Page`, with given `jcr:content/cq:template` attribute:
 
     Resource resource = ...;
     while ((resource = resource.getParent()) != null) {
@@ -25,7 +25,7 @@ SlingQuery is a tool that helps creating such queries in a more concise way. Abo
 
     $(resource).closest("cq:Page[jcr:content/cq:template=my/template]")
 
-Dollar sign is a static method that takes the resource array and creates SlingQuery object. The `closest()` method returns first ancestor matching the selector string passed as the argument.
+Dollar sign is a static method that takes the resource array and creates SlingQuery object. The `closest()` method returns the first ancestor matching the selector string passed as the argument.
 
 SlingQuery is inspired by the jQuery framework. jQuery is the source of method names, selector string syntax and the dollar sign method used as a collection constructor.
 
@@ -238,13 +238,13 @@ Replace each element in the collection with its parent.
     
 ### `.parents([selector])`
 
-For each element in the collection find its all ancestor, optionally filtered them by a selector.
+For each element in the collection find all of its ancestors, optionally filtering them by a selector.
 
     ($resource).parents("cq:Page"); // create page breadcrumbs for the given resources
 
 ### `.parentsUntil(selector[, filter])`
 
-For each element in the collection find all of its ancestors until the predicate is met, optionally filter by a selector.
+For each element in the collection find all of its ancestors until a resource matching the selector is found, optionally filtering them by a selector.
 
     ($currentResource).parentsUntil("cq:Page"); // find all ancestor components on the current page
     
