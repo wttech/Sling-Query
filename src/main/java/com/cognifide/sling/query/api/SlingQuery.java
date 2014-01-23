@@ -305,10 +305,24 @@ public class SlingQuery implements Iterable<Resource> {
 		return function(new ParentsFunction(new RejectingPredicate()), selector);
 	}
 
+	/**
+	 * For each element in the collection find all of its ancestors until the predicate is met.
+	 * 
+	 * @param until Selector marking when the operation should stop
+	 * @return a {@link SlingQuery} object transformed by this operation
+	 */
 	public SlingQuery parentsUntil(String until) {
 		return function(new ParentsFunction(new Selector(until).getPredicate()), "");
 	}
 
+	/**
+	 * For each element in the collection find all of its ancestors until the predicate is met, optionally
+	 * filter by a selector.
+	 * 
+	 * @param until Selector marking when the operation should stop
+	 * @param selector Parents filter
+	 * @return a {@link SlingQuery} object transformed by this operation
+	 */
 	public SlingQuery parentsUntil(String until, String selector) {
 		return function(new ParentsFunction(new Selector(until).getPredicate()), selector);
 	}
