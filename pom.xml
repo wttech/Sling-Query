@@ -64,14 +64,6 @@
 		</repository>
 	</repositories>
 
-	<distributionManagement>
-		<repository>
-			<id>cognifide-internal-repository</id>
-			<name>Cognifide Internal Repository</name>
-			<url>http://nexus.cognifide.com/content/repositories/cognifide-internal</url>
-		</repository>
-	</distributionManagement>
-
 	<build>
 		<pluginManagement>
 			<plugins>
