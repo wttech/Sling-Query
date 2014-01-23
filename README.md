@@ -1,4 +1,5 @@
 # SlingQuery
+[![Build Status](https://travis-ci.org/Cognifide/Sling-Query.png?branch=master)](https://travis-ci.org/Cognifide/Sling-Query)
 
 SlingQuery is a Sling resource tree traversal tool inspired by the [jQuery](http://api.jquery.com/category/traversing/tree-traversal/).
 
