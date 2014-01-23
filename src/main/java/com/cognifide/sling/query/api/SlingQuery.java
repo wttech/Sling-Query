@@ -142,7 +142,15 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	public SlingQuery parents(String selector) {
-		return function(new ParentsFunction(), selector);
+		return function(new ParentsFunction(new RejectingPredicate()), selector);
+	}
+
+	public SlingQuery parentsUntil(String until) {
+		return function(new ParentsFunction(new Selector(until).getPredicate()), "");
+	}
+
+	public SlingQuery parentsUntil(String until, String selector) {
+		return function(new ParentsFunction(new Selector(until).getPredicate()), selector);
 	}
 
 	public SlingQuery prev() {
