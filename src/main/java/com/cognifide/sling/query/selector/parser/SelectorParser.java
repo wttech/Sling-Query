@@ -1,6 +1,7 @@
 package com.cognifide.sling.query.selector.parser;
 
 public final class SelectorParser {
+
 	private SelectorParser() {
 	}
 

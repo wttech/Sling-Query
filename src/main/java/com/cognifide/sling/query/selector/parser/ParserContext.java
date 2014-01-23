@@ -6,9 +6,13 @@ import java.util.List;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
 
 public class ParserContext {
+	private final List<SelectorSegment> segments = new ArrayList<SelectorSegment>();
+
 	private final List<PropertyPredicate> attributes = new ArrayList<PropertyPredicate>();
 
 	private final List<SelectorFunction> functions = new ArrayList<SelectorFunction>();
+
+	private char hierarchyOperator;
 
 	private State state = State.START;
 
@@ -22,16 +26,20 @@ public class ParserContext {
 
 	private int squareParenthesesCount = 0;
 
-	public List<PropertyPredicate> getAttributes() {
+	List<PropertyPredicate> getAttributes() {
 		return attributes;
 	}
 
-	public List<SelectorFunction> getFunctions() {
+	List<SelectorFunction> getFunctions() {
 		return functions;
 	}
 
-	public String getResourceType() {
+	String getResourceType() {
 		return resourceType;
+	}
+
+	char getHierarchyOperator() {
+		return hierarchyOperator;
 	}
 
 	public State getState() {
@@ -85,8 +93,23 @@ public class ParserContext {
 		this.state = state;
 	}
 
+	void setHierarchyOperator(char hierarchyOperator) {
+		this.hierarchyOperator = hierarchyOperator;
+	}
+
+	void finishSelectorSegment() {
+		segments.add(new SelectorSegment(this));
+		attributes.clear();
+		functions.clear();
+		hierarchyOperator = 0;
+		resourceType = null;
+	}
+
 	void append(char c) {
 		builder.append(c);
 	}
 
+	public List<SelectorSegment> getSegments() {
+		return segments;
+	}
 }

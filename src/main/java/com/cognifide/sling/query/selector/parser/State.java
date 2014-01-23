@@ -12,7 +12,9 @@ public enum State {
 				context.setState(State.ATTRIBUTE);
 			} else if (c == ':') {
 				context.setState(State.FUNCTION);
-			} else {
+			} else if (c == '>' || c == '+' || c == '~') {
+				context.setHierarchyOperator(c);
+			} else if (c != ' ') {
 				context.setState(State.RESOURCE_TYPE);
 				context.append(c);
 			}
@@ -26,6 +28,11 @@ public enum State {
 				context.setState(State.ATTRIBUTE);
 			} else if (c == ':') {
 				context.setState(State.FUNCTION);
+			} else if (c == ' ') {
+				context.finishSelectorSegment();
+				context.setState(START);
+			} else if (c == 0) {
+				context.finishSelectorSegment();
 			}
 		}
 	},
@@ -44,6 +51,7 @@ public enum State {
 				context.append(c);
 			} else if (c == 0) {
 				context.setResourceType();
+				context.finishSelectorSegment();
 			} else {
 				context.append(c);
 			}
@@ -61,6 +69,7 @@ public enum State {
 				context.setResourceType();
 			} else if (c == 0) {
 				context.setResourceType();
+				context.finishSelectorSegment();
 			} else {
 				context.append(c);
 			}
@@ -76,6 +85,7 @@ public enum State {
 				}
 			} else if (c == 0) {
 				context.addAttribute();
+				context.finishSelectorSegment();
 			} else {
 				context.append(c);
 			}
@@ -92,6 +102,7 @@ public enum State {
 				context.increaseParentheses();
 			} else if (c == 0) {
 				context.addFunction();
+				context.finishSelectorSegment();
 			} else {
 				context.append(c);
 			}

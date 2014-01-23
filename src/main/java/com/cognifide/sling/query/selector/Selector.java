@@ -13,6 +13,7 @@ import com.cognifide.sling.query.predicate.PropertyPredicate;
 import com.cognifide.sling.query.selector.parser.SelectorFunction;
 import com.cognifide.sling.query.selector.parser.ParserContext;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
+import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
 public class Selector {
 
@@ -30,9 +31,12 @@ public class Selector {
 
 	private void parseSelector(String selectorString) {
 		ParserContext context = SelectorParser.parse(selectorString);
-		resourceType = context.getResourceType();
-		properties.addAll(context.getAttributes());
-		functions.addAll(context.getFunctions());
+		if (!context.getSegments().isEmpty()) {
+			SelectorSegment segment = context.getSegments().get(0);
+			resourceType = segment.getResourceType();
+			properties.addAll(segment.getAttributes());
+			functions.addAll(segment.getFunctions());
+		}
 	}
 
 	public ResourcePredicate getPredicate() {
