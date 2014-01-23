@@ -63,6 +63,20 @@ public enum FunctionType {
 			};
 		}
 	},
+	EMPTY {
+		@Override
+		public Function<?, ?> getFunction(String argument) {
+			return new ResourceToResourceFunction() {
+				@Override
+				public Resource apply(Resource resource) {
+					if (resource.listChildren().hasNext()) {
+						return null;
+					}
+					return resource;
+				}
+			};
+		}
+	},
 	ODD {
 		@Override
 		public Function<?, ?> getFunction(String argument) {
