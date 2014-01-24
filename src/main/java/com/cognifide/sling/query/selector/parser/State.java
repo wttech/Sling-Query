@@ -1,5 +1,7 @@
 package com.cognifide.sling.query.selector.parser;
 
+import org.apache.commons.lang.ArrayUtils;
+
 public enum State {
 	START {
 		@Override
@@ -8,8 +10,7 @@ public enum State {
 				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
 				context.append(c);
 			} else if (c == '[') {
-				context.increaseSquareParentheses();
-				context.setState(State.ATTRIBUTE);
+				context.setState(State.ATTRIBUTE_KEY);
 			} else if (c == ':') {
 				context.setState(State.FUNCTION);
 			} else if (c == '>' || c == '+' || c == '~') {
@@ -26,8 +27,7 @@ public enum State {
 		@Override
 		public void process(ParserContext context, char c) {
 			if (c == '[') {
-				context.increaseSquareParentheses();
-				context.setState(State.ATTRIBUTE);
+				context.setState(State.ATTRIBUTE_KEY);
 			} else if (c == ':') {
 				context.setState(State.FUNCTION);
 			} else if (c == ' ' || c == 0) {
@@ -43,8 +43,7 @@ public enum State {
 				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
 				context.append(c);
 			} else if (c == '[') {
-				context.increaseSquareParentheses();
-				context.setState(State.ATTRIBUTE);
+				context.setState(State.ATTRIBUTE_KEY);
 				context.setResourceType();
 			} else if (c == ':') {
 				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
@@ -65,8 +64,7 @@ public enum State {
 		@Override
 		public void process(ParserContext context, char c) {
 			if (c == '[') {
-				context.increaseSquareParentheses();
-				context.setState(State.ATTRIBUTE);
+				context.setState(State.ATTRIBUTE_KEY);
 				context.setResourceType();
 			} else if (c == ':') {
 				context.setState(State.FUNCTION);
@@ -87,8 +85,7 @@ public enum State {
 		@Override
 		public void process(ParserContext context, char c) {
 			if (c == '[') {
-				context.increaseSquareParentheses();
-				context.setState(State.ATTRIBUTE);
+				context.setState(State.ATTRIBUTE_KEY);
 				context.setResourceName();
 			} else if (c == ':') {
 				context.setState(State.FUNCTION);
@@ -103,17 +100,41 @@ public enum State {
 
 		}
 	},
-	ATTRIBUTE {
+	ATTRIBUTE_KEY {
 		@Override
 		public void process(ParserContext context, char c) {
 			if (c == ']') {
-				if (context.decreaseSquareParentheses() == 0) {
-					context.setState(State.IDLE);
-					context.addAttribute();
-				}
-			} else if (c == 0) {
+				context.setAttributeKey();
 				context.addAttribute();
-				context.finishSelectorSegment();
+				context.setState(State.IDLE);
+			} else if (ArrayUtils.contains(OPERATORS, c)) {
+				context.setAttributeKey();
+				context.setState(State.ATTRIBUTE_OPERATOR);
+				context.append(c);
+			} else {
+				context.append(c);
+			}
+		}
+	},
+	ATTRIBUTE_OPERATOR {
+		@Override
+		public void process(ParserContext context, char c) {
+			if (!ArrayUtils.contains(OPERATORS, c)) {
+				context.setAttributeOperator();
+				context.append(c);
+				context.setState(ATTRIBUTE_VALUE);
+			} else {
+				context.append(c);
+			}
+		}
+	},
+	ATTRIBUTE_VALUE {
+		@Override
+		public void process(ParserContext context, char c) {
+			if (c == ']') {
+				context.setState(State.IDLE);
+				context.setAttributeValue();
+				context.addAttribute();
 			} else {
 				context.append(c);
 			}
@@ -156,4 +177,6 @@ public enum State {
 		}
 	};
 	public abstract void process(ParserContext context, char c);
+
+	private static final char[] OPERATORS = "*~$!^=".toCharArray();
 }

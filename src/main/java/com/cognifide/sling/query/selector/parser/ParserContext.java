@@ -22,11 +22,15 @@ public class ParserContext {
 
 	private String resourceName;
 
+	private String attributeKey;
+
+	private String attributeOperator;
+
+	private String attributeValue;
+
 	private String currentFunctionName;
 
 	private int parenthesesCount = 0;
-
-	private int squareParenthesesCount = 0;
 
 	List<PropertyPredicate> getAttributes() {
 		return attributes;
@@ -60,14 +64,6 @@ public class ParserContext {
 		return --parenthesesCount;
 	}
 
-	void increaseSquareParentheses() {
-		squareParenthesesCount++;
-	}
-
-	int decreaseSquareParentheses() {
-		return --squareParenthesesCount;
-	}
-
 	void setResourceType() {
 		resourceType = builder.toString();
 		builder = new StringBuilder();
@@ -78,9 +74,26 @@ public class ParserContext {
 		builder = new StringBuilder();
 	}
 
-	void addAttribute() {
-		attributes.add(new PropertyPredicate(builder.toString()));
+	void setAttributeKey() {
+		attributeKey = builder.toString();
 		builder = new StringBuilder();
+	}
+
+	void setAttributeOperator() {
+		attributeOperator = builder.toString();
+		builder = new StringBuilder();
+	}
+
+	void setAttributeValue() {
+		attributeValue = builder.toString();
+		builder = new StringBuilder();
+	}
+
+	void addAttribute() {
+		attributes.add(new PropertyPredicate(attributeKey, attributeOperator, attributeValue));
+		attributeKey = null;
+		attributeOperator = null;
+		attributeValue = null;
 	}
 
 	void setFunctionName() {

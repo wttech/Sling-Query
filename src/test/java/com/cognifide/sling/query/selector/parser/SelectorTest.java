@@ -208,7 +208,7 @@ public class SelectorTest {
 	}
 
 	private static PropertyPredicate pp(String key, String value) {
-		return new PropertyPredicate(key, value);
+		return new PropertyPredicate(key, "=", value);
 	}
 
 	private static SelectorFunction f(String functionId, String argument) {

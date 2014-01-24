@@ -1,6 +1,5 @@
 package com.cognifide.sling.query.predicate;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.sling.api.resource.Resource;
@@ -12,15 +11,12 @@ public class PropertyPredicate implements ResourcePredicate {
 
 	private final String value;
 
-	public PropertyPredicate(String property) {
-		String[] split = StringUtils.split(property, "=");
-		this.key = split[0];
-		this.value = split[1];
-	}
+	private final SelectorOperator operator;
 
-	public PropertyPredicate(String key, String value) {
+	public PropertyPredicate(String key, String operator, String value) {
 		this.key = key;
 		this.value = value;
+		this.operator = SelectorOperator.getSelectorOperator(operator);
 	}
 
 	@Override
@@ -28,13 +24,15 @@ public class PropertyPredicate implements ResourcePredicate {
 		Resource property = resource.getChild(key);
 		if (property == null) {
 			return false;
+		} else if (value == null) {
+			return true;
 		} else {
-			return value.equals(property.adaptTo(String.class));
+			return operator.accepts(property.adaptTo(String.class), value);
 		}
 	}
 
 	public String toString() {
-		return String.format("PropertyPredicate[%s=%s]", key, value);
+		return String.format("PropertyPredicate[%s %s %s]", key, operator, value);
 	}
 
 	public boolean equals(Object obj) {
