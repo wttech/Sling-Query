@@ -49,6 +49,10 @@ public enum State {
 			} else if (c == ':') {
 				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
 				context.append(c);
+			} else if (c == ' ') {
+				context.setResourceType();
+				context.finishSelectorSegment();
+				context.setState(START);
 			} else if (c == 0) {
 				context.setResourceType();
 				context.finishSelectorSegment();
@@ -67,6 +71,10 @@ public enum State {
 			} else if (c == ':') {
 				context.setState(State.FUNCTION);
 				context.setResourceType();
+			} else if (c == ' ') {
+				context.setResourceType();
+				context.finishSelectorSegment();
+				context.setState(START);
 			} else if (c == 0) {
 				context.setResourceType();
 				context.finishSelectorSegment();
@@ -100,6 +108,10 @@ public enum State {
 				context.setFunctionName();
 				context.setState(State.FUNCTION_ARGUMENT);
 				context.increaseParentheses();
+			} else if (c == ' ') {
+				context.addFunction();
+				context.finishSelectorSegment();
+				context.setState(START);
 			} else if (c == 0) {
 				context.addFunction();
 				context.finishSelectorSegment();
