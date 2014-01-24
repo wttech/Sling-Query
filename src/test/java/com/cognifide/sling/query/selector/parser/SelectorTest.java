@@ -1,6 +1,8 @@
 package com.cognifide.sling.query.selector.parser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -133,6 +135,24 @@ public class SelectorTest {
 		Assert.assertEquals(Arrays.asList(f("first", null), f("eq", "12")), selector.getFunctions());
 	}
 
+	@Test
+	public void parseMultiSegments() {
+		List<SelectorSegment> segments = SelectorParser.parse("cq:Page cq:Page").getSegments();
+		Assert.assertEquals(getSegments("cq:Page", " ", "cq:Page"), segments);
+
+		segments = SelectorParser.parse("cq:Page > cq:Page").getSegments();
+		Assert.assertEquals(getSegments("cq:Page", ">", "cq:Page"), segments);
+
+		segments = SelectorParser.parse("cq:Page ~ cq:Page").getSegments();
+		Assert.assertEquals(getSegments("cq:Page", "~", "cq:Page"), segments);
+
+		segments = SelectorParser.parse("cq:Page + cq:Page").getSegments();
+		Assert.assertEquals(getSegments("cq:Page", "+", "cq:Page"), segments);
+
+		segments = SelectorParser.parse("cq:Page   cq:Page2 +  cq:Page3").getSegments();
+		Assert.assertEquals(getSegments("cq:Page", " ", "cq:Page2", "+", "cq:Page3"), segments);
+	}
+
 	private static PropertyPredicate pp(String key, String value) {
 		return new PropertyPredicate(key, value);
 	}
@@ -143,5 +163,20 @@ public class SelectorTest {
 
 	private static SelectorSegment getFirstSegment(String selector) {
 		return SelectorParser.parse(selector).getSegments().get(0);
+	}
+
+	private static List<SelectorSegment> getSegments(String... segments) {
+		List<SelectorSegment> list = new ArrayList<SelectorSegment>();
+		if (segments.length > 0) {
+			list.add(getFirstSegment(segments[0]));
+		}
+		for (int i = 1; i < segments.length; i += 2) {
+			SelectorSegment parsed = SelectorParser.parse(segments[i + 1]).getSegments().get(0);
+			char operator = segments[i].charAt(0);
+			SelectorSegment segment = new SelectorSegment(parsed.getResourceType(), parsed.getAttributes(),
+					parsed.getFunctions(), operator);
+			list.add(segment);
+		}
+		return list;
 	}
 }
