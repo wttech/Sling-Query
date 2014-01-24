@@ -94,6 +94,21 @@ public enum FunctionType {
 		public Function<?, ?> getFunction(String argument) {
 			return new NotFunction(new Selector(argument));
 		}
+	},
+	NAME {
+		@Override
+		public Function<?, ?> getFunction(final String argument) {
+			return new ResourceToResourceFunction() {
+				@Override
+				public Resource apply(Resource resource) {
+					if (resource.getName().equals(argument)) {
+						return resource;
+					} else {
+						return null;
+					}
+				}
+			};
+		}
 	};
 
 	public abstract Function<?, ?> getFunction(String argument);

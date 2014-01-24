@@ -21,7 +21,7 @@ public class ChildrenTest {
 
 	@Test
 	public void testNameChildren() {
-		SlingQuery query = $(tree).children("cq:Page#application");
+		SlingQuery query = $(tree).children("cq:Page:name(application)");
 		assertResourceListEquals(query.iterator(), "application");
 	}
 

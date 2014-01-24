@@ -15,8 +15,6 @@ public enum State {
 				context.setState(State.FUNCTION);
 			} else if (c == '>' || c == '+' || c == '~') {
 				context.setHierarchyOperator(c);
-			} else if (c == '#') {
-				context.setState(State.NAME);
 			} else if (c != ' ') {
 				context.setState(State.RESOURCE_TYPE);
 				context.append(c);
@@ -48,9 +46,6 @@ public enum State {
 			} else if (c == ':') {
 				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
 				context.append(c);
-			} else if (c == '#') {
-				context.setResourceType();
-				context.setState(State.NAME);
 			} else if (c == ' ' || c == 0) {
 				context.setResourceType();
 				context.finishSelectorSegment();
@@ -69,9 +64,6 @@ public enum State {
 			} else if (c == ':') {
 				context.setState(State.FUNCTION);
 				context.setResourceType();
-			} else if (c == '#') {
-				context.setResourceType();
-				context.setState(State.NAME);
 			} else if (c == ' ' || c == 0) {
 				context.setResourceType();
 				context.finishSelectorSegment();
@@ -79,25 +71,6 @@ public enum State {
 			} else {
 				context.append(c);
 			}
-		}
-	},
-	NAME {
-		@Override
-		public void process(ParserContext context, char c) {
-			if (c == '[') {
-				context.setState(State.ATTRIBUTE_KEY);
-				context.setResourceName();
-			} else if (c == ':') {
-				context.setState(State.FUNCTION);
-				context.setResourceName();
-			} else if (c == ' ' || c == 0) {
-				context.setResourceName();
-				context.finishSelectorSegment();
-				context.setState(START);
-			} else {
-				context.append(c);
-			}
-
 		}
 	},
 	ATTRIBUTE_KEY {
