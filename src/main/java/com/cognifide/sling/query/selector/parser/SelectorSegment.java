@@ -18,6 +18,8 @@ import com.cognifide.sling.query.selector.SelectorFilterPredicate;
 public class SelectorSegment implements IteratorToIteratorFunction {
 	private final String resourceType;
 
+	private final String resourceName;
+
 	private final List<PropertyPredicate> attributes;
 
 	private final List<SelectorFunction> functions;
@@ -26,6 +28,7 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 
 	public SelectorSegment(ParserContext context, boolean firstSegment) {
 		this.resourceType = context.getResourceType();
+		this.resourceName = context.getResourceName();
 		this.attributes = new ArrayList<PropertyPredicate>(context.getAttributes());
 		this.functions = new ArrayList<SelectorFunction>(context.getFunctions());
 		if (firstSegment) {
@@ -35,9 +38,10 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 		}
 	}
 
-	SelectorSegment(String resourceType, List<PropertyPredicate> attributes,
+	SelectorSegment(String resourceType, String resourceName, List<PropertyPredicate> attributes,
 			List<SelectorFunction> functions, char hierarchyOperator) {
 		this.resourceType = resourceType;
+		this.resourceName = resourceName;
 		this.attributes = attributes;
 		this.functions = functions;
 		this.hierarchyOperator = HierarchyOperator.findByCharacter(hierarchyOperator);
@@ -57,6 +61,10 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 		return resourceType;
 	}
 
+	String getResourceName() {
+		return resourceName;
+	}
+
 	List<PropertyPredicate> getAttributes() {
 		return attributes;
 	}
@@ -74,7 +82,7 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 	}
 
 	private ResourcePredicate getFilter() {
-		return new SelectorFilterPredicate(resourceType, attributes);
+		return new SelectorFilterPredicate(resourceType, resourceName, attributes);
 	}
 
 	@Override

@@ -20,6 +20,8 @@ public class ParserContext {
 
 	private String resourceType;
 
+	private String resourceName;
+
 	private String currentFunctionName;
 
 	private int parenthesesCount = 0;
@@ -36,6 +38,10 @@ public class ParserContext {
 
 	String getResourceType() {
 		return resourceType;
+	}
+
+	String getResourceName() {
+		return resourceName;
 	}
 
 	char getHierarchyOperator() {
@@ -64,6 +70,11 @@ public class ParserContext {
 
 	void setResourceType() {
 		resourceType = builder.toString();
+		builder = new StringBuilder();
+	}
+
+	void setResourceName() {
+		resourceName = builder.toString();
 		builder = new StringBuilder();
 	}
 
@@ -112,4 +123,5 @@ public class ParserContext {
 	public List<SelectorSegment> getSegments() {
 		return segments;
 	}
+
 }

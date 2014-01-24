@@ -19,15 +19,22 @@ public class SelectorFilterPredicate implements ResourcePredicate {
 
 	private final String resourceType;
 
+	private final String resourceName;
+
 	private final List<PropertyPredicate> properties;
 
-	public SelectorFilterPredicate(String resourceType, List<PropertyPredicate> properties) {
+	public SelectorFilterPredicate(String resourceType, String resourceName,
+			List<PropertyPredicate> properties) {
 		this.resourceType = resourceType;
+		this.resourceName = resourceName;
 		this.properties = properties;
 	}
 
 	@Override
 	public boolean accepts(Resource resource) {
+		if (StringUtils.isNotBlank(resourceName) && !resource.getName().equals(resourceName)) {
+			return false;
+		}
 		if (!isResourceType(resource, resourceType)) {
 			return false;
 		}
