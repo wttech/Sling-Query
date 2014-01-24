@@ -98,7 +98,7 @@ public class ParserContext {
 	}
 
 	void finishSelectorSegment() {
-		segments.add(new SelectorSegment(this));
+		segments.add(new SelectorSegment(this, segments.isEmpty()));
 		attributes.clear();
 		functions.clear();
 		hierarchyOperator = 0;

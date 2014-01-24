@@ -1,4 +1,4 @@
-package com.cognifide.sling.query.selector;
+package com.cognifide.sling.query.selector.parser;
 
 import java.util.Arrays;
 
