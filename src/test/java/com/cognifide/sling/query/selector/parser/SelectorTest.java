@@ -32,10 +32,25 @@ public class SelectorTest {
 	}
 
 	@Test
+	public void parseResourceTypeAndName() {
+		SelectorSegment selector = getFirstSegment("my/resource/type#some-name");
+		Assert.assertEquals("my/resource/type", selector.getResourceType());
+		Assert.assertEquals("some-name", selector.getResourceName());
+	}
+
+	@Test
 	public void parseResourceTypeAndProperty() {
 		SelectorSegment selector = getFirstSegment("my/resource/type[key=value]");
 		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getAttributes());
 		Assert.assertEquals("my/resource/type", selector.getResourceType());
+	}
+
+	@Test
+	public void parseResourceTypeAndNameAndProperty() {
+		SelectorSegment selector = getFirstSegment("my/resource/type#some-name[key=value]");
+		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getAttributes());
+		Assert.assertEquals("my/resource/type", selector.getResourceType());
+		Assert.assertEquals("some-name", selector.getResourceName());
 	}
 
 	@Test
@@ -46,8 +61,30 @@ public class SelectorTest {
 	}
 
 	@Test
+	public void parseResourceTypeAndNameAndProperties() {
+		SelectorSegment selector = getFirstSegment("my/resource/type#some-name[key=value][key2=value2]");
+		Assert.assertEquals(Arrays.asList(pp("key", "value"), pp("key2", "value2")), selector.getAttributes());
+		Assert.assertEquals("my/resource/type", selector.getResourceType());
+		Assert.assertEquals("some-name", selector.getResourceName());
+	}
+
+	@Test
 	public void parseFunction() {
 		SelectorSegment selector = getFirstSegment(":eq(12)");
+		Assert.assertEquals(Arrays.asList(f("eq", "12")), selector.getFunctions());
+	}
+
+	@Test
+	public void parseNameAndFunction() {
+		SelectorSegment selector = getFirstSegment("#some-name:eq(12)");
+		Assert.assertEquals("some-name", selector.getResourceName());
+		Assert.assertEquals(Arrays.asList(f("eq", "12")), selector.getFunctions());
+	}
+
+	@Test
+	public void parseEscapedNameAndFunction() {
+		SelectorSegment selector = getFirstSegment("#'jcr:content':eq(12)");
+		Assert.assertEquals("jcr:content", selector.getResourceName());
 		Assert.assertEquals(Arrays.asList(f("eq", "12")), selector.getFunctions());
 	}
 
@@ -55,6 +92,13 @@ public class SelectorTest {
 	public void parseFunctionWithFilter() {
 		SelectorSegment selector = getFirstSegment(":has([key=value])");
 		Assert.assertEquals(Arrays.asList(f("has", "[key=value]")), selector.getFunctions());
+	}
+
+	@Test
+	public void parseNameAndFunctionWithFilter() {
+		SelectorSegment selector = getFirstSegment("#some-name:has([key=value])");
+		Assert.assertEquals(Arrays.asList(f("has", "[key=value]")), selector.getFunctions());
+		Assert.assertEquals("some-name", selector.getResourceName());
 	}
 
 	@Test
@@ -97,6 +141,14 @@ public class SelectorTest {
 	}
 
 	@Test
+	public void parseResourceTypeAndNameAndFunction() {
+		SelectorSegment selector = getFirstSegment("my/resource/type#some-name:first");
+		Assert.assertEquals("my/resource/type", selector.getResourceType());
+		Assert.assertEquals(Arrays.asList(f("first", null)), selector.getFunctions());
+		Assert.assertEquals("some-name", selector.getResourceName());
+	}
+
+	@Test
 	public void parseResourceTypeAndFunctions() {
 		SelectorSegment selector = getFirstSegment("my/resource/type:first:eq(12)");
 		Assert.assertEquals("my/resource/type", selector.getResourceType());
@@ -109,6 +161,15 @@ public class SelectorTest {
 		Assert.assertEquals("my/resource/type", selector.getResourceType());
 		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getAttributes());
 		Assert.assertEquals(Arrays.asList(f("first", null)), selector.getFunctions());
+	}
+
+	@Test
+	public void parseResourceTypeAndNameAndPropertyAndFunction() {
+		SelectorSegment selector = getFirstSegment("my/resource/type#some-name[key=value]:first");
+		Assert.assertEquals(selector.getResourceType(), "my/resource/type");
+		Assert.assertEquals(Arrays.asList(pp("key", "value")), selector.getAttributes());
+		Assert.assertEquals(Arrays.asList(f("first", null)), selector.getFunctions());
+		Assert.assertEquals("some-name", selector.getResourceName());
 	}
 
 	@Test
