@@ -60,3 +60,4 @@ Add following Maven dependency to your `pom.xml`:
 ## External resources
 
 * See the [Apache Sling website](http://sling.apache.org/) for the Sling reference documentation. Apache Sling, Apache and Sling are trademarks of the [Apache Software Foundation](http://apache.org).
+* Method names, selector syntax and some parts of documentation are inspired by the [jQuery](http://jquery.com/) library.
