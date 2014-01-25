@@ -52,7 +52,10 @@ Add following Maven dependency to your `pom.xml`:
 * [Basic ideas](https://github.com/Cognifide/Sling-Query/wiki/Basic-ideas)
 * [Method list](https://github.com/Cognifide/Sling-Query/wiki/Method-list)
 * [Selector syntax](https://github.com/Cognifide/Sling-Query/wiki/Selector-syntax)
-* [Modifier list](https://github.com/Cognifide/Sling-Query/wiki/Modifier-list)
+	* [Operator list](https://github.com/Cognifide/Sling-Query/wiki/Operator-list)
+	* [Modifier list](https://github.com/Cognifide/Sling-Query/wiki/Modifier-list)
+	* [Hierarchy operator list](https://github.com/Cognifide/Sling-Query/wiki/Hierarchy-operator-list)
+* [Examples](https://github.com/Cognifide/Sling-Query/wiki/Examples)
 
 ## External resources
 
