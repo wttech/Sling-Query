@@ -1,5 +1,5 @@
 package com.cognifide.sling.query.api;
 
-public enum TreeIteratorType {
+public enum SearchStrategy {
 	BFS, DFS;
 }

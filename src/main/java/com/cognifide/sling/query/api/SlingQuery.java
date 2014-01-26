@@ -142,7 +142,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param strategy strategy used to list descendants
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery find(String selector, TreeIteratorType strategy) {
+	public SlingQuery find(String selector, SearchStrategy strategy) {
 		return functionWithSelector(new FindFunction(strategy), selector);
 	}
 

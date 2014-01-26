@@ -4,20 +4,20 @@ import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.TreeIteratorType;
+import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.iterator.tree.BfsTreeIterator;
 import com.cognifide.sling.query.iterator.tree.DfsTreeIterator;
 
 public class FindFunction implements ResourceToIteratorFunction {
 
-	private final TreeIteratorType type;
+	private final SearchStrategy type;
 
 	public FindFunction() {
-		this(TreeIteratorType.DFS);
+		this(SearchStrategy.DFS);
 	}
 
-	public FindFunction(TreeIteratorType type) {
+	public FindFunction(SearchStrategy type) {
 		this.type = type;
 	}
 

@@ -9,7 +9,7 @@ import org.apache.sling.api.resource.Resource;
 import org.junit.Test;
 
 import com.cognifide.sling.query.api.SlingQuery;
-import com.cognifide.sling.query.api.TreeIteratorType;
+import com.cognifide.sling.query.api.SearchStrategy;
 
 public class FindTest {
 
@@ -46,7 +46,7 @@ public class FindTest {
 	@Test
 	public void testBfsFind() {
 		SlingQuery query = $(tree.getChild("application/configuration/labels"))
-				.find("", TreeIteratorType.BFS);
+				.find("", SearchStrategy.BFS);
 		assertResourceListEquals(query.iterator(), "jcr:content", "configParsys", "tab", "tab_0", "items",
 				"items", "localizedtext", "text", "text_0", "text", "lang");
 	}
@@ -54,7 +54,7 @@ public class FindTest {
 	@Test
 	public void testDfsFind() {
 		SlingQuery query = $(tree.getChild("application/configuration/labels"))
-				.find("", TreeIteratorType.DFS);
+				.find("", SearchStrategy.DFS);
 		assertResourceListEquals(query.iterator(), "jcr:content", "configParsys", "tab", "items",
 				"localizedtext", "lang", "text", "tab_0", "items", "text_0", "text");
 	}
