@@ -5,8 +5,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.sling.api.resource.Resource;
 import org.junit.Assert;
@@ -44,15 +45,20 @@ public final class TestUtils {
 	}
 
 	public static void assertResourceSetEquals(Iterator<Resource> iterator, String... names) {
-		List<String> namesSet = new LinkedList<String>(Arrays.asList(names));
+		Set<String> expectedSet = new LinkedHashSet<String>(Arrays.asList(names));
+		Set<String> actualSet = new LinkedHashSet<String>(getResourceNames(iterator));
+		Assert.assertEquals(expectedSet, actualSet);
+	}
+
+	public static void assertResourceListEquals(Iterator<Resource> iterator, String... names) {
+		Assert.assertEquals(Arrays.asList(names), getResourceNames(iterator));
+	}
+
+	private static List<String> getResourceNames(Iterator<Resource> iterator) {
+		List<String> resourceNames = new ArrayList<String>();
 		while (iterator.hasNext()) {
-			Resource resource = iterator.next();
-			if (!namesSet.remove(resource.getName())) {
-				Assert.fail(String.format("Unexpected resource %s", resource.getName()));
-			}
+			resourceNames.add(iterator.next().getName());
 		}
-		if (!namesSet.isEmpty()) {
-			Assert.fail("Following resources not found: " + namesSet.toString());
-		}
+		return resourceNames;
 	}
 }
