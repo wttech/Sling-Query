@@ -1,10 +1,12 @@
 package com.cognifide.sling.query.function;
 
+import java.util.Iterator;
+
 import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.api.ResourcePredicate;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
-import com.cognifide.sling.query.iterator.TreeIterator;
+import com.cognifide.sling.query.iterator.tree.DfsTreeIterator;
 
 public class HasFunction implements ResourceToResourceFunction {
 
@@ -16,7 +18,7 @@ public class HasFunction implements ResourceToResourceFunction {
 
 	@Override
 	public Resource apply(Resource input) {
-		TreeIterator iterator = new TreeIterator(input);
+		Iterator<Resource> iterator = new DfsTreeIterator(input);
 		while (iterator.hasNext()) {
 			if (predicate.accepts(iterator.next())) {
 				return input;

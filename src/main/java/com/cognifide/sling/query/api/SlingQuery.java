@@ -123,7 +123,7 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	/**
-	 * For each resource in collection use breadth-first search to return all its descendants. Please notice
+	 * For each resource in collection use depth-first search to return all its descendants. Please notice
 	 * that invoking this method on a resource being a root of a large subtree may and will cause performance
 	 * problems.
 	 * 
@@ -131,6 +131,19 @@ public class SlingQuery implements Iterable<Resource> {
 	 */
 	public SlingQuery find() {
 		return find("");
+	}
+
+	/**
+	 * For each resource in collection return all its descendants using given strategy. Please notice that
+	 * invoking this method on a resource being a root of a large subtree may and will cause performance
+	 * problems.
+	 * 
+	 * @param selector descendants filter
+	 * @param strategy strategy used to list descendants
+	 * @return a {@link SlingQuery} object transformed by this operation
+	 */
+	public SlingQuery find(String selector, TreeIteratorType strategy) {
+		return functionWithSelector(new FindFunction(strategy), selector);
 	}
 
 	/**
