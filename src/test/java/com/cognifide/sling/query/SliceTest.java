@@ -1,6 +1,6 @@
 package com.cognifide.sling.query;
 
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
@@ -24,19 +24,19 @@ public class SliceTest {
 	@Test
 	public void testSlice() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children().slice(2, 4);
-		assertResourceListEquals(query.iterator(), "configvalue_0", "configvalue_1", "configvalue_2");
+		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1", "configvalue_2");
 	}
 
 	@Test
 	public void testSliceOne() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children().slice(2, 2);
-		assertResourceListEquals(query.iterator(), "configvalue_0");
+		assertResourceSetEquals(query.iterator(), "configvalue_0");
 	}
 
 	@Test
 	public void testEq() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children().eq(2);
-		assertResourceListEquals(query.iterator(), "configvalue_0");
+		assertResourceSetEquals(query.iterator(), "configvalue_0");
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class SliceTest {
 	@Test
 	public void testFirst() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children().first();
-		assertResourceListEquals(query.iterator(), "richtext");
+		assertResourceSetEquals(query.iterator(), "richtext");
 	}
 
 	@Test
@@ -60,14 +60,14 @@ public class SliceTest {
 	@Test
 	public void testSliceAll() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children().slice(0, 4);
-		assertResourceListEquals(query.iterator(), "richtext", "configvalue", "configvalue_0",
+		assertResourceSetEquals(query.iterator(), "richtext", "configvalue", "configvalue_0",
 				"configvalue_1", "configvalue_2");
 	}
 
 	@Test
 	public void testSliceAllBigTo() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children().slice(0, 10);
-		assertResourceListEquals(query.iterator(), "richtext", "configvalue", "configvalue_0",
+		assertResourceSetEquals(query.iterator(), "richtext", "configvalue", "configvalue_0",
 				"configvalue_1", "configvalue_2");
 	}
 

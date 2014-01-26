@@ -1,6 +1,6 @@
 package com.cognifide.sling.query;
 
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -17,6 +17,6 @@ public class HasTest {
 	@Test
 	public void testHas() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children().has("demo/core/components/configValue");
-		assertResourceListEquals(query.iterator(), "labels");
+		assertResourceSetEquals(query.iterator(), "labels");
 	}
 }

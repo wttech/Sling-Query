@@ -1,7 +1,7 @@
 package com.cognifide.sling.query;
 
 import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -18,27 +18,27 @@ public class NextPrevUntilTest {
 	@Test
 	public void testNextUntil() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue")).nextUntil("[key=unknownKey]");
-		assertResourceListEquals(query.iterator(), "configvalue_0", "configvalue_1");
+		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1");
 	}
 
 	@Test
 	public void testPrevUntil() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).prevUntil("[key=helloWorld]");
-		assertResourceListEquals(query.iterator(), "configvalue_0", "configvalue_1");
+		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1");
 	}
 
 	@Test
 	public void testNextUntilFiltered() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue")).nextUntil("[key=unknownKey]",
 				"demo/core/components/configValue");
-		assertResourceListEquals(query.iterator(), "configvalue_0", "configvalue_1");
+		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1");
 	}
 
 	@Test
 	public void testPrevUntilFiltered() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).prevUntil("[key=helloWorld]",
 				"demo/core/components/configValue");
-		assertResourceListEquals(query.iterator(), "configvalue_0", "configvalue_1");
+		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1");
 	}
 
 	@Test
@@ -82,14 +82,14 @@ public class NextPrevUntilTest {
 	@Test
 	public void testNextUntilInvalid() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("richtext")).nextUntil("cq:Undefined");
-		assertResourceListEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1",
+		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1",
 				"configvalue_2");
 	}
 
 	@Test
 	public void testPrevUntilInvalid() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).prevUntil("cq:Undefined");
-		assertResourceListEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1",
+		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1",
 				"richtext");
 	}
 }

@@ -1,7 +1,7 @@
 package com.cognifide.sling.query;
 
 import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -16,7 +16,7 @@ public class AttributeOperatorTest {
 	@Test
 	public void testEquals() {
 		SlingQuery query = $(tree).children("cq:PageContent[jcr:title=CQ Commons demo]");
-		assertResourceListEquals(query.iterator(), "jcr:content");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
@@ -28,7 +28,7 @@ public class AttributeOperatorTest {
 	@Test
 	public void testContains() {
 		SlingQuery query = $(tree).children("cq:PageContent[jcr:title*=mmons de]");
-		assertResourceListEquals(query.iterator(), "jcr:content");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class AttributeOperatorTest {
 	@Test
 	public void testContainsWord() {
 		SlingQuery query = $(tree).children("cq:PageContent[jcr:title~=Commons]");
-		assertResourceListEquals(query.iterator(), "jcr:content");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class AttributeOperatorTest {
 	@Test
 	public void testEndsWith() {
 		SlingQuery query = $(tree).children("cq:PageContent[jcr:title$=demo]");
-		assertResourceListEquals(query.iterator(), "jcr:content");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class AttributeOperatorTest {
 	@Test
 	public void testNotEquals2() {
 		SlingQuery query = $(tree).children("cq:PageContent[jcr:title!=123]");
-		assertResourceListEquals(query.iterator(), "jcr:content");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class AttributeOperatorTest {
 	@Test
 	public void testStartsWith() {
 		SlingQuery query = $(tree).children("cq:PageContent[jcr:title^=CQ]");
-		assertResourceListEquals(query.iterator(), "jcr:content");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class AttributeOperatorTest {
 	@Test
 	public void testHas() {
 		SlingQuery query = $(tree).children("cq:PageContent[jcr:title]");
-		assertResourceListEquals(query.iterator(), "jcr:content");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class AttributeOperatorTest {
 	@Test
 	public void testMultipleAttributes() {
 		SlingQuery query = $(tree).children("cq:PageContent[jcr:title=CQ Commons demo][jcr:createdBy=admin]");
-		assertResourceListEquals(query.iterator(), "jcr:content");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test

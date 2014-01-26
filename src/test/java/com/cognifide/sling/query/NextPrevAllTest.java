@@ -1,7 +1,7 @@
 package com.cognifide.sling.query;
 
 import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -18,27 +18,27 @@ public class NextPrevAllTest {
 	@Test
 	public void testNextAll() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_0")).nextAll();
-		assertResourceListEquals(query.iterator(), "configvalue_1", "configvalue_2");
+		assertResourceSetEquals(query.iterator(), "configvalue_1", "configvalue_2");
 	}
 
 	@Test
 	public void testPrevAll() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_0")).prevAll();
-		assertResourceListEquals(query.iterator(), "richtext", "configvalue");
+		assertResourceSetEquals(query.iterator(), "richtext", "configvalue");
 	}
 
 	@Test
 	public void testNextAllFiltered() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue")).nextAll(
 				"demo/core/components/configValue");
-		assertResourceListEquals(query.iterator(), "configvalue_0", "configvalue_1", "configvalue_2");
+		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1", "configvalue_2");
 	}
 
 	@Test
 	public void testPrevAllFiltered() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_0")).prevAll(
 				"demo/core/components/richtext");
-		assertResourceListEquals(query.iterator(), "richtext");
+		assertResourceSetEquals(query.iterator(), "richtext");
 	}
 
 	@Test

@@ -1,7 +1,7 @@
 package com.cognifide.sling.query;
 
 import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -16,19 +16,19 @@ public class ChildrenTest {
 	@Test
 	public void testChildren() {
 		SlingQuery query = $(tree).children();
-		assertResourceListEquals(query.iterator(), "jcr:content", "application", "home");
+		assertResourceSetEquals(query.iterator(), "jcr:content", "application", "home");
 	}
 
 	@Test
 	public void testNameChildren() {
 		SlingQuery query = $(tree).children("cq:Page#application");
-		assertResourceListEquals(query.iterator(), "application");
+		assertResourceSetEquals(query.iterator(), "application");
 	}
 
 	@Test
 	public void testFilteredChildren() {
 		SlingQuery query = $(tree).children("cq:Page");
-		assertResourceListEquals(query.iterator(), "application", "home");
+		assertResourceSetEquals(query.iterator(), "application", "home");
 	}
 
 	@Test

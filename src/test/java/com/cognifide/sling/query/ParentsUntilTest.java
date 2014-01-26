@@ -1,6 +1,6 @@
 package com.cognifide.sling.query;
 
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -17,19 +17,19 @@ public class ParentsUntilTest {
 	@Test
 	public void testParentsUntilMatch() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).parentsUntil("cq:Page");
-		assertResourceListEquals(query.iterator(),  "jcr:content", "configParsys", "tab");
+		assertResourceSetEquals(query.iterator(),  "jcr:content", "configParsys", "tab");
 	}
 
 	@Test
 	public void testParentsUntilNoMatch() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).parentsUntil("cq:Undefined");
-		assertResourceListEquals(query.iterator(), "application", "configuration", "labels", "jcr:content", "configParsys", "tab", "/");
+		assertResourceSetEquals(query.iterator(), "application", "configuration", "labels", "jcr:content", "configParsys", "tab", "/");
 	}
 
 	@Test
 	public void testParentsUntilFromRoot() {
 		SlingQuery query = $(tree).parentsUntil("cq:Page", "cq:Undefined");
-		assertResourceListEquals(query.iterator());
+		assertResourceSetEquals(query.iterator());
 	}
 
 }

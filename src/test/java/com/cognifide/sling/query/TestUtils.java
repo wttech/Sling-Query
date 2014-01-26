@@ -43,7 +43,7 @@ public final class TestUtils {
 		}
 	}
 
-	public static void assertResourceListEquals(Iterator<Resource> iterator, String... names) {
+	public static void assertResourceSetEquals(Iterator<Resource> iterator, String... names) {
 		List<String> namesSet = new LinkedList<String>(Arrays.asList(names));
 		while (iterator.hasNext()) {
 			Resource resource = iterator.next();

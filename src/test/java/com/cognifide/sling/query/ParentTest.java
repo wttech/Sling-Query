@@ -1,7 +1,7 @@
 package com.cognifide.sling.query;
 
 import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -16,7 +16,7 @@ public class ParentTest {
 	@Test
 	public void testParent() {
 		SlingQuery query = $(tree.getChild("application/configuration/labels")).parent();
-		assertResourceListEquals(query.iterator(), "configuration");
+		assertResourceSetEquals(query.iterator(), "configuration");
 	}
 
 	@Test

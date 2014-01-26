@@ -1,13 +1,14 @@
 package com.cognifide.sling.query;
 
 import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
 import org.junit.Test;
 
 import com.cognifide.sling.query.api.SlingQuery;
+import com.cognifide.sling.query.api.TreeIteratorType;
 
 public class FindTest {
 
@@ -16,7 +17,7 @@ public class FindTest {
 	@Test
 	public void testFind() {
 		SlingQuery query = $(tree.getChild("application/configuration/labels")).find();
-		assertResourceListEquals(query.iterator(), "jcr:content", "configParsys", "tab", "tab_0", "items",
+		assertResourceSetEquals(query.iterator(), "jcr:content", "configParsys", "tab", "tab_0", "items",
 				"items", "localizedtext", "text", "text_0", "text", "lang");
 	}
 
@@ -24,7 +25,7 @@ public class FindTest {
 	public void testFindWithFilter() {
 		SlingQuery query = $(tree.getChild("application/configuration/labels")).find(
 				"cq-commons/config/components/text");
-		assertResourceListEquals(query.iterator(), "text", "text");
+		assertResourceSetEquals(query.iterator(), "text", "text");
 	}
 
 	@Test

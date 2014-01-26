@@ -1,7 +1,7 @@
 package com.cognifide.sling.query;
 
 import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -18,7 +18,7 @@ public class ClosestTest {
 	@Test
 	public void testClosest() {
 		SlingQuery query = $(tree.getChild(PATH)).closest("cq:Page");
-		assertResourceListEquals(query.iterator(), "labels");
+		assertResourceSetEquals(query.iterator(), "labels");
 	}
 
 	@Test
@@ -30,6 +30,6 @@ public class ClosestTest {
 	@Test
 	public void testClosestOnRoot() {
 		SlingQuery query = $(tree).closest("cq:Page");
-		assertResourceListEquals(query.iterator(), "/");
+		assertResourceSetEquals(query.iterator(), "/");
 	}
 }

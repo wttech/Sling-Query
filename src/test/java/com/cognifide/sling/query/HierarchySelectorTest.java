@@ -1,6 +1,6 @@
 package com.cognifide.sling.query;
 
-import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -15,25 +15,25 @@ public class HierarchySelectorTest {
 	@Test
 	public void testChildrenWithAttribute() {
 		SlingQuery query = $(tree.getChild("home")).children("cq:Page > cq:PageContent[jcr:title=Java]");
-		assertResourceListEquals(query.iterator(), "jcr:content");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testDescendant() {
 		SlingQuery query = $(tree.getChild("home")).children(
 				"cq:Page [jcr:title=E-mail] demo/core/components/richtext");
-		assertResourceListEquals(query.iterator(), "richtext");
+		assertResourceSetEquals(query.iterator(), "richtext");
 	}
 
 	@Test
 	public void testNextAdjacent() {
 		SlingQuery query = $(tree).children("cq:PageContent + cq:Page");
-		assertResourceListEquals(query.iterator(), "application");
+		assertResourceSetEquals(query.iterator(), "application");
 	}
 
 	@Test
 	public void testNextSiblings() {
 		SlingQuery query = $(tree).children("cq:PageContent ~ cq:Page");
-		assertResourceListEquals(query.iterator(), "application", "home");
+		assertResourceSetEquals(query.iterator(), "application", "home");
 	}
 }
