@@ -2,6 +2,7 @@ package com.cognifide.sling.query;
 
 import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
 import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
+import static com.cognifide.sling.query.TestUtils.assertResourceListEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import org.apache.sling.api.resource.Resource;
@@ -40,5 +41,21 @@ public class FindTest {
 	public void testEmptyFind() {
 		SlingQuery query = $(tree.getChild("application/configuration/labels")).find("cq:Undefined");
 		assertEmptyIterator(query.iterator());
+	}
+
+	@Test
+	public void testBfsFind() {
+		SlingQuery query = $(tree.getChild("application/configuration/labels"))
+				.find("", TreeIteratorType.BFS);
+		assertResourceListEquals(query.iterator(), "jcr:content", "configParsys", "tab", "tab_0", "items",
+				"items", "localizedtext", "text", "text_0", "text", "lang");
+	}
+
+	@Test
+	public void testDfsFind() {
+		SlingQuery query = $(tree.getChild("application/configuration/labels"))
+				.find("", TreeIteratorType.DFS);
+		assertResourceListEquals(query.iterator(), "jcr:content", "configParsys", "tab", "items",
+				"localizedtext", "lang", "text", "tab_0", "items", "text_0", "text");
 	}
 }
