@@ -40,7 +40,7 @@ public class AdaptToIterator<T> implements Iterator<T> {
 		while (iterator.hasNext()) {
 			currentModel = iterator.next().adaptTo(clazz);
 			if (currentModel != null) {
-				continue;
+				break;
 			}
 		}
 	}
