@@ -41,7 +41,6 @@
 		<sling.url>http://localhost:4502</sling.url>
 		<sling.username>admin</sling.username>
 		<sling.password>admin</sling.password>
-		<gpg.skip>true</gpg.skip>
 	</properties>
 
 	<organization>
