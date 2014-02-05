@@ -8,17 +8,21 @@ import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.iterator.tree.BfsTreeIterator;
 import com.cognifide.sling.query.iterator.tree.DfsTreeIterator;
+import com.cognifide.sling.query.iterator.tree.JcrTreeIterator;
 
 public class FindFunction implements ResourceToIteratorFunction {
 
 	private final SearchStrategy type;
 
+	private final String selector;
+
 	public FindFunction() {
-		this(SearchStrategy.DFS);
+		this(null, SearchStrategy.DFS);
 	}
 
-	public FindFunction(SearchStrategy type) {
+	public FindFunction(String selector, SearchStrategy type) {
 		this.type = type;
+		this.selector = selector;
 	}
 
 	@Override
@@ -26,6 +30,8 @@ public class FindFunction implements ResourceToIteratorFunction {
 		switch (type) {
 			case BFS:
 				return new BfsTreeIterator(resource);
+			case JCR:
+				return new JcrTreeIterator(selector, resource);
 			case DFS:
 			default:
 				return new DfsTreeIterator(resource);

@@ -10,6 +10,11 @@ public enum SelectorOperator {
 		public boolean accepts(String property, String value) {
 			return StringUtils.contains(property, value);
 		}
+
+		@Override
+		public String getJcrQueryFragment(String key, String value) {
+			return String.format("s.[%s] LIKE '%%%s%%'", key, value);
+		}
 	},
 	CONTAINS_WORD("~=") {
 		@Override
@@ -18,11 +23,21 @@ public enum SelectorOperator {
 			String regex = String.format("(^| )%s( |$)", quoted);
 			return property != null && Pattern.compile(regex).matcher(property).find();
 		}
+
+		@Override
+		public String getJcrQueryFragment(String key, String value) {
+			return CONTAINS.getJcrQueryFragment(key, value);
+		}
 	},
 	ENDS_WITH("$=") {
 		@Override
 		public boolean accepts(String property, String value) {
 			return StringUtils.endsWith(property, value);
+		}
+
+		@Override
+		public String getJcrQueryFragment(String key, String value) {
+			return String.format("s.[%s] LIKE '%%%s'", key, value);
 		}
 	},
 	EQUALS("=") {
@@ -30,17 +45,32 @@ public enum SelectorOperator {
 		public boolean accepts(String property, String value) {
 			return StringUtils.equals(property, value);
 		}
+
+		@Override
+		public String getJcrQueryFragment(String key, String value) {
+			return String.format("s.[%s] = '%s'", key, value);
+		}
 	},
 	NOT_EQUAL("!=") {
 		@Override
 		public boolean accepts(String property, String value) {
 			return !StringUtils.equals(property, value);
 		}
+
+		@Override
+		public String getJcrQueryFragment(String key, String value) {
+			return String.format("s.[%s] != '%s'", key, value);
+		}
 	},
 	STARTS_WITH("^=") {
 		@Override
 		public boolean accepts(String property, String value) {
 			return StringUtils.startsWith(property, value);
+		}
+
+		@Override
+		public String getJcrQueryFragment(String key, String value) {
+			return String.format("s.[%s] LIKE '%s%%'", key, value);
 		}
 	};
 
@@ -51,6 +81,8 @@ public enum SelectorOperator {
 	}
 
 	public abstract boolean accepts(String key, String value);
+
+	public abstract String getJcrQueryFragment(String key, String value);
 
 	public static SelectorOperator getSelectorOperator(String operator) {
 		for (SelectorOperator o : values()) {

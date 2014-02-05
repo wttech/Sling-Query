@@ -1,5 +1,6 @@
 package com.cognifide.sling.query.predicate;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.sling.api.resource.Resource;
@@ -29,6 +30,10 @@ public class PropertyPredicate implements ResourcePredicate {
 		} else {
 			return operator.accepts(property.adaptTo(String.class), value);
 		}
+	}
+
+	public String toJcrString() {
+		return operator.getJcrQueryFragment(key, StringUtils.replace(value, "'", "''"));
 	}
 
 	public String toString() {

@@ -154,7 +154,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery find(String selector, SearchStrategy strategy) {
-		return functionWithSelector(new FindFunction(strategy), selector);
+		return functionWithSelector(new FindFunction(selector, strategy), selector);
 	}
 
 	/**
