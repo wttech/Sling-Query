@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.sling.api.adapter.Adaptable;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.FunctionWithSelector;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
@@ -49,6 +50,16 @@ public class SlingQuery implements Iterable<Resource> {
 	 */
 	public static SlingQuery $(Resource... resources) {
 		return new SlingQuery(resources);
+	}
+
+	/**
+	 * Create a new SlingQuery object, using repository root / as an initial collection.
+	 * 
+	 * @param resourceResolver Sling resource resolver
+	 * @return New SlingQuery object.
+	 */
+	public static SlingQuery $(ResourceResolver resolver) {
+		return new SlingQuery(resolver.getResource("/"));
 	}
 
 	private SlingQuery(Resource... resources) {
