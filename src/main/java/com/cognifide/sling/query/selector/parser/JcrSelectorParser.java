@@ -34,6 +34,7 @@ public final class JcrSelectorParser {
 		} else {
 			query.append(" [nt:base]");
 		}
+		query.append(" AS s");
 		List<String> conditions = prepareConditions(rootPath, resourceType, resourceName, attributes);
 		if (!conditions.isEmpty()) {
 			query.append(" WHERE ").append(conditions.remove(0));
