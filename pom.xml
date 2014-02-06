@@ -112,7 +112,7 @@
 					<bundleFileName>${project.build.directory}/${project.build.finalName}.jar</bundleFileName>
 					<user>${sling.username}</user>
 					<password>${sling.password}</password>
-					<slingUrl>${sling.url}</slingUrl>
+					<slingUrl>${sling.url}/system/console</slingUrl>
 				</configuration>
 			</plugin>
 		</plugins>
