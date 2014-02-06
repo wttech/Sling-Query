@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.predicate.FunctionPredicate;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
@@ -17,11 +18,11 @@ public class Selector implements IteratorToIteratorFunction {
 
 	private final List<SelectorSegment> segments;
 
-	public Selector(String selectorString) {
+	public Selector(String selectorString, SearchStrategy strategy) {
 		if (StringUtils.isBlank(selectorString)) {
 			segments = Collections.emptyList();
 		} else {
-			segments = SelectorParser.parse(selectorString).getSegments();
+			segments = SelectorParser.parse(selectorString, strategy).getSegments();
 		}
 	}
 

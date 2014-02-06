@@ -10,6 +10,7 @@ import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.IteratorFactory;
 import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
@@ -26,7 +27,9 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 
 	private final HierarchyOperator hierarchyOperator;
 
-	public SelectorSegment(ParserContext context, boolean firstSegment) {
+	private final SearchStrategy strategy;
+
+	public SelectorSegment(ParserContext context, boolean firstSegment, SearchStrategy strategy) {
 		this.resourceType = context.getResourceType();
 		this.resourceName = context.getResourceName();
 		this.attributes = new ArrayList<PropertyPredicate>(context.getAttributes());
@@ -36,15 +39,17 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 		} else {
 			hierarchyOperator = HierarchyOperator.findByCharacter(context.getHierarchyOperator());
 		}
+		this.strategy = strategy;
 	}
 
 	SelectorSegment(String resourceType, String resourceName, List<PropertyPredicate> attributes,
-			List<SelectorFunction> functions, char hierarchyOperator) {
+			List<SelectorFunction> functions, char hierarchyOperator, SearchStrategy strategy) {
 		this.resourceType = resourceType;
 		this.resourceName = resourceName;
 		this.attributes = attributes;
 		this.functions = functions;
 		this.hierarchyOperator = HierarchyOperator.findByCharacter(hierarchyOperator);
+		this.strategy = strategy;
 	}
 
 	@Override
@@ -52,7 +57,7 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 		Iterator<Resource> iterator = applyHierarchyOperator(input);
 		iterator = new FilteringIteratorWrapper(iterator, getFilter());
 		for (SelectorFunction f : functions) {
-			iterator = IteratorFactory.getIterator(f.function(), iterator);
+			iterator = IteratorFactory.getIterator(f.function(strategy), iterator);
 		}
 		return iterator;
 	}
@@ -77,7 +82,7 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 		if (hierarchyOperator == null) {
 			return input;
 		} else {
-			return IteratorFactory.getIterator(hierarchyOperator.getFunction(), input);
+			return IteratorFactory.getIterator(hierarchyOperator.getFunction(strategy), input);
 		}
 	}
 

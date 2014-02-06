@@ -45,16 +45,16 @@ public class FindTest {
 
 	@Test
 	public void testBfsFind() {
-		SlingQuery query = $(tree.getChild("application/configuration/labels"))
-				.find("", SearchStrategy.BFS);
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).searchStrategy(
+				SearchStrategy.BFS).find("");
 		assertResourceListEquals(query.iterator(), "jcr:content", "configParsys", "tab", "tab_0", "items",
 				"items", "localizedtext", "text", "text_0", "text", "lang");
 	}
 
 	@Test
 	public void testDfsFind() {
-		SlingQuery query = $(tree.getChild("application/configuration/labels"))
-				.find("", SearchStrategy.DFS);
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).searchStrategy(
+				SearchStrategy.DFS).find("");
 		assertResourceListEquals(query.iterator(), "jcr:content", "configParsys", "tab", "items",
 				"localizedtext", "lang", "text", "tab_0", "items", "text_0", "text");
 	}

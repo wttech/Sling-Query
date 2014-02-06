@@ -3,6 +3,7 @@ package com.cognifide.sling.query.selector;
 import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.api.Function;
+import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 import com.cognifide.sling.query.function.EvenFunction;
 import com.cognifide.sling.query.function.HasFunction;
@@ -13,44 +14,44 @@ import com.cognifide.sling.query.function.SliceFunction;
 public enum FunctionType {
 	EQ {
 		@Override
-		public Function<?, ?> getFunction(String argument) {
+		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
 			int index = Integer.parseInt(argument);
 			return new SliceFunction(index, index);
 		}
 	},
 	FIRST {
 		@Override
-		public Function<?, ?> getFunction(String argument) {
+		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
 			return new SliceFunction(0, 0);
 		}
 	},
 	LAST {
 		@Override
-		public Function<?, ?> getFunction(String argument) {
+		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
 			return new LastFunction();
 		}
 	},
 	GT {
 		@Override
-		public Function<?, ?> getFunction(String argument) {
+		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
 			return new SliceFunction(Integer.valueOf(argument) + 1);
 		}
 	},
 	LT {
 		@Override
-		public Function<?, ?> getFunction(String argument) {
+		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
 			return new SliceFunction(0, Integer.valueOf(argument) - 1);
 		}
 	},
 	HAS {
 		@Override
-		public Function<?, ?> getFunction(String selector) {
-			return new HasFunction(new Selector(selector).asPredicate());
+		public Function<?, ?> getFunction(String selector, SearchStrategy strategy) {
+			return new HasFunction(selector, strategy);
 		}
 	},
 	PARENT {
 		@Override
-		public Function<?, ?> getFunction(String selector) {
+		public Function<?, ?> getFunction(String selector, SearchStrategy strategy) {
 			return new ResourceToResourceFunction() {
 				@Override
 				public Resource apply(Resource resource) {
@@ -65,7 +66,7 @@ public enum FunctionType {
 	},
 	EMPTY {
 		@Override
-		public Function<?, ?> getFunction(String argument) {
+		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
 			return new ResourceToResourceFunction() {
 				@Override
 				public Resource apply(Resource resource) {
@@ -79,22 +80,22 @@ public enum FunctionType {
 	},
 	ODD {
 		@Override
-		public Function<?, ?> getFunction(String argument) {
+		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
 			return new EvenFunction(false);
 		}
 	},
 	EVEN {
 		@Override
-		public Function<?, ?> getFunction(String argument) {
+		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
 			return new EvenFunction(true);
 		}
 	},
 	NOT {
 		@Override
-		public Function<?, ?> getFunction(String argument) {
-			return new NotFunction(new Selector(argument));
+		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
+			return new NotFunction(new Selector(argument, strategy));
 		}
 	};
 
-	public abstract Function<?, ?> getFunction(String argument);
+	public abstract Function<?, ?> getFunction(String argument, SearchStrategy strategy);
 }

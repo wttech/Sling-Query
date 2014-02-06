@@ -3,9 +3,12 @@ package com.cognifide.sling.query.selector.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
 
 public class ParserContext {
+	private final SearchStrategy strategy;
+
 	private final List<SelectorSegment> segments = new ArrayList<SelectorSegment>();
 
 	private final List<PropertyPredicate> attributes = new ArrayList<PropertyPredicate>();
@@ -31,6 +34,10 @@ public class ParserContext {
 	private String currentFunctionName;
 
 	private int parenthesesCount = 0;
+
+	ParserContext(SearchStrategy strategy) {
+		this.strategy = strategy;
+	}
 
 	List<PropertyPredicate> getAttributes() {
 		return attributes;
@@ -122,7 +129,7 @@ public class ParserContext {
 	}
 
 	void finishSelectorSegment() {
-		segments.add(new SelectorSegment(this, segments.isEmpty()));
+		segments.add(new SelectorSegment(this, segments.isEmpty(), strategy));
 		attributes.clear();
 		functions.clear();
 		hierarchyOperator = 0;

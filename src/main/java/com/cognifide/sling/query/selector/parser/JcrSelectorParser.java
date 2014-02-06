@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
 
 public final class JcrSelectorParser {
@@ -14,7 +15,8 @@ public final class JcrSelectorParser {
 	}
 
 	public static String parse(String selector, String rootPath) {
-		ParserContext context = SelectorParser.parse(selector);
+		ParserContext context = SelectorParser.parse(selector, SearchStrategy.DFS); // search strategy is not
+																					// used here
 		if (context.getSegments().isEmpty()) {
 			return prepareQuery(rootPath, null, null, Collections.<PropertyPredicate> emptyList());
 		} else {

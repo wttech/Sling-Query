@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
 import com.cognifide.sling.query.selector.parser.SelectorFunction;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
@@ -198,19 +199,20 @@ public class SelectorTest {
 
 	@Test
 	public void parseMultiSegments() {
-		List<SelectorSegment> segments = SelectorParser.parse("cq:Page cq:Page").getSegments();
+		List<SelectorSegment> segments = SelectorParser.parse("cq:Page cq:Page", SearchStrategy.DFS)
+				.getSegments();
 		Assert.assertEquals(getSegments("cq:Page", " ", "cq:Page"), segments);
 
-		segments = SelectorParser.parse("cq:Page > cq:Page").getSegments();
+		segments = SelectorParser.parse("cq:Page > cq:Page", SearchStrategy.DFS).getSegments();
 		Assert.assertEquals(getSegments("cq:Page", ">", "cq:Page"), segments);
 
-		segments = SelectorParser.parse("cq:Page ~ cq:Page").getSegments();
+		segments = SelectorParser.parse("cq:Page ~ cq:Page", SearchStrategy.DFS).getSegments();
 		Assert.assertEquals(getSegments("cq:Page", "~", "cq:Page"), segments);
 
-		segments = SelectorParser.parse("cq:Page + cq:Page").getSegments();
+		segments = SelectorParser.parse("cq:Page + cq:Page", SearchStrategy.DFS).getSegments();
 		Assert.assertEquals(getSegments("cq:Page", "+", "cq:Page"), segments);
 
-		segments = SelectorParser.parse("cq:Page   cq:Page2 +  cq:Page3").getSegments();
+		segments = SelectorParser.parse("cq:Page   cq:Page2 +  cq:Page3", SearchStrategy.DFS).getSegments();
 		Assert.assertEquals(getSegments("cq:Page", " ", "cq:Page2", "+", "cq:Page3"), segments);
 	}
 
@@ -223,7 +225,7 @@ public class SelectorTest {
 	}
 
 	private static SelectorSegment getFirstSegment(String selector) {
-		return SelectorParser.parse(selector).getSegments().get(0);
+		return SelectorParser.parse(selector, SearchStrategy.DFS).getSegments().get(0);
 	}
 
 	private static List<SelectorSegment> getSegments(String... segments) {
@@ -232,10 +234,11 @@ public class SelectorTest {
 			list.add(getFirstSegment(segments[0]));
 		}
 		for (int i = 1; i < segments.length; i += 2) {
-			SelectorSegment parsed = SelectorParser.parse(segments[i + 1]).getSegments().get(0);
+			SelectorSegment parsed = SelectorParser.parse(segments[i + 1], SearchStrategy.DFS).getSegments()
+					.get(0);
 			char operator = segments[i].charAt(0);
 			SelectorSegment segment = new SelectorSegment(parsed.getResourceType(), null,
-					parsed.getAttributes(), parsed.getFunctions(), operator);
+					parsed.getAttributes(), parsed.getFunctions(), operator, SearchStrategy.DFS);
 			list.add(segment);
 		}
 		return list;

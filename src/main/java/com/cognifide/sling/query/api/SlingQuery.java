@@ -42,6 +42,8 @@ public class SlingQuery implements Iterable<Resource> {
 
 	private final List<Resource> resources;
 
+	private final SearchStrategy searchStrategy;
+
 	/**
 	 * Create a new SlingQuery object, using passed resources as an initial collection.
 	 * 
@@ -64,11 +66,17 @@ public class SlingQuery implements Iterable<Resource> {
 
 	private SlingQuery(Resource... resources) {
 		this.resources = Arrays.asList(resources);
+		this.searchStrategy = SearchStrategy.DFS;
 	}
 
 	private SlingQuery(SlingQuery original) {
+		this(original, original.searchStrategy);
+	}
+
+	private SlingQuery(SlingQuery original, SearchStrategy searchStrategy) {
 		this.functions.addAll(original.functions);
 		this.resources = new ArrayList<Resource>(original.resources);
+		this.searchStrategy = searchStrategy;
 	}
 
 	/**
@@ -110,7 +118,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery closest(String selector) {
-		return functionWithSelector(new ClosestFunction(new Selector(selector)), "");
+		return functionWithSelector(new ClosestFunction(new Selector(selector, searchStrategy)), "");
 	}
 
 	/**
@@ -145,19 +153,6 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	/**
-	 * For each resource in collection return all its descendants using given strategy. Please notice that
-	 * invoking this method on a resource being a root of a large subtree may and will cause performance
-	 * problems.
-	 * 
-	 * @param selector descendants filter
-	 * @param strategy strategy used to list descendants
-	 * @return a {@link SlingQuery} object transformed by this operation
-	 */
-	public SlingQuery find(String selector, SearchStrategy strategy) {
-		return functionWithSelector(new FindFunction(selector, strategy), selector);
-	}
-
-	/**
 	 * For each resource in collection use breadth-first search to return all its descendants. Please notice
 	 * that invoking this method on a resource being a root of a large subtree may and will cause performance
 	 * problems.
@@ -166,7 +161,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery find(String selector) {
-		return functionWithSelector(new FindFunction(), selector);
+		return functionWithSelector(new FindFunction(selector, searchStrategy), selector);
 	}
 
 	/**
@@ -188,7 +183,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery functionWithSelector(Function<?, ?> function, String selector) {
-		return function(new FunctionWithSelector(function, selector));
+		return function(new FunctionWithSelector(function, selector, searchStrategy));
 	}
 
 	/**
@@ -198,7 +193,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery has(String selector) {
-		return functionWithSelector(new HasFunction(new Selector(selector).asPredicate()), "");
+		return functionWithSelector(new HasFunction(selector, searchStrategy), "");
 	}
 
 	/**
@@ -286,7 +281,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery nextUntil(String until, String selector) {
-		return functionWithSelector(new NextFunction(new Selector(until).asPredicate()), selector);
+		return functionWithSelector(new NextFunction(new Selector(until, searchStrategy).asPredicate()),
+				selector);
 	}
 
 	/**
@@ -298,7 +294,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery not(String selector) {
-		return functionWithSelector(new NotFunction(new Selector(selector)), "");
+		return functionWithSelector(new NotFunction(new Selector(selector, searchStrategy)), "");
 	}
 
 	/**
@@ -336,7 +332,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery parentsUntil(String until) {
-		return functionWithSelector(new ParentsFunction(new Selector(until).asPredicate()), "");
+		return functionWithSelector(new ParentsFunction(new Selector(until, searchStrategy).asPredicate()),
+				"");
 	}
 
 	/**
@@ -348,7 +345,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery parentsUntil(String until, String selector) {
-		return functionWithSelector(new ParentsFunction(new Selector(until).asPredicate()), selector);
+		return functionWithSelector(new ParentsFunction(new Selector(until, searchStrategy).asPredicate()),
+				selector);
 	}
 
 	/**
@@ -410,7 +408,19 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery prevUntil(String until, String selector) {
-		return functionWithSelector(new PrevFunction(new Selector(until).asPredicate()), selector);
+		return functionWithSelector(new PrevFunction(new Selector(until, searchStrategy).asPredicate()),
+				selector);
+	}
+
+	/**
+	 * Set new search strategy, which will be used in {@link SlingQuery#find()} and
+	 * {@link SlingQuery#has(String)} functions.
+	 * 
+	 * @param strategy Search strategy type
+	 * @return a {@link SlingQuery} object transformed by this operation
+	 */
+	public SlingQuery searchStrategy(SearchStrategy strategy) {
+		return new SlingQuery(this, strategy);
 	}
 
 	/**
