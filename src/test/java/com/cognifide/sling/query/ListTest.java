@@ -4,6 +4,7 @@ import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.sling.api.resource.Resource;
 import org.junit.Assert;
@@ -17,6 +18,17 @@ public class ListTest {
 	public void testIterator() {
 		List<Resource> list = $(tree).children().asList();
 		assertResourceSetEquals(list.iterator(), "jcr:content", "application", "home");
+	}
+	
+	@Test
+	public void testListIterator() {
+		ListIterator<Resource> iterator = $(tree).children().asList().listIterator();
+		Assert.assertEquals("jcr:content", iterator.next().getName());
+		Assert.assertEquals("application", iterator.next().getName());
+		Assert.assertEquals("home", iterator.next().getName());
+		Assert.assertEquals("home", iterator.previous().getName());
+		Assert.assertEquals("application", iterator.previous().getName());
+		Assert.assertEquals("jcr:content", iterator.previous().getName());
 	}
 
 	@Test

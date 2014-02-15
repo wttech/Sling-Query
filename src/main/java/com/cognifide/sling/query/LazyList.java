@@ -9,8 +9,16 @@ import java.util.NoSuchElementException;
 
 public class LazyList<E> implements List<E> {
 
-	private final class LazyListIterator implements Iterator<E> {
+	private final class LazyListIterator implements ListIterator<E> {
 		private int index = 0;
+
+		private LazyListIterator() {
+			this.index = 0;
+		}
+
+		private LazyListIterator(int index) {
+			this.index = index;
+		}
 
 		@Override
 		public boolean hasNext() {
@@ -27,7 +35,41 @@ public class LazyList<E> implements List<E> {
 		}
 
 		@Override
+		public boolean hasPrevious() {
+			return index > 0;
+		}
+
+		@Override
+		public E previous() {
+			if (!hasPrevious()) {
+				throw new NoSuchElementException();
+			}
+			fillToSize(index);
+			return arrayList.get(--index);
+		}
+
+		@Override
+		public int nextIndex() {
+			return index;
+		}
+
+		@Override
+		public int previousIndex() {
+			return index - 1;
+		}
+
+		@Override
 		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void set(E e) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void add(E e) {
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -138,14 +180,12 @@ public class LazyList<E> implements List<E> {
 
 	@Override
 	public ListIterator<E> listIterator() {
-		fillAll();
-		return arrayList.listIterator();
+		return new LazyListIterator();
 	}
 
 	@Override
 	public ListIterator<E> listIterator(int index) {
-		fillAll();
-		return arrayList.listIterator(index);
+		return new LazyListIterator(index);
 	}
 
 	@Override
