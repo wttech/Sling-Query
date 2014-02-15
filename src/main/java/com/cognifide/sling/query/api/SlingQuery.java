@@ -93,7 +93,7 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	/**
-	 * Transform SlingQuery collection to list.
+	 * Transform SlingQuery collection into a lazy list.
 	 * 
 	 * @return List containing all elements from the collection.
 	 */
