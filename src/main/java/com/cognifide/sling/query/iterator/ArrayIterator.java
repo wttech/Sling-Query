@@ -1,23 +1,21 @@
 package com.cognifide.sling.query.iterator;
 
-import org.apache.sling.api.resource.Resource;
+public class ArrayIterator<T> extends AbstractIterator<T> {
 
-public class ArrayIterator extends AbstractResourceIterator {
-
-	private final Resource[] resources;
+	private final T[] elements;
 
 	private int index = 0;
 
-	public ArrayIterator(Resource... resources) {
-		this.resources = resources;
+	public ArrayIterator(T... elements) {
+		this.elements = elements;
 	}
 
 	@Override
-	protected Resource getResource() {
-		if (index >= resources.length) {
+	protected T getElement() {
+		if (index >= elements.length) {
 			return null;
 		} else {
-			return resources[index++];
+			return elements[index++];
 		}
 	}
 

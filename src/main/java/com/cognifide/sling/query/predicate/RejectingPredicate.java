@@ -1,24 +1,22 @@
 package com.cognifide.sling.query.predicate;
 
-import org.apache.sling.api.resource.Resource;
+import com.cognifide.sling.query.api.Predicate;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+public class RejectingPredicate<T> implements Predicate<T> {
 
-public class RejectingPredicate implements ResourcePredicate {
-
-	private final ResourcePredicate predicate;
+	private final Predicate<T> predicate;
 
 	public RejectingPredicate() {
-		this(new AcceptingPredicate());
+		this(new AcceptingPredicate<T>());
 	}
 
-	public RejectingPredicate(ResourcePredicate predicate) {
+	public RejectingPredicate(Predicate<T> predicate) {
 		this.predicate = predicate;
 	}
 
 	@Override
-	public boolean accepts(Resource resource) {
-		return !predicate.accepts(resource);
+	public boolean accepts(T value) {
+		return !predicate.accepts(value);
 	}
 
 }

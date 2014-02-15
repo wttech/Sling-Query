@@ -9,7 +9,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.IteratorFactory;
-import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
@@ -55,7 +55,7 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 	@Override
 	public Iterator<Resource> apply(Iterator<Resource> input) {
 		Iterator<Resource> iterator = applyHierarchyOperator(input);
-		iterator = new FilteringIteratorWrapper(iterator, getFilter());
+		iterator = new FilteringIteratorWrapper<Resource>(iterator, getFilter());
 		for (SelectorFunction f : functions) {
 			iterator = IteratorFactory.getIterator(f.function(strategy), iterator);
 		}
@@ -86,7 +86,7 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 		}
 	}
 
-	private ResourcePredicate getFilter() {
+	private Predicate<Resource> getFilter() {
 		return new SelectorFilterPredicate(resourceType, resourceName, attributes);
 	}
 

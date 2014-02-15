@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
 
@@ -18,10 +18,10 @@ public class EvenFunction implements IteratorToIteratorFunction {
 
 	@Override
 	public Iterator<Resource> apply(Iterator<Resource> resources) {
-		return new FilteringIteratorWrapper(resources, new EvenPredicate(even));
+		return new FilteringIteratorWrapper<Resource>(resources, new EvenPredicate<Resource>(even));
 	}
 
-	private static class EvenPredicate implements ResourcePredicate {
+	private static class EvenPredicate<T> implements Predicate<T> {
 
 		private boolean accept;
 
@@ -30,7 +30,7 @@ public class EvenFunction implements IteratorToIteratorFunction {
 		}
 
 		@Override
-		public boolean accepts(Resource resource) {
+		public boolean accepts(T element) {
 			boolean oldAccept = accept;
 			accept = !accept;
 			return oldAccept;

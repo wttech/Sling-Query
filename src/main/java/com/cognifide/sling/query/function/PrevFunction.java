@@ -7,16 +7,16 @@ import java.util.List;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.iterator.ArrayIterator;
 import com.cognifide.sling.query.iterator.EmptyIterator;
 
 public class PrevFunction implements ResourceToIteratorFunction {
 
-	private final ResourcePredicate until;
+	private final Predicate<Resource> until;
 
-	public PrevFunction(ResourcePredicate until) {
+	public PrevFunction(Predicate<Resource> until) {
 		this.until = until;
 	}
 
@@ -29,7 +29,7 @@ public class PrevFunction implements ResourceToIteratorFunction {
 		}
 		if (until == null) {
 			Resource prev = prevSiblings.get(prevSiblings.size() - 1);
-			return new ArrayIterator(prev);
+			return new ArrayIterator<Resource>(prev);
 		} else {
 			return prevSiblings.iterator();
 		}
@@ -54,7 +54,7 @@ public class PrevFunction implements ResourceToIteratorFunction {
 		return prevResources;
 	}
 
-	private static List<Resource> subListAfterLast(List<Resource> resources, ResourcePredicate selector) {
+	private static List<Resource> subListAfterLast(List<Resource> resources, Predicate<Resource> selector) {
 		if (selector != null) {
 			int i;
 			for (i = resources.size() - 1; i >= 0; i--) {

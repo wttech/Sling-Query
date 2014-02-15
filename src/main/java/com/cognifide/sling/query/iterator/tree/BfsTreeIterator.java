@@ -6,9 +6,9 @@ import java.util.LinkedList;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.iterator.AbstractResourceIterator;
+import com.cognifide.sling.query.iterator.AbstractIterator;
 
-public class BfsTreeIterator extends AbstractResourceIterator {
+public class BfsTreeIterator extends AbstractIterator<Resource> {
 
 	private final Deque<Resource> queue = new LinkedList<Resource>();
 
@@ -19,7 +19,7 @@ public class BfsTreeIterator extends AbstractResourceIterator {
 	}
 
 	@Override
-	protected Resource getResource() {
+	protected Resource getElement() {
 		if (currentIterator.hasNext()) {
 			Resource resource = currentIterator.next();
 			queue.add(resource);
@@ -28,7 +28,7 @@ public class BfsTreeIterator extends AbstractResourceIterator {
 
 		if (!queue.isEmpty()) {
 			currentIterator = queue.pop().listChildren();
-			return getResource();
+			return getElement();
 		}
 
 		return null;

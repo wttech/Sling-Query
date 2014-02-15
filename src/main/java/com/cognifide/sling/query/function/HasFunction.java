@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
@@ -14,7 +14,7 @@ public class HasFunction implements ResourceToResourceFunction {
 
 	private FindFunction findFunction;
 
-	private ResourcePredicate predicate;
+	private Predicate<Resource> predicate;
 
 	public HasFunction(String selectorString, SearchStrategy searchStrategy) {
 		this.findFunction = new FindFunction(selectorString, searchStrategy);
@@ -24,7 +24,7 @@ public class HasFunction implements ResourceToResourceFunction {
 	@Override
 	public Resource apply(Resource input) {
 		Iterator<Resource> iterator = findFunction.apply(input);
-		iterator = new FilteringIteratorWrapper(iterator, predicate);
+		iterator = new FilteringIteratorWrapper<Resource>(iterator, predicate);
 		if (iterator.hasNext()) {
 			return input;
 		} else {

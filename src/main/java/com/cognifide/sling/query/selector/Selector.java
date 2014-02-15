@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.predicate.FunctionPredicate;
@@ -35,7 +35,7 @@ public class Selector implements IteratorToIteratorFunction {
 		return iterator;
 	}
 
-	public ResourcePredicate asPredicate() {
-		return new FunctionPredicate(this);
+	public Predicate<Resource> asPredicate() {
+		return new FunctionPredicate<Resource>(this);
 	}
 }

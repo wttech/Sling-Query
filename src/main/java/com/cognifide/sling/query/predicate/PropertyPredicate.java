@@ -5,9 +5,9 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.Predicate;
 
-public class PropertyPredicate implements ResourcePredicate {
+public class PropertyPredicate implements Predicate<Resource> {
 	private final String key;
 
 	private final String value;

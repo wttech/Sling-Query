@@ -7,7 +7,7 @@ import static com.cognifide.sling.query.api.SlingQuery.$;
 import org.apache.sling.api.resource.Resource;
 import org.junit.Test;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SlingQuery;
 
 public class FilterTest {
@@ -16,7 +16,7 @@ public class FilterTest {
 
 	@Test
 	public void testFilter() {
-		SlingQuery query = $(tree).find().filter(new ResourcePredicate() {
+		SlingQuery query = $(tree).find().filter(new Predicate<Resource>() {
 			@Override
 			public boolean accepts(Resource resource) {
 				return "configParsys".equals(resource.getName());
@@ -27,7 +27,7 @@ public class FilterTest {
 
 	@Test
 	public void testFilterOnEmptyCollection() {
-		SlingQuery query = $().filter(new ResourcePredicate() {
+		SlingQuery query = $().filter(new Predicate<Resource>() {
 			@Override
 			public boolean accepts(Resource resource) {
 				return true;

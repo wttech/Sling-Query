@@ -18,9 +18,9 @@ public final class IteratorFactory {
 		if (function instanceof ResourceToResourceFunction) {
 			ResourceToIteratorFunction wrappingFunction = new ResourceToIteratorWrapperFunction(
 					(ResourceToResourceFunction) function);
-			return new FunctionIterator(wrappingFunction, parentIterator);
+			return new FunctionIterator<Resource>(wrappingFunction, parentIterator);
 		} else if (function instanceof ResourceToIteratorFunction) {
-			return new FunctionIterator((ResourceToIteratorFunction) function, parentIterator);
+			return new FunctionIterator<Resource>((ResourceToIteratorFunction) function, parentIterator);
 		} else if (function instanceof IteratorToIteratorFunction) {
 			return ((IteratorToIteratorFunction) function).apply(parentIterator);
 		} else {

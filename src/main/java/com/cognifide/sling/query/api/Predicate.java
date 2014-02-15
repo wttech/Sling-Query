@@ -8,12 +8,12 @@ import org.apache.sling.api.resource.Resource;
  * @author Tomasz Rękawek
  * 
  */
-public interface ResourcePredicate {
+public interface Predicate<T> {
 	/**
 	 * Accept or reject given resource.
 	 * 
 	 * @param resource Object to test
 	 * @return {@code true} or {@code false}
 	 */
-	boolean accepts(Resource resource);
+	boolean accepts(T resource);
 }

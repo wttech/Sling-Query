@@ -4,24 +4,24 @@ import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.Predicate;
 
-public class NextIterator extends AbstractResourceIterator {
+public class NextIterator extends AbstractIterator<Resource> {
 
-	private final ResourcePredicate until;
+	private final Predicate<Resource> until;
 
 	private final Iterator<Resource> nextResources;
 
 	private boolean finished;
 
-	public NextIterator(ResourcePredicate until, Resource resource) {
+	public NextIterator(Predicate<Resource> until, Resource resource) {
 		this.until = until;
 		this.nextResources = rewindedIterator(resource);
 		this.finished = false;
 	}
 
 	@Override
-	protected Resource getResource() {
+	protected Resource getElement() {
 		if (finished) {
 			return null;
 		}

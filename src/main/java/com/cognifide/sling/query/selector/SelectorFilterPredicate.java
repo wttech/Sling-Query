@@ -10,10 +10,10 @@ import org.apache.sling.api.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
 
-public class SelectorFilterPredicate implements ResourcePredicate {
+public class SelectorFilterPredicate implements Predicate<Resource> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SelectorFilterPredicate.class);
 

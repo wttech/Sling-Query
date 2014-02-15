@@ -137,7 +137,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param predicate Collection filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery filter(ResourcePredicate predicate) {
+	public SlingQuery filter(Predicate<Resource> predicate) {
 		return function(new FilterFunction(predicate));
 	}
 
@@ -258,7 +258,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery nextAll(String selector) {
-		return functionWithSelector(new NextFunction(new RejectingPredicate()), selector);
+		return functionWithSelector(new NextFunction(new RejectingPredicate<Resource>()), selector);
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery parents(String selector) {
-		return functionWithSelector(new ParentsFunction(new RejectingPredicate()), selector);
+		return functionWithSelector(new ParentsFunction(new RejectingPredicate<Resource>()), selector);
 	}
 
 	/**
@@ -385,7 +385,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery prevAll(String selector) {
-		return functionWithSelector(new PrevFunction(new RejectingPredicate()), selector);
+		return functionWithSelector(new PrevFunction(new RejectingPredicate<Resource>()), selector);
 	}
 
 	/**

@@ -2,27 +2,25 @@ package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
+import com.cognifide.sling.query.api.Predicate;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+public class FilteringIteratorWrapper<T> extends AbstractIterator<T> {
 
-public class FilteringIteratorWrapper extends AbstractResourceIterator {
+	private final Iterator<T> iterator;
 
-	private final Iterator<Resource> iterator;
+	private final Predicate<T> predicate;
 
-	private final ResourcePredicate predicate;
-
-	public FilteringIteratorWrapper(Iterator<Resource> iterator, ResourcePredicate predicate) {
+	public FilteringIteratorWrapper(Iterator<T> iterator, Predicate<T> predicate) {
 		this.iterator = iterator;
 		this.predicate = predicate;
 	}
 
 	@Override
-	protected Resource getResource() {
+	protected T getElement() {
 		while (iterator.hasNext()) {
-			Resource resource = iterator.next();
-			if (predicate.accepts(resource)) {
-				return resource;
+			T element = iterator.next();
+			if (predicate.accepts(element)) {
+				return element;
 			}
 		}
 		return null;

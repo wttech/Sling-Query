@@ -5,10 +5,10 @@ import java.util.Iterator;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
-import com.cognifide.sling.query.iterator.AbstractResourceIterator;
+import com.cognifide.sling.query.iterator.AbstractIterator;
 import com.cognifide.sling.query.selector.parser.JcrSelectorParser;
 
-public class JcrTreeIterator extends AbstractResourceIterator {
+public class JcrTreeIterator extends AbstractIterator<Resource> {
 
 	private final ResourceResolver resolver;
 
@@ -22,7 +22,7 @@ public class JcrTreeIterator extends AbstractResourceIterator {
 	}
 
 	@Override
-	protected Resource getResource() {
+	protected Resource getElement() {
 		if (currentIterator == null) {
 			currentIterator = resolver.findResources(query, "JCR-SQL2");
 		}

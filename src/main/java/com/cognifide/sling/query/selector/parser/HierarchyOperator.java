@@ -1,5 +1,7 @@
 package com.cognifide.sling.query.selector.parser;
 
+import org.apache.sling.api.resource.Resource;
+
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.function.ChildrenFunction;
@@ -30,7 +32,7 @@ public enum HierarchyOperator {
 	NEXT_SIBLINGS('~') {
 		@Override
 		public Function<?, ?> getFunction(SearchStrategy strategy) {
-			return new NextFunction(new RejectingPredicate());
+			return new NextFunction(new RejectingPredicate<Resource>());
 		}
 	};
 //@formatter:on

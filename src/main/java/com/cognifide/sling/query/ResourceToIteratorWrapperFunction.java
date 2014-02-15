@@ -23,7 +23,7 @@ public class ResourceToIteratorWrapperFunction implements ResourceToIteratorFunc
 		if (result == null) {
 			return EmptyIterator.INSTANCE;
 		} else {
-			return new ArrayIterator(result);
+			return new ArrayIterator<Resource>(result);
 		}
 	}
 

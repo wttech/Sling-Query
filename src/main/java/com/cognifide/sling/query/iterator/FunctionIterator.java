@@ -2,31 +2,29 @@ package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
+import com.cognifide.sling.query.api.Function;
 
-import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
+public class FunctionIterator<T> extends AbstractIterator<T> {
 
-public class FunctionIterator extends AbstractResourceIterator {
+	private final Function<T, Iterator<T>> function;
 
-	private final ResourceToIteratorFunction function;
+	private final Iterator<T> parentIterator;
 
-	private final Iterator<Resource> parentIterator;
+	private Iterator<T> currentIterator;
 
-	private Iterator<Resource> currentIterator;
-
-	public FunctionIterator(ResourceToIteratorFunction function, Iterator<Resource> parentIterator) {
+	public FunctionIterator(Function<T, Iterator<T>> function, Iterator<T> parentIterator) {
 		this.function = function;
 		this.parentIterator = parentIterator;
 	}
 
 	@Override
-	protected Resource getResource() {
+	protected T getElement() {
 		if (currentIterator != null && currentIterator.hasNext()) {
 			return currentIterator.next();
 		}
 		while (parentIterator.hasNext()) {
-			Resource parentResource = parentIterator.next();
-			currentIterator = function.apply(parentResource);
+			T parentElement = parentIterator.next();
+			currentIterator = function.apply(parentElement);
 			if (currentIterator.hasNext()) {
 				return currentIterator.next();
 			}

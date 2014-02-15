@@ -13,7 +13,7 @@ public class SiblingsFunction implements ResourceToIteratorFunction {
 	public Iterator<Resource> apply(Resource resource) {
 		Resource parent = resource.getParent();
 		if (parent == null) {
-			return new ArrayIterator(resource);
+			return new ArrayIterator<Resource>(resource);
 		} else {
 			return parent.listChildren();
 		}

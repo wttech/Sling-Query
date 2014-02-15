@@ -15,7 +15,7 @@ public class LastFunction implements IteratorToIteratorFunction {
 		while (input.hasNext()) {
 			lastElement = input.next();
 		}
-		return new ArrayIterator(lastElement);
+		return new ArrayIterator<Resource>(lastElement);
 	}
 
 }

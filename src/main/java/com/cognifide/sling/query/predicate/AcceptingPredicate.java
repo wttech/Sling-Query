@@ -1,13 +1,11 @@
 package com.cognifide.sling.query.predicate;
 
-import org.apache.sling.api.resource.Resource;
+import com.cognifide.sling.query.api.Predicate;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
-
-public class AcceptingPredicate implements ResourcePredicate {
+public class AcceptingPredicate<T> implements Predicate<T> {
 
 	@Override
-	public boolean accepts(Resource resource) {
+	public boolean accepts(T value) {
 		return true;
 	}
 

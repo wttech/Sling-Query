@@ -2,11 +2,9 @@ package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
+public class SliceIterator<T> extends AbstractIterator<T> {
 
-public class SliceIterator extends AbstractResourceIterator {
-
-	private final Iterator<Resource> resources;
+	private final Iterator<T> iterator;
 
 	private int current;
 
@@ -14,32 +12,32 @@ public class SliceIterator extends AbstractResourceIterator {
 
 	private Integer to;
 
-	public SliceIterator(Iterator<Resource> resources, int from, int to) {
-		this.resources = resources;
+	public SliceIterator(Iterator<T> iterator, int from, int to) {
+		this.iterator = iterator;
 		this.current = 0;
 		this.from = from;
 		this.to = to;
 	}
 
-	public SliceIterator(Iterator<Resource> resources, int from) {
-		this.resources = resources;
+	public SliceIterator(Iterator<T> iterator, int from) {
+		this.iterator = iterator;
 		this.current = 0;
 		this.from = from;
 		this.to = null;
 	}
 
 	@Override
-	protected Resource getResource() {
+	protected T getElement() {
 		if (to != null && current > to) {
 			return null;
 		}
-		Resource resource;
+		T element;
 		do {
-			if (!resources.hasNext()) {
+			if (!iterator.hasNext()) {
 				return null;
 			}
-			resource = resources.next();
+			element = iterator.next();
 		} while (current++ < from);
-		return resource;
+		return element;
 	}
 }

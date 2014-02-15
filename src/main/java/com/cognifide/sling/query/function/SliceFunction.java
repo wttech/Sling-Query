@@ -26,9 +26,9 @@ public class SliceFunction implements IteratorToIteratorFunction {
 	@Override
 	public Iterator<Resource> apply(Iterator<Resource> resources) {
 		if (to == null) {
-			return new SliceIterator(resources, from);
+			return new SliceIterator<Resource>(resources, from);
 		} else {
-			return new SliceIterator(resources, from, to);
+			return new SliceIterator<Resource>(resources, from, to);
 		}
 	}
 }

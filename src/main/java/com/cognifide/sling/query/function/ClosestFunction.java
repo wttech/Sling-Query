@@ -21,7 +21,7 @@ public class ClosestFunction implements ResourceToIteratorFunction {
 	public Iterator<Resource> apply(Resource resource) {
 		Resource current = resource;
 		while (current != null) {
-			Iterator<Resource> iterator = new ArrayIterator(current);
+			Iterator<Resource> iterator = new ArrayIterator<Resource>(current);
 			iterator = selector.apply(iterator);
 			if (iterator.hasNext()) {
 				return iterator;

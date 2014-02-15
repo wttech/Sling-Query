@@ -1,22 +1,23 @@
 package com.cognifide.sling.query.predicate;
 
-import org.apache.sling.api.resource.Resource;
+import java.util.Iterator;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
-import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+import com.cognifide.sling.query.api.Function;
+import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.iterator.ArrayIterator;
 
-public class FunctionPredicate implements ResourcePredicate {
+public class FunctionPredicate<T> implements Predicate<T> {
 
-	private final IteratorToIteratorFunction function;
+	private final Function<Iterator<T>, Iterator<T>> function;
 
-	public FunctionPredicate(IteratorToIteratorFunction function) {
+	public FunctionPredicate(Function<Iterator<T>, Iterator<T>> function) {
 		this.function = function;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean accepts(Resource resource) {
-		return function.apply(new ArrayIterator(resource)).hasNext();
+	public boolean accepts(T value) {
+		return function.apply(new ArrayIterator<T>(value)).hasNext();
 	}
 
 }

@@ -6,9 +6,9 @@ import java.util.LinkedList;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.iterator.AbstractResourceIterator;
+import com.cognifide.sling.query.iterator.AbstractIterator;
 
-public class DfsTreeIterator extends AbstractResourceIterator {
+public class DfsTreeIterator extends AbstractIterator<Resource> {
 
 	private final Deque<Iterator<Resource>> queue = new LinkedList<Iterator<Resource>>();
 
@@ -17,7 +17,7 @@ public class DfsTreeIterator extends AbstractResourceIterator {
 	}
 
 	@Override
-	protected Resource getResource() {
+	protected Resource getElement() {
 		if (queue.isEmpty()) {
 			return null;
 		}
@@ -27,7 +27,7 @@ public class DfsTreeIterator extends AbstractResourceIterator {
 			return next;
 		} else {
 			queue.pollLast();
-			return getResource();
+			return getElement();
 		}
 	}
 }

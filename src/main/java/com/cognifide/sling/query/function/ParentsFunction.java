@@ -4,15 +4,15 @@ import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.ResourcePredicate;
+import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.iterator.ParentsIterator;
 
 public class ParentsFunction implements ResourceToIteratorFunction {
 
-	private final ResourcePredicate until;
+	private final Predicate<Resource> until;
 
-	public ParentsFunction(ResourcePredicate until) {
+	public ParentsFunction(Predicate<Resource> until) {
 		this.until = until;
 	}
 
