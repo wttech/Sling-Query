@@ -10,6 +10,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.FunctionWithSelector;
+import com.cognifide.sling.query.LazyList;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
@@ -89,6 +90,15 @@ public class SlingQuery implements Iterable<Resource> {
 			iterator = operation.apply(iterator);
 		}
 		return iterator;
+	}
+
+	/**
+	 * Transform SlingQuery collection to list.
+	 * 
+	 * @return List containing all elements from the collection.
+	 */
+	public List<Resource> asList() {
+		return new LazyList<Resource>(iterator());
 	}
 
 	/**
