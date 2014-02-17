@@ -1,6 +1,10 @@
 package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
+import java.util.List;
+
+import com.cognifide.sling.query.LazyList;
+import com.cognifide.sling.query.api.Function;
 
 public class ExcludingIterator<T> extends AbstractIterator<T> {
 
@@ -10,9 +14,10 @@ public class ExcludingIterator<T> extends AbstractIterator<T> {
 
 	private T nextToExclude;
 
-	public ExcludingIterator(Iterator<T> iterator, Iterator<T> toExclude) {
-		this.iterator = iterator;
-		this.toExclude = toExclude;
+	public ExcludingIterator(Iterator<T> iterator, Function<Iterator<T>, Iterator<T>> excludingFunction) {
+		List<T> lazyList = new LazyList<T>(iterator);
+		this.iterator = lazyList.iterator();
+		this.toExclude = excludingFunction.apply(lazyList.iterator());
 	}
 
 	@Override
