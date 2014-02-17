@@ -296,9 +296,7 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	/**
-	 * Remove elements from the collection. This function will evaluate the collection eagerly (=will create
-	 * an {@link ArrayList} with the whole collection) if the selector contains some modifiers (functions
-	 * starting with colon, like {@code :first} or {@code :eq(2)}).
+	 * Remove elements from the collection.
 	 * 
 	 * @param selector Selector used to remove resources
 	 * @return a {@link SlingQuery} object transformed by this operation
