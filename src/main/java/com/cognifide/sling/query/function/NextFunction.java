@@ -6,7 +6,8 @@ import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
-import com.cognifide.sling.query.iterator.NextIterator;
+import com.cognifide.sling.query.iterator.SiblingsIterator;
+import com.cognifide.sling.query.iterator.SiblingsIterator.Type;
 
 public class NextFunction implements ResourceToIteratorFunction {
 
@@ -18,6 +19,6 @@ public class NextFunction implements ResourceToIteratorFunction {
 
 	@Override
 	public Iterator<Resource> apply(Resource resource) {
-		return new NextIterator(until, resource);
+		return new SiblingsIterator(until, resource, Type.NEXT);
 	}
 }
