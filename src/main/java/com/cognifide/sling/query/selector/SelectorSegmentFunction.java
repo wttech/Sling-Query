@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.cognifide.sling.query.IteratorFactory;
-import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
+import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.function.FilterFunction;
+import com.cognifide.sling.query.iterator.IteratorFactory;
 import com.cognifide.sling.query.selector.parser.Modifier;
 import com.cognifide.sling.query.selector.parser.SelectorSegment;
 

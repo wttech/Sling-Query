@@ -1,4 +1,4 @@
-package com.cognifide.sling.query;
+package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 
@@ -6,7 +6,7 @@ import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
-import com.cognifide.sling.query.iterator.FunctionIterator;
+import com.cognifide.sling.query.function.ResourceToIteratorWrapperFunction;
 
 public final class IteratorFactory {
 	private IteratorFactory() {

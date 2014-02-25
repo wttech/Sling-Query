@@ -1,6 +1,6 @@
 package com.cognifide.sling.query.function;
 
-import com.cognifide.sling.query.TreeProvider;
+import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 
 public class ParentFunction<T> implements ResourceToResourceFunction<T> {

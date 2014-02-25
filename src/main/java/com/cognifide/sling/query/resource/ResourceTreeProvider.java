@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Predicate;
-import com.cognifide.sling.query.resource.jcr.JcrTreeIterator;
+import com.cognifide.sling.query.api.TreeProvider;
+import com.cognifide.sling.query.resource.jcr.JcrQueryIterator;
 import com.cognifide.sling.query.selector.parser.Attribute;
 
 public class ResourceTreeProvider implements TreeProvider<Resource> {
@@ -34,7 +34,7 @@ public class ResourceTreeProvider implements TreeProvider<Resource> {
 
 	@Override
 	public Iterator<Resource> query(String selector, Resource resource) {
-		return new JcrTreeIterator(selector, resource);
+		return new JcrQueryIterator(selector, resource);
 	}
 
 }

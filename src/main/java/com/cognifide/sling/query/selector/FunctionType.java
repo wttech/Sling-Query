@@ -1,8 +1,8 @@
 package com.cognifide.sling.query.selector;
 
-import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
+import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 import com.cognifide.sling.query.function.EvenFunction;
 import com.cognifide.sling.query.function.HasFunction;

@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import com.cognifide.sling.query.LazyList;
-import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Predicate;
+import com.cognifide.sling.query.api.TreeProvider;
 
 public class SiblingsIterator<T> extends AbstractIterator<T> {
 

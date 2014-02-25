@@ -1,4 +1,4 @@
-package com.cognifide.sling.query;
+package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
@@ -19,7 +19,7 @@ public class ResourceToIteratorWrapperFunction<T> implements ResourceToIteratorF
 	public Iterator<T> apply(T input) {
 		T result = wrappedFunction.apply(input);
 		if (result == null) {
-			return new ArrayIterator<T>();
+			return ArrayIterator.getEmptyIterator();
 		} else {
 			return new ArrayIterator<T>(result);
 		}

@@ -1,7 +1,7 @@
 package com.cognifide.sling.query.iterator;
 
-import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Predicate;
+import com.cognifide.sling.query.api.TreeProvider;
 
 public class ParentsIterator<T> extends AbstractIterator<T> {
 

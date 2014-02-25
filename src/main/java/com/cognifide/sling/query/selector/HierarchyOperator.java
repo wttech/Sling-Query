@@ -1,8 +1,8 @@
 package com.cognifide.sling.query.selector;
 
-import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
+import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.FindFunction;
 import com.cognifide.sling.query.function.IdentityFunction;
@@ -57,7 +57,6 @@ public enum HierarchyOperator {
 				return operator;
 			}
 		}
-		return DESCENDANT;
+		return NOOP;
 	}
-
 }

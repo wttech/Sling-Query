@@ -1,4 +1,4 @@
-package com.cognifide.sling.query;
+package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
@@ -6,7 +6,9 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
+import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+import com.cognifide.sling.query.iterator.IteratorFactory;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
 public class FunctionWithSelector<T> implements IteratorToIteratorFunction<T> {

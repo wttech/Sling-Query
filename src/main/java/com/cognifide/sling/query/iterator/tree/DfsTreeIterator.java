@@ -4,7 +4,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import com.cognifide.sling.query.TreeProvider;
+import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.iterator.AbstractIterator;
 
 public class DfsTreeIterator<T> extends AbstractIterator<T> {

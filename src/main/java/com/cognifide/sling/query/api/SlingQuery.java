@@ -9,15 +9,14 @@ import org.apache.sling.api.adapter.Adaptable;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
-import com.cognifide.sling.query.FunctionWithSelector;
 import com.cognifide.sling.query.LazyList;
-import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
 import com.cognifide.sling.query.function.FilterFunction;
+import com.cognifide.sling.query.function.FunctionWithSelector;
 import com.cognifide.sling.query.function.HasFunction;
 import com.cognifide.sling.query.function.FindFunction;
 import com.cognifide.sling.query.function.LastFunction;

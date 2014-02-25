@@ -2,8 +2,8 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
-import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Predicate;
+import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.iterator.SiblingsIterator;
 import com.cognifide.sling.query.iterator.SiblingsIterator.Type;

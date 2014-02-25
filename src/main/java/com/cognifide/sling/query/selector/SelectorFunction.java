@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
+import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.ArrayIterator;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
