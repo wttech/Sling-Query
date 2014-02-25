@@ -11,10 +11,10 @@ import com.cognifide.sling.query.iterator.tree.DfsTreeIterator;
 public class FindFunction<T> implements ResourceToIteratorFunction<T> {
 
 	private final String preFilteringSelector;
-	
+
 	private final TreeProvider<T> provider;
 
-	private SearchStrategy strategy;
+	private final SearchStrategy strategy;
 
 	public FindFunction(String preFilteringSelector, SearchStrategy searchStrategy, TreeProvider<T> provider) {
 		this.preFilteringSelector = preFilteringSelector;
@@ -27,7 +27,7 @@ public class FindFunction<T> implements ResourceToIteratorFunction<T> {
 		switch (strategy) {
 			case BFS:
 				return new BfsTreeIterator<T>(resource, provider);
-			case JCR:
+			case QUERY:
 				return provider.query(preFilteringSelector, resource);
 			case DFS:
 			default:
