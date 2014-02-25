@@ -17,21 +17,21 @@ public class FindTest {
 
 	@Test
 	public void testFind() {
-		SlingQuery<Resource> query = $(tree.getChild("application/configuration/labels")).find();
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).find();
 		assertResourceSetEquals(query.iterator(), "jcr:content", "configParsys", "tab", "tab_0", "items",
 				"items", "localizedtext", "text", "text_0", "text", "lang");
 	}
 
 	@Test
 	public void testFindWithFilter() {
-		SlingQuery<Resource> query = $(tree.getChild("application/configuration/labels")).find(
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).find(
 				"cq-commons/config/components/text");
 		assertResourceSetEquals(query.iterator(), "text", "text");
 	}
 
 	@Test
 	public void testLeaveFind() {
-		SlingQuery<Resource> query = $(
+		SlingQuery query = $(
 				tree.getChild("application/configuration/labels/jcr:content/configParsys/tab/items/localizedtext/lang"))
 				.find();
 		assertEmptyIterator(query.iterator());
@@ -39,13 +39,13 @@ public class FindTest {
 
 	@Test
 	public void testEmptyFind() {
-		SlingQuery<Resource> query = $(tree.getChild("application/configuration/labels")).find("cq:Undefined");
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).find("cq:Undefined");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testBfsFind() {
-		SlingQuery<Resource> query = $(tree.getChild("application/configuration/labels")).searchStrategy(
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).searchStrategy(
 				SearchStrategy.BFS).find("");
 		assertResourceListEquals(query.iterator(), "jcr:content", "configParsys", "tab", "tab_0", "items",
 				"items", "localizedtext", "text", "text_0", "text", "lang");
@@ -53,7 +53,7 @@ public class FindTest {
 
 	@Test
 	public void testDfsFind() {
-		SlingQuery<Resource> query = $(tree.getChild("application/configuration/labels")).searchStrategy(
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).searchStrategy(
 				SearchStrategy.DFS).find("");
 		assertResourceListEquals(query.iterator(), "jcr:content", "configParsys", "tab", "items",
 				"localizedtext", "lang", "text", "tab_0", "items", "text_0", "text");

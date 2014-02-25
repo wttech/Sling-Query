@@ -15,25 +15,25 @@ public class SiblingsTest {
 
 	@Test
 	public void testSiblings() {
-		SlingQuery<Resource> query = $(tree.getChild("application")).siblings();
+		SlingQuery query = $(tree.getChild("application")).siblings();
 		assertResourceSetEquals(query.iterator(), "jcr:content", "application", "home");
 	}
 
 	@Test
 	public void testFilteredChildren() {
-		SlingQuery<Resource> query = $(tree.getChild("application")).siblings("cq:Page");
+		SlingQuery query = $(tree.getChild("application")).siblings("cq:Page");
 		assertResourceSetEquals(query.iterator(), "application", "home");
 	}
 
 	@Test
 	public void testNoSiblings() {
-		SlingQuery<Resource> query = $(tree.getChild("application")).siblings("cq:Undefined");
+		SlingQuery query = $(tree.getChild("application")).siblings("cq:Undefined");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testRootSiblings() {
-		SlingQuery<Resource> query = $(tree).siblings();
+		SlingQuery query = $(tree).siblings();
 		assertResourceSetEquals(query.iterator(), "/");
 	}
 }

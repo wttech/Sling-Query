@@ -17,13 +17,13 @@ public class LastTest {
 
 	@Test
 	public void testLast() {
-		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children().last();
+		SlingQuery query = $(tree.getChild(PAR_PATH)).children().last();
 		assertResourceSetEquals(query.iterator(), "configvalue_2");
 	}
 
 	@Test
 	public void testLastOnEmptyCollection() {
-		SlingQuery<Resource> query = $().last();
+		SlingQuery query = $().last();
 		assertEmptyIterator(query.iterator());
 	}
 }

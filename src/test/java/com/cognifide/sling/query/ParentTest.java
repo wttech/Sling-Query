@@ -15,13 +15,13 @@ public class ParentTest {
 
 	@Test
 	public void testParent() {
-		SlingQuery<Resource> query = $(tree.getChild("application/configuration/labels")).parent();
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).parent();
 		assertResourceSetEquals(query.iterator(), "configuration");
 	}
 
 	@Test
 	public void testRootParent() {
-		SlingQuery<Resource> query = $(tree).parent();
+		SlingQuery query = $(tree).parent();
 		assertEmptyIterator(query.iterator());
 	}
 }

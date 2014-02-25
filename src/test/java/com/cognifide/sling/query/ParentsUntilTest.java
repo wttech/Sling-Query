@@ -16,19 +16,19 @@ public class ParentsUntilTest {
 
 	@Test
 	public void testParentsUntilMatch() {
-		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).parentsUntil("cq:Page");
+		SlingQuery query = $(tree.getChild(PAR_PATH)).parentsUntil("cq:Page");
 		assertResourceSetEquals(query.iterator(),  "jcr:content", "configParsys", "tab");
 	}
 
 	@Test
 	public void testParentsUntilNoMatch() {
-		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).parentsUntil("cq:Undefined");
+		SlingQuery query = $(tree.getChild(PAR_PATH)).parentsUntil("cq:Undefined");
 		assertResourceSetEquals(query.iterator(), "application", "configuration", "labels", "jcr:content", "configParsys", "tab", "/");
 	}
 
 	@Test
 	public void testParentsUntilFromRoot() {
-		SlingQuery<Resource> query = $(tree).parentsUntil("cq:Page", "cq:Undefined");
+		SlingQuery query = $(tree).parentsUntil("cq:Page", "cq:Undefined");
 		assertResourceSetEquals(query.iterator());
 	}
 
