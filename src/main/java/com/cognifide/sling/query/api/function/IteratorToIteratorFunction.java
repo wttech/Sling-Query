@@ -12,12 +12,12 @@ import com.cognifide.sling.query.api.Function;
  * @author Tomasz Rękawek
  * 
  */
-public interface IteratorToIteratorFunction extends Function<Iterator<Resource>, Iterator<Resource>> {
+public interface IteratorToIteratorFunction<T> extends Function<Iterator<T>, Iterator<T>> {
 
 	/**
 	 * Transform one iterator into another.
 	 * 
 	 */
-	Iterator<Resource> apply(Iterator<Resource> input);
+	Iterator<T> apply(Iterator<T> input);
 
 }

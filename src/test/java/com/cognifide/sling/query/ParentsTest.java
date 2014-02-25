@@ -15,13 +15,13 @@ public class ParentsTest {
 
 	@Test
 	public void testParents() {
-		SlingQuery query = $(tree.getChild("application/configuration/labels/jcr:content")).parents();
+		SlingQuery<Resource> query = $(tree.getChild("application/configuration/labels/jcr:content")).parents();
 		assertResourceSetEquals(query.iterator(), "labels", "configuration", "application", "/");
 	}
 
 	@Test
 	public void testFilteredParents() {
-		SlingQuery query = $(
+		SlingQuery<Resource> query = $(
 				tree.getChild("application/configuration/labels/jcr:content/configParsys/tab/items"))
 				.parents("cq:Page");
 		assertResourceSetEquals(query.iterator(), "labels", "configuration", "application", "/");
@@ -29,7 +29,7 @@ public class ParentsTest {
 
 	@Test
 	public void testNoParents() {
-		SlingQuery query = $(
+		SlingQuery<Resource> query = $(
 				tree.getChild("application/configuration/labels/jcr:content/configParsys/tab/items"))
 				.parents("cq:Undefined");
 		assertEmptyIterator(query.iterator());
@@ -37,7 +37,7 @@ public class ParentsTest {
 
 	@Test
 	public void testRootParents() {
-		SlingQuery query = $(tree).parents();
+		SlingQuery<Resource> query = $(tree).parents();
 		assertEmptyIterator(query.iterator());
 	}
 }

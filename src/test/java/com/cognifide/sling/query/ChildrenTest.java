@@ -15,31 +15,31 @@ public class ChildrenTest {
 
 	@Test
 	public void testChildren() {
-		SlingQuery query = $(tree).children();
+		SlingQuery<Resource> query = $(tree).children();
 		assertResourceSetEquals(query.iterator(), "jcr:content", "application", "home");
 	}
 
 	@Test
 	public void testNameChildren() {
-		SlingQuery query = $(tree).children("cq:Page#application");
+		SlingQuery<Resource> query = $(tree).children("cq:Page#application");
 		assertResourceSetEquals(query.iterator(), "application");
 	}
 
 	@Test
 	public void testFilteredChildren() {
-		SlingQuery query = $(tree).children("cq:Page");
+		SlingQuery<Resource> query = $(tree).children("cq:Page");
 		assertResourceSetEquals(query.iterator(), "application", "home");
 	}
 
 	@Test
 	public void testNoChildren() {
-		SlingQuery query = $(tree.getChild("jcr:content")).children();
+		SlingQuery<Resource> query = $(tree.getChild("jcr:content")).children();
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testLeafChildren() {
-		SlingQuery query = $(tree.getChild("jcr:content")).children();
+		SlingQuery<Resource> query = $(tree.getChild("jcr:content")).children();
 		assertEmptyIterator(query.iterator());
 	}
 }

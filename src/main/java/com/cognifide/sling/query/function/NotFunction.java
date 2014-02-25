@@ -2,22 +2,20 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
-
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.ExcludingIterator;
 import com.cognifide.sling.query.selector.Selector;
 
-public class NotFunction implements IteratorToIteratorFunction {
+public class NotFunction<T> implements IteratorToIteratorFunction<T> {
 
-	private final Selector selector;
+	private final Selector<T> selector;
 
-	public NotFunction(Selector selector) {
+	public NotFunction(Selector<T> selector) {
 		this.selector = selector;
 	}
 
 	@Override
-	public Iterator<Resource> apply(Iterator<Resource> input) {
-		return new ExcludingIterator<Resource>(input, selector);
+	public Iterator<T> apply(Iterator<T> input) {
+		return new ExcludingIterator<T>(input, selector);
 	}
 }

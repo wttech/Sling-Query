@@ -3,17 +3,20 @@ package com.cognifide.sling.query.selector.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
 
-public class ParserContext {
+public class ParserContext<T> {
 	private final SearchStrategy strategy;
 
-	private final List<SelectorSegment> segments = new ArrayList<SelectorSegment>();
+	private final List<SelectorSegment<T>> segments = new ArrayList<SelectorSegment<T>>();
 
 	private final List<PropertyPredicate> attributes = new ArrayList<PropertyPredicate>();
 
 	private final List<SelectorFunction> functions = new ArrayList<SelectorFunction>();
+	
+	private final TreeStructureProvider<T> provider;
 
 	private char hierarchyOperator;
 
@@ -35,8 +38,9 @@ public class ParserContext {
 
 	private int parenthesesCount = 0;
 
-	ParserContext(SearchStrategy strategy) {
+	ParserContext(SearchStrategy strategy, TreeStructureProvider<T> provider) {
 		this.strategy = strategy;
+		this.provider = provider;
 	}
 
 	List<PropertyPredicate> getAttributes() {
@@ -129,7 +133,7 @@ public class ParserContext {
 	}
 
 	void finishSelectorSegment() {
-		segments.add(new SelectorSegment(this, segments.isEmpty(), strategy));
+		segments.add(new SelectorSegment<T>(this, segments.isEmpty(), strategy, provider));
 		attributes.clear();
 		functions.clear();
 		hierarchyOperator = 0;
@@ -140,7 +144,7 @@ public class ParserContext {
 		builder.append(c);
 	}
 
-	public List<SelectorSegment> getSegments() {
+	public List<SelectorSegment<T>> getSegments() {
 		return segments;
 	}
 

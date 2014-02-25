@@ -6,17 +6,16 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.IteratorFactory;
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
-import com.cognifide.sling.query.selector.SelectorFilterPredicate;
 
-public class SelectorSegment implements IteratorToIteratorFunction {
+public class SelectorSegment<T> implements IteratorToIteratorFunction<T> {
 	private final String resourceType;
 
 	private final String resourceName;
@@ -29,7 +28,10 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 
 	private final SearchStrategy strategy;
 
-	public SelectorSegment(ParserContext context, boolean firstSegment, SearchStrategy strategy) {
+	private final TreeStructureProvider<T> provider;
+
+	public SelectorSegment(ParserContext<T> context, boolean firstSegment, SearchStrategy strategy,
+			TreeStructureProvider<T> provider) {
 		this.resourceType = context.getResourceType();
 		this.resourceName = context.getResourceName();
 		this.attributes = new ArrayList<PropertyPredicate>(context.getAttributes());
@@ -40,37 +42,40 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 			hierarchyOperator = HierarchyOperator.findByCharacter(context.getHierarchyOperator());
 		}
 		this.strategy = strategy;
+		this.provider = provider;
 	}
 
 	SelectorSegment(String resourceType, String resourceName, List<PropertyPredicate> attributes,
-			List<SelectorFunction> functions, char hierarchyOperator, SearchStrategy strategy) {
+			List<SelectorFunction> functions, char hierarchyOperator, SearchStrategy strategy,
+			TreeStructureProvider<T> provider) {
 		this.resourceType = resourceType;
 		this.resourceName = resourceName;
 		this.attributes = attributes;
 		this.functions = functions;
 		this.hierarchyOperator = HierarchyOperator.findByCharacter(hierarchyOperator);
 		this.strategy = strategy;
+		this.provider = provider;
 	}
 
 	@Override
-	public Iterator<Resource> apply(Iterator<Resource> input) {
-		Iterator<Resource> iterator = applyHierarchyOperator(input);
-		iterator = new FilteringIteratorWrapper<Resource>(iterator, getFilter());
+	public Iterator<T> apply(Iterator<T> input) {
+		Iterator<T> iterator = applyHierarchyOperator(input);
+		iterator = new FilteringIteratorWrapper<T>(iterator, getFilter());
 		for (SelectorFunction f : functions) {
-			iterator = IteratorFactory.getIterator(f.function(strategy), iterator);
+			iterator = IteratorFactory.getIterator(f.function(strategy, provider), iterator);
 		}
 		return iterator;
 	}
 
-	String getResourceType() {
+	public String getResourceType() {
 		return resourceType;
 	}
 
-	String getResourceName() {
+	public String getResourceName() {
 		return resourceName;
 	}
 
-	List<PropertyPredicate> getAttributes() {
+	public List<PropertyPredicate> getAttributes() {
 		return attributes;
 	}
 
@@ -78,16 +83,16 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 		return functions;
 	}
 
-	private Iterator<Resource> applyHierarchyOperator(Iterator<Resource> input) {
+	private Iterator<T> applyHierarchyOperator(Iterator<T> input) {
 		if (hierarchyOperator == null) {
 			return input;
 		} else {
-			return IteratorFactory.getIterator(hierarchyOperator.getFunction(strategy), input);
+			return IteratorFactory.getIterator(hierarchyOperator.getFunction(strategy, provider), input);
 		}
 	}
 
-	private Predicate<Resource> getFilter() {
-		return new SelectorFilterPredicate(resourceType, resourceName, attributes);
+	private Predicate<T> getFilter() {
+		return provider.getPredicate(resourceType, resourceName, attributes);
 	}
 
 	@Override
@@ -101,7 +106,8 @@ public class SelectorSegment implements IteratorToIteratorFunction {
 		if (obj.getClass() != getClass()) {
 			return false;
 		}
-		SelectorSegment rhs = (SelectorSegment) obj;
+		@SuppressWarnings("unchecked")
+		SelectorSegment<T> rhs = (SelectorSegment<T>) obj;
 		return new EqualsBuilder().append(resourceType, rhs.resourceType).append(attributes, rhs.attributes)
 				.append(functions, rhs.functions).append(hierarchyOperator, rhs.hierarchyOperator).isEquals();
 	}

@@ -1,5 +1,6 @@
 package com.cognifide.sling.query.selector.parser;
 
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.SearchStrategy;
 
 public final class SelectorParser {
@@ -7,8 +8,9 @@ public final class SelectorParser {
 	private SelectorParser() {
 	}
 
-	public static ParserContext parse(String selector, SearchStrategy strategy) {
-		ParserContext context = new ParserContext(strategy);
+	public static <T> ParserContext<T> parse(String selector, SearchStrategy strategy,
+			TreeStructureProvider<T> provider) {
+		ParserContext<T> context = new ParserContext<T>(strategy, provider);
 		for (char c : selector.toCharArray()) {
 			context.getState().process(context, c);
 		}

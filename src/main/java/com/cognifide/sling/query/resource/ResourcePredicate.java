@@ -1,4 +1,4 @@
-package com.cognifide.sling.query.selector;
+package com.cognifide.sling.query.resource;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
 
-public class SelectorFilterPredicate implements Predicate<Resource> {
+public class ResourcePredicate implements Predicate<Resource> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SelectorFilterPredicate.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ResourcePredicate.class);
 
 	private final String resourceType;
 
@@ -23,7 +23,7 @@ public class SelectorFilterPredicate implements Predicate<Resource> {
 
 	private final List<PropertyPredicate> properties;
 
-	public SelectorFilterPredicate(String resourceType, String resourceName,
+	public ResourcePredicate(String resourceType, String resourceName,
 			List<PropertyPredicate> properties) {
 		this.resourceType = resourceType;
 		this.resourceName = resourceName;

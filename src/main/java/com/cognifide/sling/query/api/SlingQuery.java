@@ -11,6 +11,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.FunctionWithSelector;
 import com.cognifide.sling.query.LazyList;
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
@@ -29,6 +30,7 @@ import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.iterator.AdaptToIterator;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
+import com.cognifide.sling.query.resource.ResourceTreeProvider;
 import com.cognifide.sling.query.selector.Selector;
 
 /**
@@ -38,12 +40,14 @@ import com.cognifide.sling.query.selector.Selector;
  * @author Tomasz Rękawek
  * 
  */
-public class SlingQuery implements Iterable<Resource> {
-	private final List<IteratorToIteratorFunction> functions = new ArrayList<IteratorToIteratorFunction>();
+public class SlingQuery<T> implements Iterable<T> {
+	private final List<IteratorToIteratorFunction<T>> functions = new ArrayList<IteratorToIteratorFunction<T>>();
 
-	private final List<Resource> resources;
+	private final List<T> resources;
 
 	private final SearchStrategy searchStrategy;
+
+	private final TreeStructureProvider<T> provider;
 
 	/**
 	 * Create a new SlingQuery object, using passed resources as an initial collection.
@@ -51,8 +55,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param resources Initial collection
 	 * @return New SlingQuery object.
 	 */
-	public static SlingQuery $(Resource... resources) {
-		return new SlingQuery(resources);
+	public static SlingQuery<Resource> $(Resource... resources) {
+		return new SlingQuery<Resource>(new ResourceTreeProvider(), resources);
 	}
 
 	/**
@@ -61,32 +65,34 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param resourceResolver Sling resource resolver
 	 * @return New SlingQuery object.
 	 */
-	public static SlingQuery $(ResourceResolver resolver) {
-		return new SlingQuery(resolver.getResource("/"));
+	public static SlingQuery<Resource> $(ResourceResolver resolver) {
+		return $(resolver.getResource("/"));
 	}
 
-	private SlingQuery(Resource... resources) {
+	private SlingQuery(TreeStructureProvider<T> provider, T[] resources) {
+		this.provider = provider;
 		this.resources = Arrays.asList(resources);
 		this.searchStrategy = SearchStrategy.DFS;
 	}
 
-	private SlingQuery(SlingQuery original) {
+	private SlingQuery(SlingQuery<T> original) {
 		this(original, original.searchStrategy);
 	}
 
-	private SlingQuery(SlingQuery original, SearchStrategy searchStrategy) {
+	private SlingQuery(SlingQuery<T> original, SearchStrategy searchStrategy) {
 		this.functions.addAll(original.functions);
-		this.resources = new ArrayList<Resource>(original.resources);
+		this.resources = new ArrayList<T>(original.resources);
 		this.searchStrategy = searchStrategy;
+		this.provider = original.provider;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Iterator<Resource> iterator() {
-		Iterator<Resource> iterator = resources.iterator();
-		for (IteratorToIteratorFunction operation : functions) {
+	public Iterator<T> iterator() {
+		Iterator<T> iterator = resources.iterator();
+		for (IteratorToIteratorFunction<T> operation : functions) {
 			iterator = operation.apply(iterator);
 		}
 		return iterator;
@@ -97,8 +103,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return List containing all elements from the collection.
 	 */
-	public List<Resource> asList() {
-		return new LazyList<Resource>(iterator());
+	public List<T> asList() {
+		return new LazyList<T>(iterator());
 	}
 
 	/**
@@ -106,7 +112,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery children() {
+	public SlingQuery<T> children() {
 		return children("");
 	}
 
@@ -116,8 +122,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Children filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery children(String selector) {
-		return functionWithSelector(new ChildrenFunction(), selector);
+	public SlingQuery<T> children(String selector) {
+		return functionWithSelector(new ChildrenFunction<T>(provider), selector);
 	}
 
 	/**
@@ -127,8 +133,9 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Ancestor filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery closest(String selector) {
-		return functionWithSelector(new ClosestFunction(new Selector(selector, searchStrategy)), "");
+	public SlingQuery<T> closest(String selector) {
+		return functionWithSelector(new ClosestFunction<T>(
+				new Selector<T>(selector, searchStrategy, provider), provider), "");
 	}
 
 	/**
@@ -137,7 +144,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param index 0-based index
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery eq(int index) {
+	public SlingQuery<T> eq(int index) {
 		return slice(index, index);
 	}
 
@@ -147,8 +154,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param predicate Collection filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery filter(Predicate<Resource> predicate) {
-		return function(new FilterFunction(predicate));
+	public SlingQuery<T> filter(Predicate<T> predicate) {
+		return function(new FilterFunction<T>(predicate));
 	}
 
 	/**
@@ -158,7 +165,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery find() {
+	public SlingQuery<T> find() {
 		return find("");
 	}
 
@@ -170,8 +177,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector descendants filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery find(String selector) {
-		return functionWithSelector(new FindFunction(selector, searchStrategy), selector);
+	public SlingQuery<T> find(String selector) {
+		return functionWithSelector(new FindFunction<T>(selector, searchStrategy, provider), selector);
 	}
 
 	/**
@@ -179,7 +186,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery first() {
+	public SlingQuery<T> first() {
 		return eq(0);
 	}
 
@@ -192,8 +199,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Result filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery functionWithSelector(Function<?, ?> function, String selector) {
-		return function(new FunctionWithSelector(function, selector, searchStrategy));
+	public SlingQuery<T> functionWithSelector(Function<?, ?> function, String selector) {
+		return function(new FunctionWithSelector<T>(function, selector, searchStrategy, provider));
 	}
 
 	/**
@@ -202,8 +209,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Descendant selector
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery has(String selector) {
-		return functionWithSelector(new HasFunction(selector, searchStrategy), "");
+	public SlingQuery<T> has(String selector) {
+		return functionWithSelector(new HasFunction<T>(selector, searchStrategy, provider), "");
 	}
 
 	/**
@@ -211,8 +218,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery last() {
-		return functionWithSelector(new LastFunction(), "");
+	public SlingQuery<T> last() {
+		return functionWithSelector(new LastFunction<T>(), "");
 	}
 
 	/**
@@ -223,11 +230,11 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param clazz Class used to adapt the resources
 	 * @return new iterable containing succesfully adapted resources
 	 */
-	public <T> Iterable<T> map(final Class<? extends T> clazz) {
-		return new Iterable<T>() {
+	public <E> Iterable<E> map(final Class<? extends E> clazz) {
+		return new Iterable<E>() {
 			@Override
-			public Iterator<T> iterator() {
-				return new AdaptToIterator<T>(SlingQuery.this.iterator(), clazz);
+			public Iterator<E> iterator() {
+				return new AdaptToIterator<T, E>(SlingQuery.this.iterator(), clazz);
 			}
 		};
 	}
@@ -237,7 +244,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery next() {
+	public SlingQuery<T> next() {
 		return next("");
 	}
 
@@ -248,8 +255,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Next sibling filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery next(String selector) {
-		return functionWithSelector(new NextFunction(null), selector);
+	public SlingQuery<T> next(String selector) {
+		return functionWithSelector(new NextFunction<T>(null, provider), selector);
 	}
 
 	/**
@@ -257,7 +264,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery nextAll() {
+	public SlingQuery<T> nextAll() {
 		return nextAll("");
 	}
 
@@ -267,8 +274,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Following siblings filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery nextAll(String selector) {
-		return functionWithSelector(new NextFunction(new RejectingPredicate<Resource>()), selector);
+	public SlingQuery<T> nextAll(String selector) {
+		return functionWithSelector(new NextFunction<T>(new RejectingPredicate<T>(), provider), selector);
 	}
 
 	/**
@@ -278,7 +285,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param until Selector marking when the operation should stop
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery nextUntil(String until) {
+	public SlingQuery<T> nextUntil(String until) {
 		return nextUntil(until, "");
 	}
 
@@ -290,8 +297,9 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Following siblings filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery nextUntil(String until, String selector) {
-		return functionWithSelector(new NextFunction(new Selector(until, searchStrategy).asPredicate()),
+	public SlingQuery<T> nextUntil(String until, String selector) {
+		return functionWithSelector(
+				new NextFunction<T>(new Selector<T>(until, searchStrategy, provider).asPredicate(), provider),
 				selector);
 	}
 
@@ -301,8 +309,9 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Selector used to remove resources
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery not(String selector) {
-		return functionWithSelector(new NotFunction(new Selector(selector, searchStrategy)), "");
+	public SlingQuery<T> not(String selector) {
+		return functionWithSelector(new NotFunction<T>(new Selector<T>(selector, searchStrategy, provider)),
+				"");
 	}
 
 	/**
@@ -310,8 +319,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery parent() {
-		return functionWithSelector(new ParentFunction(), "");
+	public SlingQuery<T> parent() {
+		return functionWithSelector(new ParentFunction<T>(provider), "");
 	}
 
 	/**
@@ -319,7 +328,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery parents() {
+	public SlingQuery<T> parents() {
 		return parents("");
 	}
 
@@ -329,8 +338,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Parents filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery parents(String selector) {
-		return functionWithSelector(new ParentsFunction(new RejectingPredicate<Resource>()), selector);
+	public SlingQuery<T> parents(String selector) {
+		return functionWithSelector(new ParentsFunction<T>(new RejectingPredicate<T>(), provider), selector);
 	}
 
 	/**
@@ -339,9 +348,10 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param until Selector marking when the operation should stop
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery parentsUntil(String until) {
-		return functionWithSelector(new ParentsFunction(new Selector(until, searchStrategy).asPredicate()),
-				"");
+	public SlingQuery<T> parentsUntil(String until) {
+		return functionWithSelector(
+				new ParentsFunction<T>(new Selector<T>(until, searchStrategy, provider).asPredicate(),
+						provider), "");
 	}
 
 	/**
@@ -352,9 +362,10 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Parents filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery parentsUntil(String until, String selector) {
-		return functionWithSelector(new ParentsFunction(new Selector(until, searchStrategy).asPredicate()),
-				selector);
+	public SlingQuery<T> parentsUntil(String until, String selector) {
+		return functionWithSelector(
+				new ParentsFunction<T>(new Selector<T>(until, searchStrategy, provider).asPredicate(),
+						provider), selector);
 	}
 
 	/**
@@ -362,7 +373,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery prev() {
+	public SlingQuery<T> prev() {
 		return prev("");
 	}
 
@@ -373,8 +384,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Previous sibling filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery prev(String selector) {
-		return functionWithSelector(new PrevFunction(null), selector);
+	public SlingQuery<T> prev(String selector) {
+		return functionWithSelector(new PrevFunction<T>(null, provider), selector);
 	}
 
 	/**
@@ -382,7 +393,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery prevAll() {
+	public SlingQuery<T> prevAll() {
 		return prevAll("");
 	}
 
@@ -392,8 +403,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Previous siblings filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery prevAll(String selector) {
-		return functionWithSelector(new PrevFunction(new RejectingPredicate<Resource>()), selector);
+	public SlingQuery<T> prevAll(String selector) {
+		return functionWithSelector(new PrevFunction<T>(new RejectingPredicate<T>(), provider), selector);
 	}
 
 	/**
@@ -403,7 +414,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param until Selector marking when the operation should stop
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery prevUntil(String until) {
+	public SlingQuery<T> prevUntil(String until) {
 		return prevUntil(until, "");
 	}
 
@@ -415,8 +426,9 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Previous siblings filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery prevUntil(String until, String selector) {
-		return functionWithSelector(new PrevFunction(new Selector(until, searchStrategy).asPredicate()),
+	public SlingQuery<T> prevUntil(String until, String selector) {
+		return functionWithSelector(
+				new PrevFunction<T>(new Selector<T>(until, searchStrategy, provider).asPredicate(), provider),
 				selector);
 	}
 
@@ -427,8 +439,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param strategy Search strategy type
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery searchStrategy(SearchStrategy strategy) {
-		return new SlingQuery(this, strategy);
+	public SlingQuery<T> searchStrategy(SearchStrategy strategy) {
+		return new SlingQuery<T>(this, strategy);
 	}
 
 	/**
@@ -436,7 +448,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * 
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery siblings() {
+	public SlingQuery<T> siblings() {
 		return siblings("");
 	}
 
@@ -446,8 +458,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param selector Siblings filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery siblings(String selector) {
-		return functionWithSelector(new SiblingsFunction(), selector);
+	public SlingQuery<T> siblings(String selector) {
+		return functionWithSelector(new SiblingsFunction<T>(provider), selector);
 	}
 
 	/**
@@ -456,11 +468,11 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param from How many resources to cut out
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery slice(int from) {
+	public SlingQuery<T> slice(int from) {
 		if (from < 0) {
 			throw new IndexOutOfBoundsException();
 		}
-		return function(new SliceFunction(from));
+		return function(new SliceFunction<T>(from));
 	}
 
 	/**
@@ -471,18 +483,18 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @param to High endpoint (inclusive) of the subcollection
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
-	public SlingQuery slice(int from, int to) {
+	public SlingQuery<T> slice(int from, int to) {
 		if (from < 0) {
 			throw new IndexOutOfBoundsException();
 		}
 		if (from > to) {
 			throw new IllegalArgumentException();
 		}
-		return function(new SliceFunction(from, to));
+		return function(new SliceFunction<T>(from, to));
 	}
 
-	private SlingQuery function(IteratorToIteratorFunction function) {
-		SlingQuery newQuery = new SlingQuery(this);
+	private SlingQuery<T> function(IteratorToIteratorFunction<T> function) {
+		SlingQuery<T> newQuery = new SlingQuery<T>(this);
 		newQuery.functions.add(function);
 		return newQuery;
 	}

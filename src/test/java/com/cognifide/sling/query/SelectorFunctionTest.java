@@ -22,68 +22,68 @@ public class SelectorFunctionTest {
 
 	@Test
 	public void testEq() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":eq(2)");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children(":eq(2)");
 		assertResourceSetEquals(query.iterator(), "configvalue_0");
 	}
 
 	@Test
 	public void testFirst() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":first");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children(":first");
 		assertResourceSetEquals(query.iterator(), "richtext");
 	}
 
 	@Test
 	public void testLast() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":last");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children(":last");
 		assertResourceSetEquals(query.iterator(), "configvalue_2");
 	}
 
 	@Test
 	public void testGt() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":gt(2)");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children(":gt(2)");
 		assertResourceSetEquals(query.iterator(), "configvalue_1", "configvalue_2");
 	}
 
 	@Test
 	public void testLt() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":lt(3)");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children(":lt(3)");
 		assertResourceSetEquals(query.iterator(), "richtext", "configvalue", "configvalue_0");
 	}
 
 	@Test
 	public void testHas() {
-		SlingQuery query = $(tree.getChild("home/java")).children(":has([key=helloWorld])");
+		SlingQuery<Resource> query = $(tree.getChild("home/java")).children(":has([key=helloWorld])");
 		assertResourceSetEquals(query.iterator(), "labels");
 	}
 
 	@Test
 	public void testParent() {
-		SlingQuery query = $(tree.getChild("home/java/email/jcr:content/par")).children(":parent");
+		SlingQuery<Resource> query = $(tree.getChild("home/java/email/jcr:content/par")).children(":parent");
 		assertResourceSetEquals(query.iterator(), "email");
 	}
 
 	@Test
 	public void testOdd() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":odd");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children(":odd");
 		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_1");
 	}
 
 	@Test
 	public void testEven() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":even");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children(":even");
 		assertResourceSetEquals(query.iterator(), "richtext", "configvalue_0", "configvalue_2");
 	}
 
 	@Test
 	public void testSimpleNot() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":not(demo/core/components/richtext)");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children(":not(demo/core/components/richtext)");
 		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1",
 				"configvalue_2");
 	}
 
 	@Test
 	public void testComplexNot() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":not(:first):not(:last)");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children(":not(:first):not(:last)");
 		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1");
 	}
 }

@@ -15,97 +15,97 @@ public class AttributeOperatorTest {
 
 	@Test
 	public void testEquals() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title=CQ Commons demo]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title=CQ Commons demo]");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testNotEquals() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title=123]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title=123]");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testContains() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title*=mmons de]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title*=mmons de]");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testNotContains() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title*=123]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title*=123]");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testContainsWord() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title~=Commons]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title~=Commons]");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testNotContainsWord() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title~=mmons de]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title~=mmons de]");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testEndsWith() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title$=demo]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title$=demo]");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testNotEndsWith() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title$=CQ]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title$=CQ]");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testNotEquals2() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title!=123]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title!=123]");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testNotNotEquals() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title!=CQ Commons demo]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title!=CQ Commons demo]");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testStartsWith() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title^=CQ]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title^=CQ]");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testNotStartsWith() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title^=Commons]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title^=Commons]");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testHas() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title]");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testNotHas() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title123]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title123]");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testMultipleAttributes() {
-		SlingQuery query = $(tree).children("cq:PageContent[jcr:title=CQ Commons demo][jcr:createdBy=admin]");
+		SlingQuery<Resource> query = $(tree).children("cq:PageContent[jcr:title=CQ Commons demo][jcr:createdBy=admin]");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testNotMultipleAttributes() {
-		SlingQuery query = $(tree).children(
+		SlingQuery<Resource> query = $(tree).children(
 				"cq:PageContent[jcr:title=CQ Commons demo aaa][jcr:createdBy=admin]");
 		assertEmptyIterator(query.iterator());
 	}

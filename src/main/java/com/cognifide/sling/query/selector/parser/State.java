@@ -5,7 +5,7 @@ import org.apache.commons.lang.ArrayUtils;
 public enum State {
 	START {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (c == '/') {
 				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
 				context.append(c);
@@ -26,7 +26,7 @@ public enum State {
 	},
 	IDLE {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (c == '[') {
 				context.setState(State.ATTRIBUTE_KEY);
 			} else if (c == ':') {
@@ -39,7 +39,7 @@ public enum State {
 	},
 	RESOURCE_TYPE {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (c == '/') {
 				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
 				context.append(c);
@@ -63,7 +63,7 @@ public enum State {
 	},
 	RESOURCE_TYPE_WITH_SLASHES {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (c == '[') {
 				context.setState(State.ATTRIBUTE_KEY);
 				context.setResourceType();
@@ -84,7 +84,7 @@ public enum State {
 	},
 	NAME {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (c == '[') {
 				context.setResourceName();
 				context.setState(State.ATTRIBUTE_KEY);
@@ -104,7 +104,7 @@ public enum State {
 	},
 	ESCAPED_NAME {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (c == '\'') {
 				context.setResourceName();
 				context.setState(IDLE);
@@ -115,7 +115,7 @@ public enum State {
 	},
 	ATTRIBUTE_KEY {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (c == ']') {
 				context.setAttributeKey();
 				context.addAttribute();
@@ -131,7 +131,7 @@ public enum State {
 	},
 	ATTRIBUTE_OPERATOR {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (!ArrayUtils.contains(OPERATORS, c)) {
 				context.setAttributeOperator();
 				context.append(c);
@@ -143,7 +143,7 @@ public enum State {
 	},
 	ATTRIBUTE_VALUE {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (c == ']') {
 				context.setState(State.IDLE);
 				context.setAttributeValue();
@@ -155,7 +155,7 @@ public enum State {
 	},
 	FUNCTION {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (c == ':') {
 				context.addFunction();
 			} else if (c == '(') {
@@ -173,7 +173,7 @@ public enum State {
 	},
 	FUNCTION_ARGUMENT {
 		@Override
-		public void process(ParserContext context, char c) {
+		public void process(ParserContext<?> context, char c) {
 			if (c == ')') {
 				if (context.decreaseParentheses() == 0) {
 					context.addFunction();
@@ -189,7 +189,7 @@ public enum State {
 			}
 		}
 	};
-	public abstract void process(ParserContext context, char c);
+	public abstract void process(ParserContext<?> context, char c);
 
 	private static final char[] OPERATORS = "*~$!^=".toCharArray();
 }

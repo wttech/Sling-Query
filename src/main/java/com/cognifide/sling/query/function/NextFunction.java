@@ -2,23 +2,25 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
-
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.iterator.SiblingsIterator;
 import com.cognifide.sling.query.iterator.SiblingsIterator.Type;
 
-public class NextFunction implements ResourceToIteratorFunction {
+public class NextFunction<T> implements ResourceToIteratorFunction<T> {
 
-	private final Predicate<Resource> until;
+	private final Predicate<T> until;
+	
+	private final TreeStructureProvider<T> provider;
 
-	public NextFunction(Predicate<Resource> until) {
+	public NextFunction(Predicate<T> until, TreeStructureProvider<T> provider) {
 		this.until = until;
+		this.provider = provider;
 	}
 
 	@Override
-	public Iterator<Resource> apply(Resource resource) {
-		return new SiblingsIterator(until, resource, Type.NEXT);
+	public Iterator<T> apply(T resource) {
+		return new SiblingsIterator<T>(until, resource, Type.NEXT, provider);
 	}
 }

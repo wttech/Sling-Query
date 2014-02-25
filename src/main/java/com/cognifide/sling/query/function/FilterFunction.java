@@ -2,23 +2,21 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
-
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
 
-public class FilterFunction implements IteratorToIteratorFunction {
+public class FilterFunction<T> implements IteratorToIteratorFunction<T> {
 
-	private final Predicate<Resource> predicate;
-
-	public FilterFunction(Predicate<Resource> predicate) {
+	private final Predicate<T> predicate;
+	
+	public FilterFunction(Predicate<T> predicate) {
 		this.predicate = predicate;
 	}
 
 	@Override
-	public Iterator<Resource> apply(Iterator<Resource> input) {
-		return new FilteringIteratorWrapper<Resource>(input, predicate);
+	public Iterator<T> apply(Iterator<T> input) {
+		return new FilteringIteratorWrapper<T>(input, predicate);
 	}
 
 }

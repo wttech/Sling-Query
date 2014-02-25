@@ -16,7 +16,7 @@ public class FilterTest {
 
 	@Test
 	public void testFilter() {
-		SlingQuery query = $(tree).find().filter(new Predicate<Resource>() {
+		SlingQuery<Resource> query = $(tree).find().filter(new Predicate<Resource>() {
 			@Override
 			public boolean accepts(Resource resource) {
 				return "configParsys".equals(resource.getName());
@@ -27,7 +27,7 @@ public class FilterTest {
 
 	@Test
 	public void testFilterOnEmptyCollection() {
-		SlingQuery query = $().filter(new Predicate<Resource>() {
+		SlingQuery<Resource> query = $().filter(new Predicate<Resource>() {
 			@Override
 			public boolean accepts(Resource resource) {
 				return true;

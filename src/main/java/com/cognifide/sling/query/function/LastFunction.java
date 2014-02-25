@@ -2,20 +2,19 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
-
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.ArrayIterator;
 
-public class LastFunction implements IteratorToIteratorFunction {
+public class LastFunction<T> implements IteratorToIteratorFunction<T> {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Iterator<Resource> apply(Iterator<Resource> input) {
-		Resource lastElement = null;
+	public Iterator<T> apply(Iterator<T> input) {
+		T lastElement = null;
 		while (input.hasNext()) {
 			lastElement = input.next();
 		}
-		return new ArrayIterator<Resource>(lastElement);
+		return new ArrayIterator<T>(lastElement);
 	}
 
 }

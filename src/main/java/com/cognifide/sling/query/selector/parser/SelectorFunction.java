@@ -3,6 +3,7 @@ package com.cognifide.sling.query.selector.parser;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.selector.FunctionType;
@@ -17,8 +18,8 @@ public class SelectorFunction {
 		this.argument = argument;
 	}
 
-	public Function<?, ?> function(SearchStrategy strategy) {
-		return function.getFunction(argument, strategy);
+	public <T> Function<?, ?> function(SearchStrategy strategy, TreeStructureProvider<T> provider) {
+		return function.getFunction(argument, strategy, provider);
 	}
 
 	@Override

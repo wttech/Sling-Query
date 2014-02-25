@@ -1,7 +1,6 @@
 package com.cognifide.sling.query.selector;
 
-import org.apache.sling.api.resource.Resource;
-
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
@@ -14,48 +13,55 @@ import com.cognifide.sling.query.function.SliceFunction;
 public enum FunctionType {
 	EQ {
 		@Override
-		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
+		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+				TreeStructureProvider<T> providerw) {
 			int index = Integer.parseInt(argument);
-			return new SliceFunction(index, index);
+			return new SliceFunction<T>(index, index);
 		}
 	},
 	FIRST {
 		@Override
-		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
-			return new SliceFunction(0, 0);
+		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+				TreeStructureProvider<T> provider) {
+			return new SliceFunction<T>(0, 0);
 		}
 	},
 	LAST {
 		@Override
-		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
-			return new LastFunction();
+		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+				TreeStructureProvider<T> provider) {
+			return new LastFunction<T>();
 		}
 	},
 	GT {
 		@Override
-		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
-			return new SliceFunction(Integer.valueOf(argument) + 1);
+		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+				TreeStructureProvider<T> provider) {
+			return new SliceFunction<T>(Integer.valueOf(argument) + 1);
 		}
 	},
 	LT {
 		@Override
-		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
-			return new SliceFunction(0, Integer.valueOf(argument) - 1);
+		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+				TreeStructureProvider<T> provider) {
+			return new SliceFunction<T>(0, Integer.valueOf(argument) - 1);
 		}
 	},
 	HAS {
 		@Override
-		public Function<?, ?> getFunction(String selector, SearchStrategy strategy) {
-			return new HasFunction(selector, strategy);
+		public <T> Function<?, ?> getFunction(String selector, SearchStrategy strategy,
+				TreeStructureProvider<T> provider) {
+			return new HasFunction<T>(selector, strategy, provider);
 		}
 	},
 	PARENT {
 		@Override
-		public Function<?, ?> getFunction(String selector, SearchStrategy strategy) {
-			return new ResourceToResourceFunction() {
+		public <T> Function<?, ?> getFunction(String selector, SearchStrategy strategy,
+				final TreeStructureProvider<T> provider) {
+			return new ResourceToResourceFunction<T>() {
 				@Override
-				public Resource apply(Resource resource) {
-					if (resource.listChildren().hasNext()) {
+				public T apply(T resource) {
+					if (provider.getChildren(resource).hasNext()) {
 						return resource;
 					} else {
 						return null;
@@ -66,11 +72,12 @@ public enum FunctionType {
 	},
 	EMPTY {
 		@Override
-		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
-			return new ResourceToResourceFunction() {
+		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+				final TreeStructureProvider<T> provider) {
+			return new ResourceToResourceFunction<T>() {
 				@Override
-				public Resource apply(Resource resource) {
-					if (resource.listChildren().hasNext()) {
+				public T apply(T resource) {
+					if (provider.getChildren(resource).hasNext()) {
 						return null;
 					}
 					return resource;
@@ -80,22 +87,26 @@ public enum FunctionType {
 	},
 	ODD {
 		@Override
-		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
-			return new EvenFunction(false);
+		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+				TreeStructureProvider<T> provider) {
+			return new EvenFunction<T>(false);
 		}
 	},
 	EVEN {
 		@Override
-		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
-			return new EvenFunction(true);
+		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+				TreeStructureProvider<T> provider) {
+			return new EvenFunction<T>(true);
 		}
 	},
 	NOT {
 		@Override
-		public Function<?, ?> getFunction(String argument, SearchStrategy strategy) {
-			return new NotFunction(new Selector(argument, strategy));
+		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+				TreeStructureProvider<T> provider) {
+			return new NotFunction<T>(new Selector<T>(argument, strategy, provider));
 		}
 	};
 
-	public abstract Function<?, ?> getFunction(String argument, SearchStrategy strategy);
+	public abstract <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+			TreeStructureProvider<T> provider);
 }

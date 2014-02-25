@@ -2,12 +2,10 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
-
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.SliceIterator;
 
-public class SliceFunction implements IteratorToIteratorFunction {
+public class SliceFunction<T> implements IteratorToIteratorFunction<T> {
 
 	private final int from;
 
@@ -24,11 +22,11 @@ public class SliceFunction implements IteratorToIteratorFunction {
 	}
 
 	@Override
-	public Iterator<Resource> apply(Iterator<Resource> resources) {
+	public Iterator<T> apply(Iterator<T> resources) {
 		if (to == null) {
-			return new SliceIterator<Resource>(resources, from);
+			return new SliceIterator<T>(resources, from);
 		} else {
-			return new SliceIterator<Resource>(resources, from, to);
+			return new SliceIterator<T>(resources, from, to);
 		}
 	}
 }

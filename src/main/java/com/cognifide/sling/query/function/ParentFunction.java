@@ -1,14 +1,19 @@
 package com.cognifide.sling.query.function;
 
-import org.apache.sling.api.resource.Resource;
-
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 
-public class ParentFunction implements ResourceToResourceFunction {
+public class ParentFunction<T> implements ResourceToResourceFunction<T> {
+
+	private final TreeStructureProvider<T> provider;
+
+	public ParentFunction(TreeStructureProvider<T> provider) {
+		this.provider = provider;
+	}
 
 	@Override
-	public Resource apply(Resource resource) {
-		return resource.getParent();
+	public T apply(T resource) {
+		return provider.getParent(resource);
 	}
 
 }

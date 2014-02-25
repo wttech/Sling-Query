@@ -2,35 +2,36 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
-
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.iterator.tree.BfsTreeIterator;
 import com.cognifide.sling.query.iterator.tree.DfsTreeIterator;
-import com.cognifide.sling.query.iterator.tree.JcrTreeIterator;
 
-public class FindFunction implements ResourceToIteratorFunction {
+public class FindFunction<T> implements ResourceToIteratorFunction<T> {
 
 	private final String preFilteringSelector;
+	
+	private final TreeStructureProvider<T> provider;
 
 	private SearchStrategy strategy;
 
-	public FindFunction(String preFilteringSelector, SearchStrategy searchStrategy) {
+	public FindFunction(String preFilteringSelector, SearchStrategy searchStrategy, TreeStructureProvider<T> provider) {
 		this.preFilteringSelector = preFilteringSelector;
 		this.strategy = searchStrategy;
+		this.provider = provider;
 	}
 
 	@Override
-	public Iterator<Resource> apply(Resource resource) {
+	public Iterator<T> apply(T resource) {
 		switch (strategy) {
 			case BFS:
-				return new BfsTreeIterator(resource);
+				return new BfsTreeIterator<T>(resource, provider);
 			case JCR:
-				return new JcrTreeIterator(preFilteringSelector, resource);
+				return provider.query(preFilteringSelector, resource);
 			case DFS:
 			default:
-				return new DfsTreeIterator(resource);
+				return new DfsTreeIterator<T>(resource, provider);
 		}
 	}
 }

@@ -3,17 +3,17 @@ package com.cognifide.sling.query.iterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.adapter.Adaptable;
 
-public class AdaptToIterator<T> implements Iterator<T> {
+public class AdaptToIterator<F, T> implements Iterator<T> {
 
-	private final Iterator<Resource> iterator;
+	private final Iterator<F> iterator;
 
 	private final Class<? extends T> clazz;
 
 	private T currentModel;
 
-	public AdaptToIterator(Iterator<Resource> iterator, Class<? extends T> clazz) {
+	public AdaptToIterator(Iterator<F> iterator, Class<? extends T> clazz) {
 		this.clazz = clazz;
 		this.iterator = iterator;
 	}
@@ -38,7 +38,10 @@ public class AdaptToIterator<T> implements Iterator<T> {
 
 	public void getCurrentModel() {
 		while (iterator.hasNext()) {
-			currentModel = iterator.next().adaptTo(clazz);
+			F element = iterator.next();
+			if (element instanceof Adaptable) {
+				currentModel = ((Adaptable) element).adaptTo(clazz);
+			}
 			if (currentModel != null) {
 				break;
 			}

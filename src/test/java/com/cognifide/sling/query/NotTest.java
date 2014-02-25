@@ -15,19 +15,19 @@ public class NotTest {
 
 	@Test
 	public void testNot() {
-		SlingQuery query = $(tree).children().not("cq:Page");
+		SlingQuery<Resource> query = $(tree).children().not("cq:Page");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testNotWithModifier() {
-		SlingQuery query = $(tree).children("cq:Page").not(":first");
+		SlingQuery<Resource> query = $(tree).children("cq:Page").not(":first");
 		assertResourceSetEquals(query.iterator(), "home");
 	}
 
 	@Test
 	public void testNotOnEmptyCollection() {
-		SlingQuery query = $().not("cq:Page");
+		SlingQuery<Resource> query = $().not("cq:Page");
 		assertEmptyIterator(query.iterator());
 	}
 }

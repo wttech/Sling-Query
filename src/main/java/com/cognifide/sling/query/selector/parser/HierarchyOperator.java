@@ -1,7 +1,6 @@
 package com.cognifide.sling.query.selector.parser;
 
-import org.apache.sling.api.resource.Resource;
-
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.function.ChildrenFunction;
@@ -13,26 +12,26 @@ public enum HierarchyOperator {
 //@formatter:off
 	CHILD('>') {
 		@Override
-		public Function<?, ?> getFunction(SearchStrategy strategy) {
-			return new ChildrenFunction();
+		public <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeStructureProvider<T> provider) {
+			return new ChildrenFunction<T>(provider);
 		}
 	},
 	DESCENDANT((char) 0) {
 		@Override
-		public Function<?, ?> getFunction(SearchStrategy strategy) {
-			return new FindFunction("", strategy);
+		public <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeStructureProvider<T> provider) {
+			return new FindFunction<T>("", strategy, provider);
 		}
 	},
 	NEXT_ADJACENT('+') {
 		@Override
-		public Function<?, ?> getFunction(SearchStrategy strategy) {
-			return new NextFunction(null);
+		public <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeStructureProvider<T> provider) {
+			return new NextFunction<T>(null, provider);
 		}
 	},
 	NEXT_SIBLINGS('~') {
 		@Override
-		public Function<?, ?> getFunction(SearchStrategy strategy) {
-			return new NextFunction(new RejectingPredicate<Resource>());
+		public <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeStructureProvider<T> provider) {
+			return new NextFunction<T>(new RejectingPredicate<T>(), provider);
 		}
 	};
 //@formatter:on
@@ -43,7 +42,7 @@ public enum HierarchyOperator {
 		this.c = c;
 	}
 
-	public abstract Function<?, ?> getFunction(SearchStrategy strategy);
+	public abstract <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeStructureProvider<T> provider);
 
 	public static HierarchyOperator findByCharacter(char c) {
 		for (HierarchyOperator operator : values()) {

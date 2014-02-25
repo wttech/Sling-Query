@@ -2,29 +2,28 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
-
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
 import com.cognifide.sling.query.selector.Selector;
 
-public class HasFunction implements ResourceToResourceFunction {
+public class HasFunction<T> implements ResourceToResourceFunction<T> {
 
-	private FindFunction findFunction;
+	private final FindFunction<T> findFunction;
 
-	private Predicate<Resource> predicate;
-
-	public HasFunction(String selectorString, SearchStrategy searchStrategy) {
-		this.findFunction = new FindFunction(selectorString, searchStrategy);
-		this.predicate = new Selector(selectorString, searchStrategy).asPredicate();
+	private final Predicate<T> predicate;
+	
+	public HasFunction(String selectorString, SearchStrategy searchStrategy, TreeStructureProvider<T> provider) {
+		this.findFunction = new FindFunction<T>(selectorString, searchStrategy, provider);
+		this.predicate = new Selector<T>(selectorString, searchStrategy, provider).asPredicate();
 	}
 
 	@Override
-	public Resource apply(Resource input) {
-		Iterator<Resource> iterator = findFunction.apply(input);
-		iterator = new FilteringIteratorWrapper<Resource>(iterator, predicate);
+	public T apply(T input) {
+		Iterator<T> iterator = findFunction.apply(input);
+		iterator = new FilteringIteratorWrapper<T>(iterator, predicate);
 		if (iterator.hasNext()) {
 			return input;
 		} else {

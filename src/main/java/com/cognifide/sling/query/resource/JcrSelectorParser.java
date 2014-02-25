@@ -1,13 +1,17 @@
-package com.cognifide.sling.query.selector.parser;
+package com.cognifide.sling.query.resource;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.predicate.PropertyPredicate;
+import com.cognifide.sling.query.selector.parser.ParserContext;
+import com.cognifide.sling.query.selector.parser.SelectorParser;
+import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
 public final class JcrSelectorParser {
 
@@ -15,12 +19,11 @@ public final class JcrSelectorParser {
 	}
 
 	public static String parse(String selector, String rootPath) {
-		ParserContext context = SelectorParser.parse(selector, SearchStrategy.DFS); // search strategy is not
-																					// used here
+		ParserContext<Resource> context = SelectorParser.parse(selector, SearchStrategy.DFS, new ResourceTreeProvider());
 		if (context.getSegments().isEmpty()) {
 			return prepareQuery(rootPath, null, null, Collections.<PropertyPredicate> emptyList());
 		} else {
-			SelectorSegment s = context.getSegments().get(0);
+			SelectorSegment<Resource> s = context.getSegments().get(0);
 			return prepareQuery(rootPath, s.getResourceType(), s.getResourceName(), s.getAttributes());
 		}
 	}

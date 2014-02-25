@@ -3,22 +3,24 @@ package com.cognifide.sling.query.iterator;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-import org.apache.sling.api.resource.Resource;
-
 import com.cognifide.sling.query.LazyList;
+import com.cognifide.sling.query.TreeStructureProvider;
 import com.cognifide.sling.query.api.Predicate;
 
-public class SiblingsIterator extends AbstractIterator<Resource> {
+public class SiblingsIterator<T> extends AbstractIterator<T> {
 
-	private final Predicate<Resource> until;
+	private final Predicate<T> until;
 
-	private final ListIterator<Resource> siblings;
+	private final ListIterator<T> siblings;
 
 	private final Type type;
 
+	private final TreeStructureProvider<T> provider;
+
 	private boolean finished;
 
-	public SiblingsIterator(Predicate<Resource> until, Resource resource, Type type) {
+	public SiblingsIterator(Predicate<T> until, T resource, Type type, TreeStructureProvider<T> provider) {
+		this.provider = provider;
 		this.until = until;
 		this.siblings = getRewindedIterator(resource, type);
 		this.finished = false;
@@ -26,12 +28,12 @@ public class SiblingsIterator extends AbstractIterator<Resource> {
 	}
 
 	@Override
-	protected Resource getElement() {
+	protected T getElement() {
 		if (finished) {
 			return null;
 		}
 		while (type.canAdvance(siblings)) {
-			Resource resource = type.advance(siblings);
+			T resource = type.advance(siblings);
 			if (until != null && until.accepts(resource)) {
 				finished = true;
 				return null;
@@ -44,19 +46,20 @@ public class SiblingsIterator extends AbstractIterator<Resource> {
 		return null;
 	}
 
-	private static ListIterator<Resource> getRewindedIterator(Resource resource, Type type) {
-		String resourceName = resource.getName();
-		Resource parent = resource.getParent();
-		Iterator<Resource> iterator;
+	@SuppressWarnings("unchecked")
+	private ListIterator<T> getRewindedIterator(T resource, Type type) {
+		String resourceName = provider.getName(resource);
+		T parent = provider.getParent(resource);
+		Iterator<T> iterator;
 		if (parent == null) {
-			iterator = new ArrayIterator<Resource>(resource);
+			iterator = new ArrayIterator<T>(resource);
 		} else {
-			iterator = parent.listChildren();
+			iterator = provider.getChildren(parent);
 		}
-		ListIterator<Resource> listIterator = new LazyList<Resource>(iterator).listIterator();
+		ListIterator<T> listIterator = new LazyList<T>(iterator).listIterator();
 		while (listIterator.hasNext()) {
-			Resource sibling = listIterator.next();
-			if (sibling.getName().equals(resourceName)) {
+			T sibling = listIterator.next();
+			if (provider.getName(sibling).equals(resourceName)) {
 				break;
 			}
 		}
@@ -69,29 +72,29 @@ public class SiblingsIterator extends AbstractIterator<Resource> {
 	public enum Type {
 		NEXT {
 			@Override
-			public boolean canAdvance(ListIterator<Resource> iterator) {
+			public boolean canAdvance(ListIterator<?> iterator) {
 				return iterator.hasNext();
 			}
 
 			@Override
-			public Resource advance(ListIterator<Resource> iterator) {
+			public <T> T advance(ListIterator<T> iterator) {
 				return iterator.next();
 			}
 		},
 		PREV {
 			@Override
-			public boolean canAdvance(ListIterator<Resource> iterator) {
+			public boolean canAdvance(ListIterator<?> iterator) {
 				return iterator.hasPrevious();
 			}
 
 			@Override
-			public Resource advance(ListIterator<Resource> iterator) {
+			public <T> T advance(ListIterator<T> iterator) {
 				return iterator.previous();
 			}
 		};
 
-		public abstract boolean canAdvance(ListIterator<Resource> iterator);
+		public abstract boolean canAdvance(ListIterator<?> iterator);
 
-		public abstract Resource advance(ListIterator<Resource> iterator);
+		public abstract <T> T advance(ListIterator<T> iterator);
 	}
 }

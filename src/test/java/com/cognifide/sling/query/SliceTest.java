@@ -23,50 +23,50 @@ public class SliceTest {
 
 	@Test
 	public void testSlice() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children().slice(2, 4);
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children().slice(2, 4);
 		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1", "configvalue_2");
 	}
 
 	@Test
 	public void testSliceOne() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children().slice(2, 2);
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children().slice(2, 2);
 		assertResourceSetEquals(query.iterator(), "configvalue_0");
 	}
 
 	@Test
 	public void testEq() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children().eq(2);
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children().eq(2);
 		assertResourceSetEquals(query.iterator(), "configvalue_0");
 	}
 
 	@Test
 	public void testEqOnEmpty() {
-		SlingQuery query = $().eq(0);
+		SlingQuery<Resource> query = $().eq(0);
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testFirst() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children().first();
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children().first();
 		assertResourceSetEquals(query.iterator(), "richtext");
 	}
 
 	@Test
 	public void testFirstOnEmpty() {
-		SlingQuery query = $().first();
+		SlingQuery<Resource> query = $().first();
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testSliceAll() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children().slice(0, 4);
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children().slice(0, 4);
 		assertResourceSetEquals(query.iterator(), "richtext", "configvalue", "configvalue_0",
 				"configvalue_1", "configvalue_2");
 	}
 
 	@Test
 	public void testSliceAllBigTo() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children().slice(0, 10);
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children().slice(0, 10);
 		assertResourceSetEquals(query.iterator(), "richtext", "configvalue", "configvalue_0",
 				"configvalue_1", "configvalue_2");
 	}

@@ -17,63 +17,63 @@ public class NextPrevAllTest {
 
 	@Test
 	public void testNextAll() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_0")).nextAll();
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH).getChild("configvalue_0")).nextAll();
 		assertResourceSetEquals(query.iterator(), "configvalue_1", "configvalue_2");
 	}
 
 	@Test
 	public void testPrevAll() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_0")).prevAll();
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH).getChild("configvalue_0")).prevAll();
 		assertResourceSetEquals(query.iterator(), "richtext", "configvalue");
 	}
 
 	@Test
 	public void testNextAllFiltered() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue")).nextAll(
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH).getChild("configvalue")).nextAll(
 				"demo/core/components/configValue");
 		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1", "configvalue_2");
 	}
 
 	@Test
 	public void testPrevAllFiltered() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_0")).prevAll(
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH).getChild("configvalue_0")).prevAll(
 				"demo/core/components/richtext");
 		assertResourceSetEquals(query.iterator(), "richtext");
 	}
 
 	@Test
 	public void testNextAllInvalidFiltered() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue")).nextAll("cq:Undefined");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH).getChild("configvalue")).nextAll("cq:Undefined");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testPrevAllInvalidFiltered() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue")).prevAll("cq:Undefined");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH).getChild("configvalue")).prevAll("cq:Undefined");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testNextAllOnLast() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).nextAll();
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).nextAll();
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testPrevAllOnFirst() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("richtext")).prevAll();
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH).getChild("richtext")).prevAll();
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testNextAllOnRoot() {
-		SlingQuery query = $(tree).nextAll();
+		SlingQuery<Resource> query = $(tree).nextAll();
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testPrevAllOnRoot() {
-		SlingQuery query = $(tree).prevAll();
+		SlingQuery<Resource> query = $(tree).prevAll();
 		assertEmptyIterator(query.iterator());
 	}
 }

@@ -1,5 +1,7 @@
 package com.cognifide.sling.query.iterator;
 
+import java.util.Iterator;
+
 public class ArrayIterator<T> extends AbstractIterator<T> {
 
 	private final T[] elements;
@@ -8,6 +10,11 @@ public class ArrayIterator<T> extends AbstractIterator<T> {
 
 	public ArrayIterator(T... elements) {
 		this.elements = elements;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> Iterator<T> getEmptyIterator() {
+		return new ArrayIterator<T>();
 	}
 
 	@Override

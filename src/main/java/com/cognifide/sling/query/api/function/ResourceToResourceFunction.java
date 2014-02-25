@@ -10,11 +10,11 @@ import com.cognifide.sling.query.api.Function;
  * @author Tomasz Rękawek
  * 
  */
-public interface ResourceToResourceFunction extends Function<Resource, Resource> {
+public interface ResourceToResourceFunction<T> extends Function<T, T> {
 
 	/**
 	 * Transform {@link Resource} into another {@link Resource}.
 	 */
-	Resource apply(Resource input);
+	T apply(T input);
 
 }

@@ -16,7 +16,7 @@ public class HasTest {
 
 	@Test
 	public void testHas() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children().has("demo/core/components/configValue");
+		SlingQuery<Resource> query = $(tree.getChild(PAR_PATH)).children().has("demo/core/components/configValue");
 		assertResourceSetEquals(query.iterator(), "labels");
 	}
 }

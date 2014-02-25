@@ -2,8 +2,6 @@ package com.cognifide.sling.query;
 
 import java.util.Iterator;
 
-import org.apache.sling.api.resource.Resource;
-
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
@@ -14,15 +12,16 @@ public final class IteratorFactory {
 	private IteratorFactory() {
 	}
 
-	public static Iterator<Resource> getIterator(Function<?, ?> function, Iterator<Resource> parentIterator) {
+	@SuppressWarnings("unchecked")
+	public static <T> Iterator<T> getIterator(Function<?, ?> function, Iterator<T> parentIterator) {
 		if (function instanceof ResourceToResourceFunction) {
-			ResourceToIteratorFunction wrappingFunction = new ResourceToIteratorWrapperFunction(
-					(ResourceToResourceFunction) function);
-			return new FunctionIterator<Resource>(wrappingFunction, parentIterator);
+			ResourceToIteratorFunction<T> wrappingFunction = new ResourceToIteratorWrapperFunction<T>(
+					(ResourceToResourceFunction<T>) function);
+			return new FunctionIterator<T>(wrappingFunction, parentIterator);
 		} else if (function instanceof ResourceToIteratorFunction) {
-			return new FunctionIterator<Resource>((ResourceToIteratorFunction) function, parentIterator);
+			return new FunctionIterator<T>((ResourceToIteratorFunction<T>) function, parentIterator);
 		} else if (function instanceof IteratorToIteratorFunction) {
-			return ((IteratorToIteratorFunction) function).apply(parentIterator);
+			return ((IteratorToIteratorFunction<T>) function).apply(parentIterator);
 		} else {
 			throw new IllegalArgumentException("Don't know how to handle " + function.toString());
 		}

@@ -17,19 +17,19 @@ public class ClosestTest {
 
 	@Test
 	public void testClosest() {
-		SlingQuery query = $(tree.getChild(PATH)).closest("cq:Page");
+		SlingQuery<Resource> query = $(tree.getChild(PATH)).closest("cq:Page");
 		assertResourceSetEquals(query.iterator(), "labels");
 	}
 
 	@Test
 	public void testNoClosest() {
-		SlingQuery query = $(tree.getChild(PATH)).closest("cq:Undefined");
+		SlingQuery<Resource> query = $(tree.getChild(PATH)).closest("cq:Undefined");
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testClosestOnRoot() {
-		SlingQuery query = $(tree).closest("cq:Page");
+		SlingQuery<Resource> query = $(tree).closest("cq:Page");
 		assertResourceSetEquals(query.iterator(), "/");
 	}
 }
