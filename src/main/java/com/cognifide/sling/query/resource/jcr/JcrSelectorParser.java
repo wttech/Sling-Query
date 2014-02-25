@@ -1,15 +1,12 @@
-package com.cognifide.sling.query.resource;
+package com.cognifide.sling.query.resource.jcr;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.api.SearchStrategy;
-import com.cognifide.sling.query.predicate.PropertyPredicate;
-import com.cognifide.sling.query.selector.parser.ParserContext;
+import com.cognifide.sling.query.selector.parser.Attribute;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
 import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
@@ -19,17 +16,17 @@ public final class JcrSelectorParser {
 	}
 
 	public static String parse(String selector, String rootPath) {
-		ParserContext<Resource> context = SelectorParser.parse(selector, SearchStrategy.DFS, new ResourceTreeProvider());
-		if (context.getSegments().isEmpty()) {
-			return prepareQuery(rootPath, null, null, Collections.<PropertyPredicate> emptyList());
+		List<SelectorSegment> segments = SelectorParser.parse(selector);
+		if (segments.isEmpty()) {
+			return prepareQuery(rootPath, null, null, Collections.<Attribute> emptyList());
 		} else {
-			SelectorSegment<Resource> s = context.getSegments().get(0);
-			return prepareQuery(rootPath, s.getResourceType(), s.getResourceName(), s.getAttributes());
+			SelectorSegment s = segments.get(0);
+			return prepareQuery(rootPath, s.getType(), s.getName(), s.getAttributes());
 		}
 	}
 
 	private static String prepareQuery(String rootPath, String resourceType, String resourceName,
-			List<PropertyPredicate> attributes) {
+			List<Attribute> attributes) {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT * FROM");
 		if (StringUtils.contains(resourceType, ':')) {
@@ -49,7 +46,7 @@ public final class JcrSelectorParser {
 	}
 
 	private static List<String> prepareConditions(String rootPath, String resourceType, String resourceName,
-			List<PropertyPredicate> attributes) {
+			List<Attribute> attributes) {
 		List<String> conditions = new ArrayList<String>();
 		if (StringUtils.isNotBlank(rootPath) && !"/".equals(rootPath)) {
 			conditions.add(String.format("ISDESCENDANTNODE([%s])", rootPath));
@@ -61,13 +58,19 @@ public final class JcrSelectorParser {
 			conditions.add(String.format("NAME(s) = '%s'", resourceName));
 		}
 		if (attributes != null) {
-			for (PropertyPredicate a : attributes) {
-				String attributeCondition = a.toJcrString();
+			for (Attribute a : attributes) {
+				String attributeCondition = getAttributeCondition(a);
 				if (StringUtils.isNotBlank(attributeCondition)) {
 					conditions.add(attributeCondition);
 				}
 			}
 		}
 		return conditions;
+	}
+
+	private static String getAttributeCondition(Attribute attribute) {
+		JcrOperator operator = JcrOperator.getSelectorOperator(attribute.getOperator());
+		String value = StringUtils.replace(attribute.getValue(), "'", "''");
+		return operator.getJcrQueryFragment(attribute.getKey(), value);
 	}
 }

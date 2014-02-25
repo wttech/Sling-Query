@@ -2,7 +2,7 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
-import com.cognifide.sling.query.TreeStructureProvider;
+import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
 import com.cognifide.sling.query.iterator.tree.BfsTreeIterator;
@@ -12,11 +12,11 @@ public class FindFunction<T> implements ResourceToIteratorFunction<T> {
 
 	private final String preFilteringSelector;
 	
-	private final TreeStructureProvider<T> provider;
+	private final TreeProvider<T> provider;
 
 	private SearchStrategy strategy;
 
-	public FindFunction(String preFilteringSelector, SearchStrategy searchStrategy, TreeStructureProvider<T> provider) {
+	public FindFunction(String preFilteringSelector, SearchStrategy searchStrategy, TreeProvider<T> provider) {
 		this.preFilteringSelector = preFilteringSelector;
 		this.strategy = searchStrategy;
 		this.provider = provider;

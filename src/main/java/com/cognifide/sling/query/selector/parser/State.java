@@ -5,55 +5,55 @@ import org.apache.commons.lang.ArrayUtils;
 public enum State {
 	START {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (c == '/') {
-				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
+				context.setState(State.TYPE_WITH_SLASHES);
 				context.append(c);
 			} else if (c == '[') {
 				context.setState(State.ATTRIBUTE_KEY);
 			} else if (c == ':') {
-				context.setState(State.FUNCTION);
+				context.setState(State.MODIFIER);
 			} else if (c == '>' || c == '+' || c == '~') {
 				context.setHierarchyOperator(c);
 			} else if (c == '#') {
-				context.setResourceType();
+				context.setType();
 				context.setState(NAME);
 			} else if (c != ' ') {
-				context.setState(State.RESOURCE_TYPE);
+				context.setState(State.TYPE);
 				context.append(c);
 			}
 		}
 	},
 	IDLE {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (c == '[') {
 				context.setState(State.ATTRIBUTE_KEY);
 			} else if (c == ':') {
-				context.setState(State.FUNCTION);
+				context.setState(State.MODIFIER);
 			} else if (c == ' ' || c == 0) {
 				context.finishSelectorSegment();
 				context.setState(START);
 			}
 		}
 	},
-	RESOURCE_TYPE {
+	TYPE {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (c == '/') {
-				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
+				context.setState(State.TYPE_WITH_SLASHES);
 				context.append(c);
 			} else if (c == '[') {
 				context.setState(State.ATTRIBUTE_KEY);
-				context.setResourceType();
+				context.setType();
 			} else if (c == ':') {
-				context.setState(State.RESOURCE_TYPE_WITH_SLASHES);
+				context.setState(State.TYPE_WITH_SLASHES);
 				context.append(c);
 			} else if (c == '#') {
-				context.setResourceType();
+				context.setType();
 				context.setState(NAME);
 			} else if (c == ' ' || c == 0) {
-				context.setResourceType();
+				context.setType();
 				context.finishSelectorSegment();
 				context.setState(START);
 			} else {
@@ -61,20 +61,20 @@ public enum State {
 			}
 		}
 	},
-	RESOURCE_TYPE_WITH_SLASHES {
+	TYPE_WITH_SLASHES {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (c == '[') {
 				context.setState(State.ATTRIBUTE_KEY);
-				context.setResourceType();
+				context.setType();
 			} else if (c == ':') {
-				context.setState(State.FUNCTION);
-				context.setResourceType();
+				context.setState(State.MODIFIER);
+				context.setType();
 			} else if (c == '#') {
-				context.setResourceType();
+				context.setType();
 				context.setState(NAME);
 			} else if (c == ' ' || c == 0) {
-				context.setResourceType();
+				context.setType();
 				context.finishSelectorSegment();
 				context.setState(START);
 			} else {
@@ -84,15 +84,15 @@ public enum State {
 	},
 	NAME {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (c == '[') {
-				context.setResourceName();
+				context.setName();
 				context.setState(State.ATTRIBUTE_KEY);
 			} else if (c == ':') {
-				context.setResourceName();
-				context.setState(State.FUNCTION);
+				context.setName();
+				context.setState(State.MODIFIER);
 			} else if (c == ' ' || c == 0) {
-				context.setResourceName();
+				context.setName();
 				context.finishSelectorSegment();
 				context.setState(START);
 			} else if (c == '\'') {
@@ -104,9 +104,9 @@ public enum State {
 	},
 	ESCAPED_NAME {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (c == '\'') {
-				context.setResourceName();
+				context.setName();
 				context.setState(IDLE);
 			} else {
 				context.append(c);
@@ -115,7 +115,7 @@ public enum State {
 	},
 	ATTRIBUTE_KEY {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (c == ']') {
 				context.setAttributeKey();
 				context.addAttribute();
@@ -131,7 +131,7 @@ public enum State {
 	},
 	ATTRIBUTE_OPERATOR {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (!ArrayUtils.contains(OPERATORS, c)) {
 				context.setAttributeOperator();
 				context.append(c);
@@ -143,7 +143,7 @@ public enum State {
 	},
 	ATTRIBUTE_VALUE {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (c == ']') {
 				context.setState(State.IDLE);
 				context.setAttributeValue();
@@ -153,17 +153,17 @@ public enum State {
 			}
 		}
 	},
-	FUNCTION {
+	MODIFIER {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (c == ':') {
-				context.addFunction();
+				context.addModifier();
 			} else if (c == '(') {
-				context.setFunctionName();
-				context.setState(State.FUNCTION_ARGUMENT);
+				context.setModifierName();
+				context.setState(State.MODIFIER_ARGUMENT);
 				context.increaseParentheses();
 			} else if (c == ' ' || c == 0) {
-				context.addFunction();
+				context.addModifier();
 				context.finishSelectorSegment();
 				context.setState(START);
 			} else {
@@ -171,12 +171,12 @@ public enum State {
 			}
 		}
 	},
-	FUNCTION_ARGUMENT {
+	MODIFIER_ARGUMENT {
 		@Override
-		public void process(ParserContext<?> context, char c) {
+		public void process(ParserContext context, char c) {
 			if (c == ')') {
 				if (context.decreaseParentheses() == 0) {
-					context.addFunction();
+					context.addModifier();
 					context.setState(IDLE);
 				} else {
 					context.append(c);
@@ -189,7 +189,7 @@ public enum State {
 			}
 		}
 	};
-	public abstract void process(ParserContext<?> context, char c);
+	public abstract void process(ParserContext context, char c);
 
 	private static final char[] OPERATORS = "*~$!^=".toCharArray();
 }

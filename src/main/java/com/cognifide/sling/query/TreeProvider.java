@@ -4,16 +4,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.cognifide.sling.query.api.Predicate;
-import com.cognifide.sling.query.predicate.PropertyPredicate;
+import com.cognifide.sling.query.selector.parser.Attribute;
 
-public interface TreeStructureProvider<T> {
-	Iterator<T> getChildren(T parent);
+public interface TreeProvider<T> {
+	Iterator<T> listChildren(T parent);
 
 	T getParent(T element);
 
 	String getName(T element);
 
-	Predicate<T> getPredicate(String type, String id, List<PropertyPredicate> attributes);
-	
+	Predicate<T> getPredicate(String type, String id, List<Attribute> attributes);
+
 	Iterator<T> query(String selector, T resource);
 }

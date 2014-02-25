@@ -4,18 +4,17 @@ import java.util.Iterator;
 
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.ExcludingIterator;
-import com.cognifide.sling.query.selector.Selector;
 
 public class NotFunction<T> implements IteratorToIteratorFunction<T> {
 
-	private final Selector<T> selector;
+	private final IteratorToIteratorFunction<T> function;
 
-	public NotFunction(Selector<T> selector) {
-		this.selector = selector;
+	public NotFunction(IteratorToIteratorFunction<T> function) {
+		this.function = function;
 	}
 
 	@Override
 	public Iterator<T> apply(Iterator<T> input) {
-		return new ExcludingIterator<T>(input, selector);
+		return new ExcludingIterator<T>(input, function);
 	}
 }

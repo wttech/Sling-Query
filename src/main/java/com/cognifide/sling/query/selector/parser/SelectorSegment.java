@@ -1,98 +1,61 @@
 package com.cognifide.sling.query.selector.parser;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.cognifide.sling.query.IteratorFactory;
-import com.cognifide.sling.query.TreeStructureProvider;
-import com.cognifide.sling.query.api.Predicate;
-import com.cognifide.sling.query.api.SearchStrategy;
-import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
-import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
-import com.cognifide.sling.query.predicate.PropertyPredicate;
+public class SelectorSegment {
+	private final String type;
 
-public class SelectorSegment<T> implements IteratorToIteratorFunction<T> {
-	private final String resourceType;
+	private final String name;
 
-	private final String resourceName;
+	private final List<Attribute> attributes;
 
-	private final List<PropertyPredicate> attributes;
+	private final List<Modifier> modifiers;
 
-	private final List<SelectorFunction> functions;
+	private final char hierarchyOperator;
 
-	private final HierarchyOperator hierarchyOperator;
-
-	private final SearchStrategy strategy;
-
-	private final TreeStructureProvider<T> provider;
-
-	public SelectorSegment(ParserContext<T> context, boolean firstSegment, SearchStrategy strategy,
-			TreeStructureProvider<T> provider) {
-		this.resourceType = context.getResourceType();
-		this.resourceName = context.getResourceName();
-		this.attributes = new ArrayList<PropertyPredicate>(context.getAttributes());
-		this.functions = new ArrayList<SelectorFunction>(context.getFunctions());
+	public SelectorSegment(ParserContext context, boolean firstSegment) {
+		this.type = context.getType();
+		this.name = context.getName();
+		this.attributes = new ArrayList<Attribute>(context.getAttributes());
+		this.modifiers = new ArrayList<Modifier>(context.getModifiers());
 		if (firstSegment) {
-			hierarchyOperator = null;
+			hierarchyOperator = 0;
 		} else {
-			hierarchyOperator = HierarchyOperator.findByCharacter(context.getHierarchyOperator());
+			hierarchyOperator = context.getHierarchyOperator();
 		}
-		this.strategy = strategy;
-		this.provider = provider;
 	}
 
-	SelectorSegment(String resourceType, String resourceName, List<PropertyPredicate> attributes,
-			List<SelectorFunction> functions, char hierarchyOperator, SearchStrategy strategy,
-			TreeStructureProvider<T> provider) {
-		this.resourceType = resourceType;
-		this.resourceName = resourceName;
+	SelectorSegment(String type, String name, List<Attribute> attributes,
+			List<Modifier> modifiers, char hierarchyOperator) {
+		this.type = type;
+		this.name = name;
 		this.attributes = attributes;
-		this.functions = functions;
-		this.hierarchyOperator = HierarchyOperator.findByCharacter(hierarchyOperator);
-		this.strategy = strategy;
-		this.provider = provider;
+		this.modifiers = modifiers;
+		this.hierarchyOperator = hierarchyOperator;
 	}
 
-	@Override
-	public Iterator<T> apply(Iterator<T> input) {
-		Iterator<T> iterator = applyHierarchyOperator(input);
-		iterator = new FilteringIteratorWrapper<T>(iterator, getFilter());
-		for (SelectorFunction f : functions) {
-			iterator = IteratorFactory.getIterator(f.function(strategy, provider), iterator);
-		}
-		return iterator;
+	public String getType() {
+		return type;
 	}
 
-	public String getResourceType() {
-		return resourceType;
+	public String getName() {
+		return name;
 	}
 
-	public String getResourceName() {
-		return resourceName;
-	}
-
-	public List<PropertyPredicate> getAttributes() {
+	public List<Attribute> getAttributes() {
 		return attributes;
 	}
 
-	List<SelectorFunction> getFunctions() {
-		return functions;
+	public char getHierarchyOperator() {
+		return hierarchyOperator;
 	}
 
-	private Iterator<T> applyHierarchyOperator(Iterator<T> input) {
-		if (hierarchyOperator == null) {
-			return input;
-		} else {
-			return IteratorFactory.getIterator(hierarchyOperator.getFunction(strategy, provider), input);
-		}
-	}
-
-	private Predicate<T> getFilter() {
-		return provider.getPredicate(resourceType, resourceName, attributes);
+	public List<Modifier> getModifiers() {
+		return modifiers;
 	}
 
 	@Override
@@ -106,21 +69,20 @@ public class SelectorSegment<T> implements IteratorToIteratorFunction<T> {
 		if (obj.getClass() != getClass()) {
 			return false;
 		}
-		@SuppressWarnings("unchecked")
-		SelectorSegment<T> rhs = (SelectorSegment<T>) obj;
-		return new EqualsBuilder().append(resourceType, rhs.resourceType).append(attributes, rhs.attributes)
-				.append(functions, rhs.functions).append(hierarchyOperator, rhs.hierarchyOperator).isEquals();
+		SelectorSegment rhs = (SelectorSegment) obj;
+		return new EqualsBuilder().append(type, rhs.type).append(attributes, rhs.attributes)
+				.append(modifiers, rhs.modifiers).append(hierarchyOperator, rhs.hierarchyOperator).isEquals();
 	}
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(resourceType).append(attributes).append(functions)
+		return new HashCodeBuilder().append(type).append(attributes).append(modifiers)
 				.append(hierarchyOperator).toHashCode();
 	}
 
 	@Override
 	public String toString() {
-		return String.format("SelectorSegment[%s,%s,%s,%s]", resourceType, attributes, functions,
+		return String.format("SelectorSegment[%s,%s,%s,%s]", type, attributes, modifiers,
 				hierarchyOperator);
 	}
 }

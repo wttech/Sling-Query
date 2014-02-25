@@ -1,17 +1,17 @@
 package com.cognifide.sling.query.iterator;
 
-import com.cognifide.sling.query.TreeStructureProvider;
+import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Predicate;
 
 public class ParentsIterator<T> extends AbstractIterator<T> {
 
 	private final Predicate<T> until;
 
-	private final TreeStructureProvider<T> provider;
+	private final TreeProvider<T> provider;
 	
 	private T currentResource;
 
-	public ParentsIterator(Predicate<T> until, T currentResource, TreeStructureProvider<T> provider) {
+	public ParentsIterator(Predicate<T> until, T currentResource, TreeProvider<T> provider) {
 		this.currentResource = currentResource;
 		this.until = until;
 		this.provider = provider;

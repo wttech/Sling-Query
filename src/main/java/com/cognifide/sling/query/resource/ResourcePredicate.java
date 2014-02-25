@@ -1,5 +1,6 @@
 package com.cognifide.sling.query.resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -11,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.sling.query.api.Predicate;
-import com.cognifide.sling.query.predicate.PropertyPredicate;
+import com.cognifide.sling.query.selector.parser.Attribute;
 
 public class ResourcePredicate implements Predicate<Resource> {
 
@@ -21,13 +22,15 @@ public class ResourcePredicate implements Predicate<Resource> {
 
 	private final String resourceName;
 
-	private final List<PropertyPredicate> properties;
+	private final List<Predicate<Resource>> subPredicates;
 
-	public ResourcePredicate(String resourceType, String resourceName,
-			List<PropertyPredicate> properties) {
+	public ResourcePredicate(String resourceType, String resourceName, List<Attribute> attributes) {
 		this.resourceType = resourceType;
 		this.resourceName = resourceName;
-		this.properties = properties;
+		this.subPredicates = new ArrayList<Predicate<Resource>>();
+		for (Attribute a : attributes) {
+			subPredicates.add(new ResourcePropertyPredicate(a));
+		}
 	}
 
 	@Override
@@ -38,7 +41,7 @@ public class ResourcePredicate implements Predicate<Resource> {
 		if (!isResourceType(resource, resourceType)) {
 			return false;
 		}
-		for (PropertyPredicate predicate : properties) {
+		for (Predicate<Resource> predicate : subPredicates) {
 			if (!predicate.accepts(resource)) {
 				return false;
 			}

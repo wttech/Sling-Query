@@ -3,20 +3,12 @@ package com.cognifide.sling.query.selector.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cognifide.sling.query.TreeStructureProvider;
-import com.cognifide.sling.query.api.SearchStrategy;
-import com.cognifide.sling.query.predicate.PropertyPredicate;
+public class ParserContext {
+	private final List<SelectorSegment> segments = new ArrayList<SelectorSegment>();
 
-public class ParserContext<T> {
-	private final SearchStrategy strategy;
+	private final List<Attribute> attributes = new ArrayList<Attribute>();
 
-	private final List<SelectorSegment<T>> segments = new ArrayList<SelectorSegment<T>>();
-
-	private final List<PropertyPredicate> attributes = new ArrayList<PropertyPredicate>();
-
-	private final List<SelectorFunction> functions = new ArrayList<SelectorFunction>();
-	
-	private final TreeStructureProvider<T> provider;
+	private final List<Modifier> modifiers = new ArrayList<Modifier>();
 
 	private char hierarchyOperator;
 
@@ -24,9 +16,9 @@ public class ParserContext<T> {
 
 	private StringBuilder builder = new StringBuilder();
 
-	private String resourceType;
+	private String type;
 
-	private String resourceName;
+	private String name;
 
 	private String attributeKey;
 
@@ -34,29 +26,24 @@ public class ParserContext<T> {
 
 	private String attributeValue;
 
-	private String currentFunctionName;
+	private String currentModifierName;
 
 	private int parenthesesCount = 0;
 
-	ParserContext(SearchStrategy strategy, TreeStructureProvider<T> provider) {
-		this.strategy = strategy;
-		this.provider = provider;
-	}
-
-	List<PropertyPredicate> getAttributes() {
+	List<Attribute> getAttributes() {
 		return attributes;
 	}
 
-	List<SelectorFunction> getFunctions() {
-		return functions;
+	List<Modifier> getModifiers() {
+		return modifiers;
 	}
 
-	String getResourceType() {
-		return resourceType;
+	String getType() {
+		return type;
 	}
 
-	String getResourceName() {
-		return resourceName;
+	String getName() {
+		return name;
 	}
 
 	char getHierarchyOperator() {
@@ -75,13 +62,13 @@ public class ParserContext<T> {
 		return --parenthesesCount;
 	}
 
-	void setResourceType() {
-		resourceType = builder.toString();
+	void setType() {
+		type = builder.toString();
 		builder = new StringBuilder();
 	}
 
-	void setResourceName() {
-		resourceName = builder.toString();
+	void setName() {
+		name = builder.toString();
 		builder = new StringBuilder();
 	}
 
@@ -101,26 +88,26 @@ public class ParserContext<T> {
 	}
 
 	void addAttribute() {
-		attributes.add(new PropertyPredicate(attributeKey, attributeOperator, attributeValue));
+		attributes.add(new Attribute(attributeKey, attributeOperator, attributeValue));
 		attributeKey = null;
 		attributeOperator = null;
 		attributeValue = null;
 	}
 
-	void setFunctionName() {
-		currentFunctionName = builder.toString();
+	void setModifierName() {
+		currentModifierName = builder.toString();
 		builder = new StringBuilder();
 	}
 
-	void addFunction() {
-		SelectorFunction function;
-		if (currentFunctionName == null) {
-			function = new SelectorFunction(builder.toString(), null);
+	void addModifier() {
+		Modifier modifier;
+		if (currentModifierName == null) {
+			modifier = new Modifier(builder.toString(), null);
 		} else {
-			function = new SelectorFunction(currentFunctionName, builder.toString());
-			currentFunctionName = null;
+			modifier = new Modifier(currentModifierName, builder.toString());
+			currentModifierName = null;
 		}
-		functions.add(function);
+		modifiers.add(modifier);
 		builder = new StringBuilder();
 	}
 
@@ -133,18 +120,18 @@ public class ParserContext<T> {
 	}
 
 	void finishSelectorSegment() {
-		segments.add(new SelectorSegment<T>(this, segments.isEmpty(), strategy, provider));
+		segments.add(new SelectorSegment(this, segments.isEmpty()));
 		attributes.clear();
-		functions.clear();
-		hierarchyOperator = 0;
-		resourceType = null;
+		modifiers.clear();
+		hierarchyOperator = ' ';
+		type = null;
 	}
 
 	void append(char c) {
 		builder.append(c);
 	}
 
-	public List<SelectorSegment<T>> getSegments() {
+	public List<SelectorSegment> getSegments() {
 		return segments;
 	}
 

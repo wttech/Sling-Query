@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import com.cognifide.sling.query.LazyList;
-import com.cognifide.sling.query.TreeStructureProvider;
+import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Predicate;
 
 public class SiblingsIterator<T> extends AbstractIterator<T> {
@@ -15,11 +15,11 @@ public class SiblingsIterator<T> extends AbstractIterator<T> {
 
 	private final Type type;
 
-	private final TreeStructureProvider<T> provider;
+	private final TreeProvider<T> provider;
 
 	private boolean finished;
 
-	public SiblingsIterator(Predicate<T> until, T resource, Type type, TreeStructureProvider<T> provider) {
+	public SiblingsIterator(Predicate<T> until, T resource, Type type, TreeProvider<T> provider) {
 		this.provider = provider;
 		this.until = until;
 		this.siblings = getRewindedIterator(resource, type);
@@ -54,7 +54,7 @@ public class SiblingsIterator<T> extends AbstractIterator<T> {
 		if (parent == null) {
 			iterator = new ArrayIterator<T>(resource);
 		} else {
-			iterator = provider.getChildren(parent);
+			iterator = provider.listChildren(parent);
 		}
 		ListIterator<T> listIterator = new LazyList<T>(iterator).listIterator();
 		while (listIterator.hasNext()) {

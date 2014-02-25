@@ -4,19 +4,19 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import com.cognifide.sling.query.TreeStructureProvider;
+import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.iterator.AbstractIterator;
 
 public class BfsTreeIterator<T> extends AbstractIterator<T> {
 
 	private final Deque<T> queue = new LinkedList<T>();
 
-	private final TreeStructureProvider<T> provider;
+	private final TreeProvider<T> provider;
 
 	private Iterator<T> currentIterator;
 
-	public BfsTreeIterator(T root, TreeStructureProvider<T> provider) {
-		this.currentIterator = provider.getChildren(root);
+	public BfsTreeIterator(T root, TreeProvider<T> provider) {
+		this.currentIterator = provider.listChildren(root);
 		this.provider = provider;
 	}
 
@@ -29,7 +29,7 @@ public class BfsTreeIterator<T> extends AbstractIterator<T> {
 		}
 
 		if (!queue.isEmpty()) {
-			currentIterator = provider.getChildren(queue.pop());
+			currentIterator = provider.listChildren(queue.pop());
 			return getElement();
 		}
 

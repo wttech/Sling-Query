@@ -3,7 +3,7 @@ package com.cognifide.sling.query.selector.parser;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.cognifide.sling.query.resource.JcrSelectorParser;
+import com.cognifide.sling.query.resource.jcr.JcrSelectorParser;
 
 public class JcrSelectorTest {
 	@Test

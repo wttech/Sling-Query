@@ -5,15 +5,15 @@ import java.util.List;
 
 import org.apache.sling.api.resource.Resource;
 
-import com.cognifide.sling.query.TreeStructureProvider;
+import com.cognifide.sling.query.TreeProvider;
 import com.cognifide.sling.query.api.Predicate;
-import com.cognifide.sling.query.iterator.tree.JcrTreeIterator;
-import com.cognifide.sling.query.predicate.PropertyPredicate;
+import com.cognifide.sling.query.resource.jcr.JcrTreeIterator;
+import com.cognifide.sling.query.selector.parser.Attribute;
 
-public class ResourceTreeProvider implements TreeStructureProvider<Resource> {
+public class ResourceTreeProvider implements TreeProvider<Resource> {
 
 	@Override
-	public Iterator<Resource> getChildren(Resource parent) {
+	public Iterator<Resource> listChildren(Resource parent) {
 		return parent.listChildren();
 	}
 
@@ -28,7 +28,7 @@ public class ResourceTreeProvider implements TreeStructureProvider<Resource> {
 	}
 
 	@Override
-	public Predicate<Resource> getPredicate(String type, String id, List<PropertyPredicate> attributes) {
+	public Predicate<Resource> getPredicate(String type, String id, List<Attribute> attributes) {
 		return new ResourcePredicate(type, id, attributes);
 	}
 

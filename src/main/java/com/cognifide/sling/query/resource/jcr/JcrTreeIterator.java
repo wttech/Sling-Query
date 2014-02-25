@@ -1,4 +1,4 @@
-package com.cognifide.sling.query.iterator.tree;
+package com.cognifide.sling.query.resource.jcr;
 
 import java.util.Iterator;
 
@@ -6,7 +6,6 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.iterator.AbstractIterator;
-import com.cognifide.sling.query.resource.JcrSelectorParser;
 
 public class JcrTreeIterator extends AbstractIterator<Resource> {
 
