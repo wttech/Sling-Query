@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.cognifide.sling.query.selector.parser.Attribute;
+import com.cognifide.sling.query.selector.parser.Selector;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
 import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
@@ -15,14 +16,19 @@ public final class JcrSelectorParser {
 	private JcrSelectorParser() {
 	}
 
-	public static String parse(String selector, String rootPath) {
-		List<SelectorSegment> segments = SelectorParser.parse(selector);
-		if (segments.isEmpty()) {
-			return prepareQuery(rootPath, null, null, Collections.<Attribute> emptyList());
-		} else {
-			SelectorSegment s = segments.get(0);
-			return prepareQuery(rootPath, s.getType(), s.getName(), s.getAttributes());
+	public static List<String> parse(String selectorString, String rootPath) {
+		List<Selector> selectors = SelectorParser.parse(selectorString);
+		List<String> queries = new ArrayList<String>();
+		for (Selector selector : selectors) {
+			List<SelectorSegment> segments = selector.getSegments();
+			if (segments.isEmpty()) {
+				queries.add(prepareQuery(rootPath, null, null, Collections.<Attribute> emptyList()));
+			} else {
+				SelectorSegment s = segments.get(0);
+				queries.add(prepareQuery(rootPath, s.getType(), s.getName(), s.getAttributes()));
+			}
 		}
+		return queries;
 	}
 
 	private static String prepareQuery(String rootPath, String resourceType, String resourceName,

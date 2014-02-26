@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParserContext {
+	private final List<Selector> selectors = new ArrayList<Selector>();
+
 	private final List<SelectorSegment> segments = new ArrayList<SelectorSegment>();
 
 	private final List<Attribute> attributes = new ArrayList<Attribute>();
@@ -127,12 +129,16 @@ public class ParserContext {
 		type = null;
 	}
 
+	void finishSelector() {
+		selectors.add(new Selector(segments));
+		segments.clear();
+	}
+
 	void append(char c) {
 		builder.append(c);
 	}
 
-	public List<SelectorSegment> getSegments() {
-		return segments;
+	public List<Selector> getSelectors() {
+		return selectors;
 	}
-
 }

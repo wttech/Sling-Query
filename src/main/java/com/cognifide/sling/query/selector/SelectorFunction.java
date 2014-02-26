@@ -8,7 +8,9 @@ import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+import com.cognifide.sling.query.function.CompositeFunction;
 import com.cognifide.sling.query.iterator.ArrayIterator;
+import com.cognifide.sling.query.selector.parser.Selector;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
 import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
@@ -16,22 +18,25 @@ public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predi
 
 	private final List<IteratorToIteratorFunction<T>> functions;
 
-	public SelectorFunction(List<SelectorSegment> segments, TreeProvider<T> provider,
-			SearchStrategy strategy) {
-		this.functions = createSegmentFunctions(segments, provider, strategy);
+	public SelectorFunction(List<Selector> selectors, TreeProvider<T> provider, SearchStrategy strategy) {
+		this.functions = createSegmentFunctions(selectors, provider, strategy);
 	}
 
 	public static <T> SelectorFunction<T> parse(String selector, SearchStrategy strategy,
 			TreeProvider<T> provider) {
-		List<SelectorSegment> segments = SelectorParser.parse(selector);
-		return new SelectorFunction<T>(segments, provider, strategy);
+		List<Selector> selectors = SelectorParser.parse(selector);
+		return new SelectorFunction<T>(selectors, provider, strategy);
 	}
 
-	private List<IteratorToIteratorFunction<T>> createSegmentFunctions(List<SelectorSegment> segments,
+	private List<IteratorToIteratorFunction<T>> createSegmentFunctions(List<Selector> selectors,
 			TreeProvider<T> provider, SearchStrategy strategy) {
 		List<IteratorToIteratorFunction<T>> functions = new ArrayList<IteratorToIteratorFunction<T>>();
-		for (SelectorSegment segment : segments) {
-			functions.add(new SelectorSegmentFunction<T>(segment, provider, strategy));
+		for (Selector selector : selectors) {
+			List<IteratorToIteratorFunction<T>> segmentFunctions = new ArrayList<IteratorToIteratorFunction<T>>();
+			for (SelectorSegment segment : selector.getSegments()) {
+				functions.add(new SelectorSegmentFunction<T>(segment, provider, strategy));
+			}
+			functions.add(new CompositeFunction<T>(segmentFunctions));
 		}
 		return functions;
 	}

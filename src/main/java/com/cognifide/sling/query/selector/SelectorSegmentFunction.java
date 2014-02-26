@@ -18,8 +18,7 @@ public class SelectorSegmentFunction<T> implements IteratorToIteratorFunction<T>
 
 	private final List<Function<?, ?>> functions;
 
-	public SelectorSegmentFunction(SelectorSegment segment, TreeProvider<T> provider,
-			SearchStrategy strategy) {
+	public SelectorSegmentFunction(SelectorSegment segment, TreeProvider<T> provider, SearchStrategy strategy) {
 		this.functions = createFunctions(segment, provider, strategy);
 	}
 

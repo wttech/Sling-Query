@@ -11,24 +11,29 @@ public class JcrQueryIterator extends AbstractIterator<Resource> {
 
 	private final ResourceResolver resolver;
 
-	private final String query;
+	private final Iterator<String> queries;
 
 	private Iterator<Resource> currentIterator;
 
 	public JcrQueryIterator(String selector, Resource root) {
-		query = JcrSelectorParser.parse(selector, root.getPath());
+		queries = JcrSelectorParser.parse(selector, root.getPath()).iterator();
 		resolver = root.getResourceResolver();
 	}
 
 	@Override
 	protected Resource getElement() {
 		if (currentIterator == null) {
-			currentIterator = resolver.findResources(query, "JCR-SQL2");
+			if (queries.hasNext()) {
+				currentIterator = resolver.findResources(queries.next(), "JCR-SQL2");
+			} else {
+				return null;
+			}
 		}
 		if (currentIterator.hasNext()) {
 			return currentIterator.next();
 		} else {
-			return null;
+			currentIterator = null;
+			return getElement();
 		}
 	}
 }

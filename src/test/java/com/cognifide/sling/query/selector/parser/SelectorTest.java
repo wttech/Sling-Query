@@ -222,7 +222,7 @@ public class SelectorTest {
 	}
 
 	private static List<SelectorSegment> getSegments(String selector) {
-		return SelectorParser.parse(selector);
+		return SelectorParser.parse(selector).get(0).getSegments();
 	}
 
 	private static SelectorSegment getFirstSegment(String selector) {
@@ -237,8 +237,8 @@ public class SelectorTest {
 		for (int i = 1; i < segments.length; i += 2) {
 			SelectorSegment parsed = getFirstSegment(segments[i + 1]);
 			char operator = segments[i].charAt(0);
-			SelectorSegment segment = new SelectorSegment(parsed.getType(), null,
-					parsed.getAttributes(), parsed.getModifiers(), operator);
+			SelectorSegment segment = new SelectorSegment(parsed.getType(), null, parsed.getAttributes(),
+					parsed.getModifiers(), operator);
 			list.add(segment);
 		}
 		return list;
