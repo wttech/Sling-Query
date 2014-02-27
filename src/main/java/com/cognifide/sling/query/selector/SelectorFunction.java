@@ -16,14 +16,13 @@ public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predi
 
 	private final List<IteratorToIteratorFunction<T>> functions;
 
-	public SelectorFunction(List<SelectorSegment> segments, TreeProvider<T> provider,
-			SearchStrategy strategy) {
+	public SelectorFunction(List<SelectorSegment> segments, TreeProvider<T> provider, SearchStrategy strategy) {
 		this.functions = createSegmentFunctions(segments, provider, strategy);
 	}
 
 	public static <T> SelectorFunction<T> parse(String selector, SearchStrategy strategy,
 			TreeProvider<T> provider) {
-		List<SelectorSegment> segments = SelectorParser.parse(selector);
+		List<SelectorSegment> segments = SelectorParser.parse(selector).get(0).getSegments();
 		return new SelectorFunction<T>(segments, provider, strategy);
 	}
 

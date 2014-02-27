@@ -31,8 +31,12 @@ public enum State {
 				context.setState(State.ATTRIBUTE_KEY);
 			} else if (c == ':') {
 				context.setState(State.MODIFIER);
-			} else if (c == ' ' || c == 0) {
+			} else if (c == ' ') {
 				context.finishSelectorSegment();
+				context.setState(START);
+			} else if (c == ',' || c == 0) {
+				context.finishSelectorSegment();
+				context.finishSelector();
 				context.setState(START);
 			}
 		}
@@ -52,9 +56,14 @@ public enum State {
 			} else if (c == '#') {
 				context.setType();
 				context.setState(NAME);
-			} else if (c == ' ' || c == 0) {
+			} else if (c == ' ') {
 				context.setType();
 				context.finishSelectorSegment();
+				context.setState(START);
+			} else if (c == ',' || c == 0) {
+				context.setType();
+				context.finishSelectorSegment();
+				context.finishSelector();
 				context.setState(START);
 			} else {
 				context.append(c);
@@ -73,9 +82,14 @@ public enum State {
 			} else if (c == '#') {
 				context.setType();
 				context.setState(NAME);
-			} else if (c == ' ' || c == 0) {
+			} else if (c == ' ') {
 				context.setType();
 				context.finishSelectorSegment();
+				context.setState(START);
+			} else if (c == ',' || c == 0) {
+				context.setType();
+				context.finishSelectorSegment();
+				context.finishSelector();
 				context.setState(START);
 			} else {
 				context.append(c);
@@ -91,9 +105,14 @@ public enum State {
 			} else if (c == ':') {
 				context.setName();
 				context.setState(State.MODIFIER);
-			} else if (c == ' ' || c == 0) {
+			} else if (c == ' ') {
 				context.setName();
 				context.finishSelectorSegment();
+				context.setState(START);
+			} else if (c == ',' || c == 0) {
+				context.setName();
+				context.finishSelectorSegment();
+				context.finishSelector();
 				context.setState(START);
 			} else if (c == '\'') {
 				context.setState(State.ESCAPED_NAME);
@@ -162,9 +181,14 @@ public enum State {
 				context.setModifierName();
 				context.setState(State.MODIFIER_ARGUMENT);
 				context.increaseParentheses();
-			} else if (c == ' ' || c == 0) {
+			} else if (c == ' ') {
 				context.addModifier();
 				context.finishSelectorSegment();
+				context.setState(START);
+			} else if (c == ',' || c == 0) {
+				context.addModifier();
+				context.finishSelectorSegment();
+				context.finishSelector();
 				context.setState(START);
 			} else {
 				context.append(c);
