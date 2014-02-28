@@ -2,15 +2,15 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
-import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
-import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
+import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
+import com.cognifide.sling.query.api.function.ElementToElementFunction;
 import com.cognifide.sling.query.iterator.ArrayIterator;
 
-public class ResourceToIteratorWrapperFunction<T> implements ResourceToIteratorFunction<T> {
+public class ResourceToIteratorWrapperFunction<T> implements ElementToIteratorFunction<T> {
 
-	private final ResourceToResourceFunction<T> wrappedFunction;
+	private final ElementToElementFunction<T> wrappedFunction;
 
-	public ResourceToIteratorWrapperFunction(ResourceToResourceFunction<T> wrappedFunction) {
+	public ResourceToIteratorWrapperFunction(ElementToElementFunction<T> wrappedFunction) {
 		this.wrappedFunction = wrappedFunction;
 	}
 

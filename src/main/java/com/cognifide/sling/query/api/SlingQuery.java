@@ -11,8 +11,8 @@ import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.LazyList;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
-import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
-import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
+import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
+import com.cognifide.sling.query.api.function.ElementToElementFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
 import com.cognifide.sling.query.function.FilterFunction;
@@ -192,8 +192,8 @@ public class SlingQuery implements Iterable<Resource> {
 	 * This method allows to process resource collection using custom function and then filter the results by
 	 * a selector string.
 	 * 
-	 * @param function Object implementing one of the interfaces: {@link ResourceToResourceFunction},
-	 * {@link ResourceToIteratorFunction} or {@link IteratorToIteratorFunction}
+	 * @param function Object implementing one of the interfaces: {@link ElementToElementFunction},
+	 * {@link ElementToIteratorFunction} or {@link IteratorToIteratorFunction}
 	 * @param selector Result filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */

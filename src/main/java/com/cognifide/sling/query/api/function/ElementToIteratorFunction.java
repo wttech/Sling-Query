@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.apache.sling.api.resource.Resource;
 
 import com.cognifide.sling.query.api.Function;
+import com.cognifide.sling.query.selector.OptionalElement;
 
 /**
  * A {@link Function} that takes a {@link Resource} and returns {@link Iterator}.
@@ -12,11 +13,11 @@ import com.cognifide.sling.query.api.Function;
  * @author Tomasz Rękawek
  * 
  */
-public interface ResourceToIteratorFunction<T> extends Function<T, Iterator<T>> {
+public interface ElementToIteratorFunction<T> extends Function<T, Iterator<OptionalElement<T>>> {
 
 	/**
 	 * Transform {@link Resource} into {@link Iterator}.
 	 */
-	Iterator<T> apply(T input);
+	Iterator<OptionalElement<T>> apply(T input);
 
 }

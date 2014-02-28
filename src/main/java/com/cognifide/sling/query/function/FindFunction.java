@@ -4,11 +4,11 @@ import java.util.Iterator;
 
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
+import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.iterator.tree.BfsTreeIterator;
 import com.cognifide.sling.query.iterator.tree.DfsTreeIterator;
 
-public class FindFunction<T> implements ResourceToIteratorFunction<T> {
+public class FindFunction<T> implements ElementToIteratorFunction<T> {
 
 	private final String preFilteringSelector;
 

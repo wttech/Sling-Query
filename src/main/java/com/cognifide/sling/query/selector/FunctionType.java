@@ -3,7 +3,7 @@ package com.cognifide.sling.query.selector;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
+import com.cognifide.sling.query.api.function.ElementToElementFunction;
 import com.cognifide.sling.query.function.EvenFunction;
 import com.cognifide.sling.query.function.HasFunction;
 import com.cognifide.sling.query.function.LastFunction;
@@ -58,7 +58,7 @@ public enum FunctionType {
 		@Override
 		public <T> Function<?, ?> getFunction(String selector, SearchStrategy strategy,
 				final TreeProvider<T> provider) {
-			return new ResourceToResourceFunction<T>() {
+			return new ElementToElementFunction<T>() {
 				@Override
 				public T apply(T resource) {
 					if (provider.listChildren(resource).hasNext()) {
@@ -74,7 +74,7 @@ public enum FunctionType {
 		@Override
 		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
 				final TreeProvider<T> provider) {
-			return new ResourceToResourceFunction<T>() {
+			return new ElementToElementFunction<T>() {
 				@Override
 				public T apply(T resource) {
 					if (provider.listChildren(resource).hasNext()) {

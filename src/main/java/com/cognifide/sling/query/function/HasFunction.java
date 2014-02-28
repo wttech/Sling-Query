@@ -5,11 +5,11 @@ import java.util.Iterator;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
+import com.cognifide.sling.query.api.function.ElementToElementFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
-public class HasFunction<T> implements ResourceToResourceFunction<T> {
+public class HasFunction<T> implements ElementToElementFunction<T> {
 
 	private final FindFunction<T> findFunction;
 

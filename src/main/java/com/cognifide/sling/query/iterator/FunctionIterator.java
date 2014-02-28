@@ -2,17 +2,17 @@ package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 
-import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
+import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 
 public class FunctionIterator<T> extends AbstractIterator<T> {
 
-	private final ResourceToIteratorFunction<T> function;
+	private final ElementToIteratorFunction<T> function;
 
 	private final Iterator<T> parentIterator;
 
 	private Iterator<T> currentIterator;
 
-	public FunctionIterator(ResourceToIteratorFunction<T> function, Iterator<T> parentIterator) {
+	public FunctionIterator(ElementToIteratorFunction<T> function, Iterator<T> parentIterator) {
 		this.function = function;
 		this.parentIterator = parentIterator;
 	}
