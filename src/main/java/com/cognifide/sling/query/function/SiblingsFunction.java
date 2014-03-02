@@ -2,9 +2,9 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
+import com.cognifide.sling.query.IteratorUtils;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
-import com.cognifide.sling.query.iterator.ArrayIterator;
 
 public class SiblingsFunction<T> implements ElementToIteratorFunction<T> {
 
@@ -14,12 +14,11 @@ public class SiblingsFunction<T> implements ElementToIteratorFunction<T> {
 		this.provider = provider;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Iterator<T> apply(T resource) {
 		T parent = provider.getParent(resource);
 		if (parent == null) {
-			return new ArrayIterator<T>(resource);
+			return IteratorUtils.singleElementIterator(resource);
 		} else {
 			return provider.listChildren(parent);
 		}

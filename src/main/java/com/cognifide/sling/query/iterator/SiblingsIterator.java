@@ -3,6 +3,7 @@ package com.cognifide.sling.query.iterator;
 import java.util.Iterator;
 import java.util.ListIterator;
 
+import com.cognifide.sling.query.IteratorUtils;
 import com.cognifide.sling.query.LazyList;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.TreeProvider;
@@ -46,13 +47,12 @@ public class SiblingsIterator<T> extends AbstractIterator<T> {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	private ListIterator<T> getRewindedIterator(T resource, Type type) {
 		String resourceName = provider.getName(resource);
 		T parent = provider.getParent(resource);
 		Iterator<T> iterator;
 		if (parent == null) {
-			iterator = new ArrayIterator<T>(resource);
+			iterator = IteratorUtils.singleElementIterator(resource);
 		} else {
 			iterator = provider.listChildren(parent);
 		}
