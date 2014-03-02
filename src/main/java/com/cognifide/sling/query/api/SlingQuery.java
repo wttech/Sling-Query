@@ -1,7 +1,6 @@
 package com.cognifide.sling.query.api;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.api.function.ElementToElementFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
-import com.cognifide.sling.query.function.CompositeFunction;
 import com.cognifide.sling.query.function.FilterFunction;
 import com.cognifide.sling.query.function.FunctionWithSelector;
 import com.cognifide.sling.query.function.HasFunction;
@@ -24,14 +22,17 @@ import com.cognifide.sling.query.function.IdentityFunction;
 import com.cognifide.sling.query.function.LastFunction;
 import com.cognifide.sling.query.function.NextFunction;
 import com.cognifide.sling.query.function.NotFunction;
+import com.cognifide.sling.query.function.OptionCompositeFunction;
 import com.cognifide.sling.query.function.ParentFunction;
 import com.cognifide.sling.query.function.ParentsFunction;
 import com.cognifide.sling.query.function.PrevFunction;
 import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.iterator.AdaptToIterator;
+import com.cognifide.sling.query.iterator.EmptyElementFilter;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
 import com.cognifide.sling.query.resource.ResourceTreeProvider;
+import com.cognifide.sling.query.selector.Option;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
 /**
@@ -42,9 +43,9 @@ import com.cognifide.sling.query.selector.SelectorFunction;
  * 
  */
 public class SlingQuery implements Iterable<Resource> {
-	private final List<OptionIteratorToIteratorFunction<Resource>> functions = new ArrayList<OptionIteratorToIteratorFunction<Resource>>();
+	private final List<Function<?, ?>> functions = new ArrayList<Function<?, ?>>();
 
-	private final List<Resource> resources;
+	private final List<Option<Resource>> resources;
 
 	private final SearchStrategy searchStrategy;
 
@@ -72,7 +73,10 @@ public class SlingQuery implements Iterable<Resource> {
 
 	private SlingQuery(TreeProvider<Resource> provider, Resource[] resources) {
 		this.provider = provider;
-		this.resources = Arrays.asList(resources);
+		this.resources = new ArrayList<Option<Resource>>();
+		for (Resource r : resources) {
+			this.resources.add(new Option<Resource>(r));
+		}
 		this.searchStrategy = SearchStrategy.DFS;
 	}
 
@@ -82,7 +86,7 @@ public class SlingQuery implements Iterable<Resource> {
 
 	private SlingQuery(SlingQuery original, SearchStrategy searchStrategy) {
 		this.functions.addAll(original.functions);
-		this.resources = new ArrayList<Resource>(original.resources);
+		this.resources = new ArrayList<Option<Resource>>(original.resources);
 		this.searchStrategy = searchStrategy;
 		this.provider = original.provider;
 	}
@@ -92,7 +96,9 @@ public class SlingQuery implements Iterable<Resource> {
 	 */
 	@Override
 	public Iterator<Resource> iterator() {
-		return new CompositeFunction<Resource>(functions).apply(resources.iterator());
+		OptionIteratorToIteratorFunction<Resource> f = new OptionCompositeFunction<Resource>(functions);
+		Iterator<Option<Resource>> iterator = f.apply(resources.iterator());
+		return new EmptyElementFilter<Resource>(iterator);
 	}
 
 	/**
