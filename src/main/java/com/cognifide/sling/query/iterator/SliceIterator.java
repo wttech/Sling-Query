@@ -27,10 +27,14 @@ public class SliceIterator<T> extends AbstractIterator<Option<T>> {
 
 	@Override
 	protected Option<T> getElement() {
+		if (current > to) {
+			return null;
+		}
+
 		if (iterator.hasNext()) {
 			Option<T> element = iterator.next();
 			if (element.isEmpty()) {
-				return element;
+				return Option.empty();
 			}
 			if (++current >= from && current <= to) {
 				return element;

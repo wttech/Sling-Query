@@ -37,8 +37,14 @@ public class NondegenerateIterator<T> extends AbstractIterator<Option<T>> {
 			if (output.hasNext()) {
 				emptyResult = output.next().isEmpty() && emptyResult;
 			} else {
-				finished = true;
-				break;
+				// all remaining input elements should be mapped to `empty`
+				if (input.hasNext()) {
+					input.next();
+					return Option.empty();
+				} else {
+					finished = true;
+					break;
+				}
 			}
 		} while (currentElement == input.nextIndex());
 
