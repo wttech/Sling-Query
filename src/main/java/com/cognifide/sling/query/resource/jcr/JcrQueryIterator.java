@@ -6,6 +6,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.iterator.AbstractIterator;
+import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
 public class JcrQueryIterator extends AbstractIterator<Resource> {
 
@@ -15,7 +16,7 @@ public class JcrQueryIterator extends AbstractIterator<Resource> {
 
 	private Iterator<Resource> currentIterator;
 
-	public JcrQueryIterator(String selector, Resource root) {
+	public JcrQueryIterator(SelectorSegment selector, Resource root) {
 		query = JcrSelectorParser.parse(selector, root.getPath());
 		resolver = root.getResourceResolver();
 	}

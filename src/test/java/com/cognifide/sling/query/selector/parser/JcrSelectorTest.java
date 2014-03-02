@@ -1,5 +1,7 @@
 package com.cognifide.sling.query.selector.parser;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -98,6 +100,7 @@ public class JcrSelectorTest {
 	}
 
 	private static String parse(String selector, String root) {
-		return JcrSelectorParser.parse(selector, root);
+		List<SelectorSegment> segments = SelectorParser.parse(selector).get(0).getSegments();
+		return JcrSelectorParser.parse(segments.isEmpty() ? null : segments.get(0), root);
 	}
 }

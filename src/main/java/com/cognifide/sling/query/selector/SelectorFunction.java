@@ -64,7 +64,7 @@ public class SelectorFunction<T> implements OptionIteratorToIteratorFunction<T>,
 			TreeProvider<T> provider, SearchStrategy strategy) {
 		List<Function<?, ?>> functions = new ArrayList<Function<?, ?>>();
 		HierarchyOperator operator = HierarchyOperator.findByCharacter(segment.getHierarchyOperator());
-		functions.add(operator.getFunction(strategy, provider));
+		functions.add(operator.getFunction(segment, strategy, provider));
 		Predicate<T> predicate = provider.getPredicate(segment.getType(), segment.getName(),
 				segment.getAttributes());
 		functions.add(new FilterFunction<T>(predicate));

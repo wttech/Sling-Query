@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.cognifide.sling.query.selector.parser.Attribute;
+import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
 public interface TreeProvider<T> {
 	Iterator<T> listChildren(T parent);
@@ -14,5 +15,5 @@ public interface TreeProvider<T> {
 
 	Predicate<T> getPredicate(String type, String name, List<Attribute> attributes);
 
-	Iterator<T> query(String selector, T resource);
+	Iterator<T> query(SelectorSegment segment, T resource);
 }

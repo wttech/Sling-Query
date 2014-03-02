@@ -15,7 +15,7 @@ import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
 import com.cognifide.sling.query.function.FilterFunction;
-import com.cognifide.sling.query.function.FunctionWithSelector;
+import com.cognifide.sling.query.function.FilteredFunction;
 import com.cognifide.sling.query.function.HasFunction;
 import com.cognifide.sling.query.function.FindFunction;
 import com.cognifide.sling.query.function.IdentityFunction;
@@ -191,7 +191,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery find(String selector) {
-		return functionWithSelector(new FindFunction<Resource>(selector, searchStrategy, provider), selector);
+		return functionWithSelector(new FindFunction<Resource>(searchStrategy, provider, selector), selector);
 	}
 
 	/**
@@ -213,7 +213,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery functionWithSelector(Function<?, ?> function, String selector) {
-		return function(new FunctionWithSelector<Resource>(function, selector, searchStrategy, provider));
+		return function(new FilteredFunction<Resource>(function, selector, searchStrategy, provider));
 	}
 
 	/**

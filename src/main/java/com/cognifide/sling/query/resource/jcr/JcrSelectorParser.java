@@ -7,8 +7,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.cognifide.sling.query.selector.parser.Attribute;
-import com.cognifide.sling.query.selector.parser.Selector;
-import com.cognifide.sling.query.selector.parser.SelectorParser;
 import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
 public final class JcrSelectorParser {
@@ -16,17 +14,11 @@ public final class JcrSelectorParser {
 	private JcrSelectorParser() {
 	}
 
-	public static String parse(String selector, String rootPath) {
-		List<Selector> selectorList = SelectorParser.parse(selector);
-		List<SelectorSegment> segments = Collections.emptyList();
-		if (!selectorList.isEmpty()) {
-			segments = selectorList.get(0).getSegments();
-		}
-		if (segments.isEmpty()) {
+	public static String parse(SelectorSegment selector, String rootPath) {
+		if (selector == null) {
 			return prepareQuery(rootPath, null, null, Collections.<Attribute> emptyList());
 		} else {
-			SelectorSegment s = segments.get(0);
-			return prepareQuery(rootPath, s.getType(), s.getName(), s.getAttributes());
+			return prepareQuery(rootPath, selector.getType(), selector.getName(), selector.getAttributes());
 		}
 	}
 

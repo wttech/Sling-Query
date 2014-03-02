@@ -11,12 +11,12 @@ import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
-public class FunctionWithSelector<T> implements OptionIteratorToIteratorFunction<T> {
+public class FilteredFunction<T> implements OptionIteratorToIteratorFunction<T> {
 	private final Function<?, ?> function;
 
 	private final SelectorFunction<T> selector;
 
-	public FunctionWithSelector(Function<?, ?> function, String selector, SearchStrategy strategy,
+	public FilteredFunction(Function<?, ?> function, String selector, SearchStrategy strategy,
 			TreeProvider<T> provider) {
 		this.function = function;
 		if (StringUtils.isBlank(selector)) {

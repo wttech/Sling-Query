@@ -17,8 +17,8 @@ public class HasFunction<T> implements ElementToIteratorFunction<T> {
 	private final SelectorFunction<T> selector;
 
 	public HasFunction(String selectorString, SearchStrategy searchStrategy, TreeProvider<T> provider) {
-		this.findFunction = new FindFunction<T>(selectorString, searchStrategy, provider);
 		this.selector = SelectorFunction.parse(selectorString, searchStrategy, provider);
+		this.findFunction = new FindFunction<T>(searchStrategy, provider, selectorString);
 	}
 
 	@Override
