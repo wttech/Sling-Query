@@ -40,18 +40,18 @@ public class SelectorFunction<T> implements OptionIteratorToIteratorFunction<T>,
 		return functions;
 	}
 
-	public Iterator<Option<T>> apply(ListIterator<T> input) {
+	public Iterator<Option<T>> applyListIterator(ListIterator<T> input) {
 		return new CompositeIterator<T>(input, functions);
 	}
 
 	@Override
 	public Iterator<Option<T>> apply(Iterator<Option<T>> input) {
-		return apply(new LazyList<T>(new EmptyElementFilter<T>(input)).listIterator());
+		return applyListIterator(new LazyList<T>(new EmptyElementFilter<T>(input)).listIterator());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean accepts(T resource) {
-		return new EmptyElementFilter<T>(apply(Arrays.asList(resource).listIterator())).hasNext();
+		return new EmptyElementFilter<T>(applyListIterator(Arrays.asList(resource).listIterator())).hasNext();
 	}
 }

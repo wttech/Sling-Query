@@ -20,6 +20,7 @@ import com.cognifide.sling.query.function.FilterFunction;
 import com.cognifide.sling.query.function.FunctionWithSelector;
 import com.cognifide.sling.query.function.HasFunction;
 import com.cognifide.sling.query.function.FindFunction;
+import com.cognifide.sling.query.function.IdentityFunction;
 import com.cognifide.sling.query.function.LastFunction;
 import com.cognifide.sling.query.function.NextFunction;
 import com.cognifide.sling.query.function.NotFunction;
@@ -151,6 +152,16 @@ public class SlingQuery implements Iterable<Resource> {
 	 */
 	public SlingQuery filter(Predicate<Resource> predicate) {
 		return function(new FilterFunction<Resource>(predicate));
+	}
+
+	/**
+	 * Filter resource collection using given selector.
+	 * 
+	 * @param selector Selector
+	 * @return a {@link SlingQuery} object transformed by this operation
+	 */
+	public SlingQuery filter(String selector) {
+		return functionWithSelector(new IdentityFunction<Resource>(), selector);
 	}
 
 	/**
@@ -304,7 +315,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
 	public SlingQuery not(String selector) {
-		return functionWithSelector(new NotFunction<Resource>(parse(selector)), "");
+		return function(new NotFunction<Resource>(parse(selector)));
 	}
 
 	/**
