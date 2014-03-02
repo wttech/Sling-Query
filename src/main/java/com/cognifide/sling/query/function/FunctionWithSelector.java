@@ -8,7 +8,6 @@ import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
-import com.cognifide.sling.query.iterator.IteratorFactory;
 import com.cognifide.sling.query.selector.Option;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
@@ -29,11 +28,11 @@ public class FunctionWithSelector<T> implements OptionIteratorToIteratorFunction
 
 	@Override
 	public Iterator<Option<T>> apply(Iterator<Option<T>> input) {
-		Iterator<Option<T>> result = IteratorFactory.getOptionIterator(function, input);
+		Iterator<Option<T>> result = new IteratorToIteratorFunctionWrapper<T>(function).apply(input);
 		if (selector != null) {
 			result = selector.apply(result);
 		}
 		return result;
-		
+
 	}
 }

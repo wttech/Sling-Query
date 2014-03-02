@@ -18,7 +18,7 @@ public class IteratorUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> Iterator<T> getEmptyIterator() {
+	public static <T> Iterator<T> emptyIterator() {
 		return Arrays.<T> asList().iterator();
 	}
 }

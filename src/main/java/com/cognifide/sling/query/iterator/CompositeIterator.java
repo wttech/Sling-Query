@@ -6,7 +6,7 @@ import java.util.ListIterator;
 
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
-import com.cognifide.sling.query.function.OptionCompositeFunction;
+import com.cognifide.sling.query.function.CompositeFunction;
 import com.cognifide.sling.query.selector.Option;
 
 public class CompositeIterator<T> extends AbstractIterator<Option<T>> {
@@ -21,7 +21,7 @@ public class CompositeIterator<T> extends AbstractIterator<Option<T>> {
 
 	public CompositeIterator(ListIterator<T> iterator, List<Function<?, ?>> functions) {
 		this.input = iterator;
-		OptionIteratorToIteratorFunction<T> function = new OptionCompositeFunction<T>(functions);
+		OptionIteratorToIteratorFunction<T> function = new CompositeFunction<T>(functions);
 		output = function.apply(new OptionalElementIterator<T>(iterator));
 	}
 

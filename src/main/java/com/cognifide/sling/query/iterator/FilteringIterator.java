@@ -5,13 +5,13 @@ import java.util.Iterator;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.selector.Option;
 
-public class FilteringIteratorWrapper<T> extends AbstractIterator<Option<T>> {
+public class FilteringIterator<T> extends AbstractIterator<Option<T>> {
 
 	private final Iterator<Option<T>> iterator;
 
 	private final Predicate<T> predicate;
 
-	public FilteringIteratorWrapper(Iterator<Option<T>> iterator, Predicate<T> predicate) {
+	public FilteringIterator(Iterator<Option<T>> iterator, Predicate<T> predicate) {
 		this.iterator = iterator;
 		this.predicate = predicate;
 	}

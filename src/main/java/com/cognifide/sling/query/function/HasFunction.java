@@ -5,13 +5,12 @@ import java.util.Iterator;
 import com.cognifide.sling.query.IteratorUtils;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.ElementToElementFunction;
+import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.iterator.EmptyElementFilter;
-import com.cognifide.sling.query.iterator.IteratorFactory;
 import com.cognifide.sling.query.selector.Option;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
-public class HasFunction<T> implements ElementToElementFunction<T> {
+public class HasFunction<T> implements ElementToIteratorFunction<T> {
 
 	private final FindFunction<T> findFunction;
 
@@ -23,14 +22,14 @@ public class HasFunction<T> implements ElementToElementFunction<T> {
 	}
 
 	@Override
-	public T apply(T input) {
+	public Iterator<T> apply(T input) {
 		Iterator<Option<T>> iterator = IteratorUtils.singleElementIterator(new Option<T>(input));
-		iterator = IteratorFactory.getOptionIterator(findFunction, iterator);
+		iterator = new IteratorToIteratorFunctionWrapper<T>(findFunction).apply(iterator);
 		iterator = selector.apply(iterator);
 		if (new EmptyElementFilter<T>(iterator).hasNext()) {
-			return input;
+			return IteratorUtils.singleElementIterator(input);
 		} else {
-			return null;
+			return IteratorUtils.emptyIterator();
 		}
 	}
 }

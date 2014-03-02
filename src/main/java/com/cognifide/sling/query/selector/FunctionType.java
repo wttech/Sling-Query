@@ -1,9 +1,12 @@
 package com.cognifide.sling.query.selector;
 
+import java.util.Iterator;
+
+import com.cognifide.sling.query.IteratorUtils;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.ElementToElementFunction;
+import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.function.EvenFunction;
 import com.cognifide.sling.query.function.HasFunction;
 import com.cognifide.sling.query.function.NotFunction;
@@ -50,13 +53,13 @@ public enum FunctionType {
 		@Override
 		public <T> Function<?, ?> getFunction(String selector, SearchStrategy strategy,
 				final TreeProvider<T> provider) {
-			return new ElementToElementFunction<T>() {
+			return new ElementToIteratorFunction<T>() {
 				@Override
-				public T apply(T resource) {
+				public Iterator<T> apply(T resource) {
 					if (provider.listChildren(resource).hasNext()) {
-						return resource;
+						return IteratorUtils.singleElementIterator(resource);
 					} else {
-						return null;
+						return IteratorUtils.emptyIterator();
 					}
 				}
 			};
@@ -66,13 +69,14 @@ public enum FunctionType {
 		@Override
 		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
 				final TreeProvider<T> provider) {
-			return new ElementToElementFunction<T>() {
+			return new ElementToIteratorFunction<T>() {
 				@Override
-				public T apply(T resource) {
+				public Iterator<T> apply(T resource) {
 					if (provider.listChildren(resource).hasNext()) {
-						return null;
+						return IteratorUtils.emptyIterator();
+					} else {
+						return IteratorUtils.singleElementIterator(resource);
 					}
-					return resource;
 				}
 			};
 		}

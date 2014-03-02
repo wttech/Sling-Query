@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
-import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
+import com.cognifide.sling.query.iterator.FilteringIterator;
 import com.cognifide.sling.query.selector.Option;
 
 public class EvenFunction<T> implements OptionIteratorToIteratorFunction<T> {
@@ -17,7 +17,7 @@ public class EvenFunction<T> implements OptionIteratorToIteratorFunction<T> {
 
 	@Override
 	public Iterator<Option<T>> apply(Iterator<Option<T>> resources) {
-		return new FilteringIteratorWrapper<T>(resources, new EvenPredicate<T>(even));
+		return new FilteringIterator<T>(resources, new EvenPredicate<T>(even));
 	}
 
 	private static class EvenPredicate<T> implements Predicate<T> {

@@ -1,36 +1,31 @@
-package com.cognifide.sling.query.iterator;
+package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
-import com.cognifide.sling.query.api.function.ElementToElementFunction;
-import com.cognifide.sling.query.function.ResourceToIteratorWrapperFunction;
+import com.cognifide.sling.query.iterator.OptionFunctionIterator;
 import com.cognifide.sling.query.selector.Option;
 
-public final class IteratorFactory {
-	private IteratorFactory() {
+public class IteratorToIteratorFunctionWrapper<T> implements OptionIteratorToIteratorFunction<T> {
+
+	private final Function<?, ?> function;
+
+	public IteratorToIteratorFunctionWrapper(Function<?, ?> function) {
+		this.function = function;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> Iterator<Option<T>> getOptionIterator(Function<?, ?> function,
-			Iterator<Option<T>> parentIterator) {
-		if (isEtoE(function)) {
-			return getOptionIterator((ElementToElementFunction<T>) function, parentIterator);
-		} else if (isEtoI(function)) {
+	@Override
+	public Iterator<Option<T>> apply(Iterator<Option<T>> parentIterator) {
+		if (isEtoI(function)) {
 			return getOptionIterator((ElementToIteratorFunction<T>) function, parentIterator);
 		} else if (isOptionItoI(function)) {
 			return getOptionIterator((OptionIteratorToIteratorFunction<T>) function, parentIterator);
 		} else {
 			throw new IllegalArgumentException("Don't know how to handle " + function.toString());
 		}
-	}
-
-	private static <T> Iterator<Option<T>> getOptionIterator(ElementToElementFunction<T> function,
-			Iterator<Option<T>> parentIterator) {
-		ElementToIteratorFunction<T> wrappingFunction = new ResourceToIteratorWrapperFunction<T>(function);
-		return new OptionFunctionIterator<T>(wrappingFunction, parentIterator);
 	}
 
 	private static <T> Iterator<Option<T>> getOptionIterator(ElementToIteratorFunction<T> function,
@@ -41,10 +36,6 @@ public final class IteratorFactory {
 	private static <T> Iterator<Option<T>> getOptionIterator(OptionIteratorToIteratorFunction<T> function,
 			Iterator<Option<T>> parentIterator) {
 		return function.apply(parentIterator);
-	}
-
-	private static boolean isEtoE(Function<?, ?> function) {
-		return function instanceof ElementToElementFunction;
 	}
 
 	private static boolean isEtoI(Function<?, ?> function) {

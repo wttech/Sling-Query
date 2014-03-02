@@ -11,7 +11,6 @@ import org.apache.sling.api.resource.ResourceResolver;
 import com.cognifide.sling.query.LazyList;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
-import com.cognifide.sling.query.api.function.ElementToElementFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
 import com.cognifide.sling.query.function.FilterFunction;
@@ -22,7 +21,7 @@ import com.cognifide.sling.query.function.IdentityFunction;
 import com.cognifide.sling.query.function.LastFunction;
 import com.cognifide.sling.query.function.NextFunction;
 import com.cognifide.sling.query.function.NotFunction;
-import com.cognifide.sling.query.function.OptionCompositeFunction;
+import com.cognifide.sling.query.function.CompositeFunction;
 import com.cognifide.sling.query.function.ParentFunction;
 import com.cognifide.sling.query.function.ParentsFunction;
 import com.cognifide.sling.query.function.PrevFunction;
@@ -96,7 +95,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 */
 	@Override
 	public Iterator<Resource> iterator() {
-		OptionIteratorToIteratorFunction<Resource> f = new OptionCompositeFunction<Resource>(functions);
+		OptionIteratorToIteratorFunction<Resource> f = new CompositeFunction<Resource>(functions);
 		Iterator<Option<Resource>> iterator = f.apply(resources.iterator());
 		return new EmptyElementFilter<Resource>(iterator);
 	}
