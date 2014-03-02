@@ -21,7 +21,7 @@ public class HierarchySelectorTest {
 	@Test
 	public void testDescendant() {
 		SlingQuery query = $(tree.getChild("home")).children(
-				"cq:Page [jcr:title=E-mail] demo/core/components/richtext");
+				"cq:Page demo/core/components/configValue");
 		assertResourceSetEquals(query.iterator(), "java");
 	}
 

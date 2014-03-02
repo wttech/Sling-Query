@@ -41,7 +41,7 @@ public class CompositeIterator<T> extends AbstractIterator<Option<T>> {
 			}
 		} while (currentElement == input.nextIndex());
 
-		currentElement = input.nextIndex();
+		currentElement = input.previousIndex();
 		Option<T> result = getResult(emptyResult);
 		return result;
 	}
