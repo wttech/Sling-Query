@@ -3,19 +3,20 @@ package com.cognifide.sling.query.function;
 import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Predicate;
-import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
+import com.cognifide.sling.query.selector.Option;
 
-public class FilterFunction<T> implements IteratorToIteratorFunction<T> {
+public class FilterFunction<T> implements OptionIteratorToIteratorFunction<T> {
 
 	private final Predicate<T> predicate;
-	
+
 	public FilterFunction(Predicate<T> predicate) {
 		this.predicate = predicate;
 	}
 
 	@Override
-	public Iterator<T> apply(Iterator<T> input) {
+	public Iterator<Option<T>> apply(Iterator<Option<T>> input) {
 		return new FilteringIteratorWrapper<T>(input, predicate);
 	}
 

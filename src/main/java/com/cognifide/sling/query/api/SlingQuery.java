@@ -10,11 +10,12 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.LazyList;
-import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.api.function.ElementToElementFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
+import com.cognifide.sling.query.function.CompositeFunction;
 import com.cognifide.sling.query.function.FilterFunction;
 import com.cognifide.sling.query.function.FunctionWithSelector;
 import com.cognifide.sling.query.function.HasFunction;
@@ -40,7 +41,7 @@ import com.cognifide.sling.query.selector.SelectorFunction;
  * 
  */
 public class SlingQuery implements Iterable<Resource> {
-	private final List<IteratorToIteratorFunction<Resource>> functions = new ArrayList<IteratorToIteratorFunction<Resource>>();
+	private final List<OptionIteratorToIteratorFunction<Resource>> functions = new ArrayList<OptionIteratorToIteratorFunction<Resource>>();
 
 	private final List<Resource> resources;
 
@@ -90,11 +91,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 */
 	@Override
 	public Iterator<Resource> iterator() {
-		Iterator<Resource> iterator = resources.iterator();
-		for (IteratorToIteratorFunction<Resource> operation : functions) {
-			iterator = operation.apply(iterator);
-		}
-		return iterator;
+		return new CompositeFunction<Resource>(functions).apply(resources.iterator());
 	}
 
 	/**
@@ -193,7 +190,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * a selector string.
 	 * 
 	 * @param function Object implementing one of the interfaces: {@link ElementToElementFunction},
-	 * {@link ElementToIteratorFunction} or {@link IteratorToIteratorFunction}
+	 * {@link ElementToIteratorFunction} or {@link OptionIteratorToIteratorFunction}
 	 * @param selector Result filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
@@ -485,7 +482,7 @@ public class SlingQuery implements Iterable<Resource> {
 		return function(new SliceFunction<Resource>(from, to));
 	}
 
-	private SlingQuery function(IteratorToIteratorFunction<Resource> function) {
+	private SlingQuery function(OptionIteratorToIteratorFunction<Resource> function) {
 		SlingQuery newQuery = new SlingQuery(this);
 		newQuery.functions.add(function);
 		return newQuery;

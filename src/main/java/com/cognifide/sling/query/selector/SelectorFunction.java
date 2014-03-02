@@ -1,20 +1,25 @@
 package com.cognifide.sling.query.selector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
+import com.cognifide.sling.query.LazyList;
+import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
-import com.cognifide.sling.query.iterator.ArrayIterator;
+import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.iterator.CompositeIterator;
+import com.cognifide.sling.query.iterator.EmptyElementFilter;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
 import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
-public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predicate<T> {
+public class SelectorFunction<T> implements OptionIteratorToIteratorFunction<T>, Predicate<T> {
 
-	private final List<IteratorToIteratorFunction<T>> functions;
+	private final List<Function<?, ?>> functions;
 
 	public SelectorFunction(List<SelectorSegment> segments, TreeProvider<T> provider, SearchStrategy strategy) {
 		this.functions = createSegmentFunctions(segments, provider, strategy);
@@ -26,27 +31,27 @@ public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predi
 		return new SelectorFunction<T>(segments, provider, strategy);
 	}
 
-	private List<IteratorToIteratorFunction<T>> createSegmentFunctions(List<SelectorSegment> segments,
+	private List<Function<?, ?>> createSegmentFunctions(List<SelectorSegment> segments,
 			TreeProvider<T> provider, SearchStrategy strategy) {
-		List<IteratorToIteratorFunction<T>> functions = new ArrayList<IteratorToIteratorFunction<T>>();
+		List<Function<?, ?>> functions = new ArrayList<Function<?, ?>>();
 		for (SelectorSegment segment : segments) {
-			functions.add(new SelectorSegmentFunction<T>(segment, provider, strategy));
+			functions.addAll(SelectorSegmentFunction.createFunctions(segment, provider, strategy));
 		}
 		return functions;
 	}
 
+	public Iterator<Option<T>> apply(ListIterator<T> input) {
+		return new CompositeIterator<T>(input, functions);
+	}
+
 	@Override
-	public Iterator<T> apply(Iterator<T> input) {
-		Iterator<T> result = input;
-		for (IteratorToIteratorFunction<T> function : functions) {
-			result = function.apply(result);
-		}
-		return result;
+	public Iterator<Option<T>> apply(Iterator<Option<T>> input) {
+		return apply(new LazyList<T>(new EmptyElementFilter<T>(input)).listIterator());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean accepts(T resource) {
-		return apply(new ArrayIterator<T>(resource)).hasNext();
+		return new EmptyElementFilter<T>(apply(Arrays.asList(resource).listIterator())).hasNext();
 	}
 }

@@ -1,17 +1,14 @@
 package com.cognifide.sling.query.selector;
 
-public class OptionalElement<T> {
-	private final T source;
-
+public class Option<T> {
 	private final T element;
 
-	public OptionalElement(T element, T source) {
+	public Option(T element) {
 		this.element = element;
-		this.source = source;
 	}
 
-	public T getSource() {
-		return source;
+	public Option() {
+		this.element = null;
 	}
 
 	public T getElement() {

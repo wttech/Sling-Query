@@ -3,7 +3,6 @@ package com.cognifide.sling.query.function;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.ElementToElementFunction;
-import com.cognifide.sling.query.selector.OptionalElement;
 
 public class ClosestFunction<T> implements ElementToElementFunction<T> {
 
@@ -17,14 +16,14 @@ public class ClosestFunction<T> implements ElementToElementFunction<T> {
 	}
 
 	@Override
-	public OptionalElement<T> apply(T resource) {
+	public T apply(T resource) {
 		T current = resource;
 		while (current != null) {
 			if (predicate.accepts(current)) {
-				return new OptionalElement<T>(current, resource);
+				return current;
 			}
 			current = provider.getParent(current);
 		}
-		return new OptionalElement<T>(null, resource);
+		return null;
 	}
 }

@@ -24,14 +24,19 @@ public class FindFunction<T> implements ElementToIteratorFunction<T> {
 
 	@Override
 	public Iterator<T> apply(T resource) {
+		Iterator<T> iterator;
 		switch (strategy) {
 			case BFS:
-				return new BfsTreeIterator<T>(resource, provider);
+				iterator = new BfsTreeIterator<T>(resource, provider);
+				break;
 			case QUERY:
-				return provider.query(preFilteringSelector, resource);
+				iterator = provider.query(preFilteringSelector, resource);
+				break;
 			case DFS:
 			default:
-				return new DfsTreeIterator<T>(resource, provider);
+				iterator = new DfsTreeIterator<T>(resource, provider);
+				break;
 		}
+		return iterator;
 	}
 }

@@ -4,8 +4,6 @@ import java.util.Iterator;
 
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
-import com.cognifide.sling.query.iterator.OptionalElementIterator;
-import com.cognifide.sling.query.selector.OptionalElement;
 
 public class ChildrenFunction<T> implements ElementToIteratorFunction<T> {
 
@@ -16,7 +14,7 @@ public class ChildrenFunction<T> implements ElementToIteratorFunction<T> {
 	}
 
 	@Override
-	public Iterator<OptionalElement<T>> apply(T parent) {
-		return new OptionalElementIterator<T>(provider.listChildren(parent), parent);
+	public Iterator<T> apply(T parent) {
+		return provider.listChildren(parent);
 	}
 }

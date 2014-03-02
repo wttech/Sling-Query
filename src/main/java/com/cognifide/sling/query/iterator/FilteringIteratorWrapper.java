@@ -3,24 +3,30 @@ package com.cognifide.sling.query.iterator;
 import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Predicate;
+import com.cognifide.sling.query.selector.Option;
 
-public class FilteringIteratorWrapper<T> extends AbstractIterator<T> {
+public class FilteringIteratorWrapper<T> extends AbstractIterator<Option<T>> {
 
-	private final Iterator<T> iterator;
+	private final Iterator<Option<T>> iterator;
 
 	private final Predicate<T> predicate;
 
-	public FilteringIteratorWrapper(Iterator<T> iterator, Predicate<T> predicate) {
+	public FilteringIteratorWrapper(Iterator<Option<T>> iterator, Predicate<T> predicate) {
 		this.iterator = iterator;
 		this.predicate = predicate;
 	}
 
 	@Override
-	protected T getElement() {
+	protected Option<T> getElement() {
 		while (iterator.hasNext()) {
-			T element = iterator.next();
-			if (predicate.accepts(element)) {
+			Option<T> element = iterator.next();
+			if (element.isEmpty()) {
+				continue;
+			}
+			if (predicate.accepts(element.getElement())) {
 				return element;
+			} else {
+				return new Option<T>();
 			}
 		}
 		return null;

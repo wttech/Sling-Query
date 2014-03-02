@@ -3,21 +3,23 @@ package com.cognifide.sling.query.function;
 import java.util.Iterator;
 import java.util.List;
 
-import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.iterator.EmptyElementFilter;
+import com.cognifide.sling.query.iterator.OptionalElementIterator;
+import com.cognifide.sling.query.selector.Option;
 
-public class CompositeFunction<T> implements IteratorToIteratorFunction<T> {
-	private final List<IteratorToIteratorFunction<T>> functions;
+public class CompositeFunction<T> {
+	private final List<OptionIteratorToIteratorFunction<T>> functions;
 
-	public CompositeFunction(List<IteratorToIteratorFunction<T>> functions) {
+	public CompositeFunction(List<OptionIteratorToIteratorFunction<T>> functions) {
 		this.functions = functions;
 	}
 
-	@Override
 	public Iterator<T> apply(Iterator<T> input) {
-		Iterator<T> result = input;
-		for (IteratorToIteratorFunction<T> f : functions) {
+		Iterator<Option<T>> result = new OptionalElementIterator<T>(input);
+		for (OptionIteratorToIteratorFunction<T> f : functions) {
 			result = f.apply(result);
 		}
-		return result;
+		return new EmptyElementFilter<T>(result);
 	}
 }

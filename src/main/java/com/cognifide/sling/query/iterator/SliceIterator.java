@@ -2,42 +2,42 @@ package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 
-public class SliceIterator<T> extends AbstractIterator<T> {
+import com.cognifide.sling.query.selector.Option;
 
-	private final Iterator<T> iterator;
+public class SliceIterator<T> extends AbstractIterator<Option<T>> {
+
+	private final Iterator<Option<T>> iterator;
+
+	private final int from;
+
+	private final int to;
 
 	private int current;
 
-	private int from;
-
-	private Integer to;
-
-	public SliceIterator(Iterator<T> iterator, int from, int to) {
+	public SliceIterator(Iterator<Option<T>> iterator, int from, int to) {
 		this.iterator = iterator;
-		this.current = 0;
+		this.current = -1;
 		this.from = from;
 		this.to = to;
 	}
 
-	public SliceIterator(Iterator<T> iterator, int from) {
-		this.iterator = iterator;
-		this.current = 0;
-		this.from = from;
-		this.to = null;
+	public SliceIterator(Iterator<Option<T>> iterator, int from) {
+		this(iterator, from, Integer.MAX_VALUE);
 	}
 
 	@Override
-	protected T getElement() {
-		if (to != null && current > to) {
-			return null;
-		}
-		T element;
-		do {
-			if (!iterator.hasNext()) {
-				return null;
+	protected Option<T> getElement() {
+		if (iterator.hasNext()) {
+			Option<T> element = iterator.next();
+			if (element.isEmpty()) {
+				return element;
 			}
-			element = iterator.next();
-		} while (current++ < from);
-		return element;
+			if (++current >= from && current <= to) {
+				return element;
+			} else {
+				return new Option<T>();
+			}
+		}
+		return null;
 	}
 }

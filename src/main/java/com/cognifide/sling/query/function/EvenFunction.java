@@ -3,10 +3,11 @@ package com.cognifide.sling.query.function;
 import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Predicate;
-import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.FilteringIteratorWrapper;
+import com.cognifide.sling.query.selector.Option;
 
-public class EvenFunction<T> implements IteratorToIteratorFunction<T> {
+public class EvenFunction<T> implements OptionIteratorToIteratorFunction<T> {
 
 	private final boolean even;
 
@@ -15,7 +16,7 @@ public class EvenFunction<T> implements IteratorToIteratorFunction<T> {
 	}
 
 	@Override
-	public Iterator<T> apply(Iterator<T> resources) {
+	public Iterator<Option<T>> apply(Iterator<Option<T>> resources) {
 		return new FilteringIteratorWrapper<T>(resources, new EvenPredicate<T>(even));
 	}
 

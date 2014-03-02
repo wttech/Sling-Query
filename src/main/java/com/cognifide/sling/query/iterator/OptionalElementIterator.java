@@ -2,30 +2,28 @@ package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 
-import com.cognifide.sling.query.selector.OptionalElement;
+import com.cognifide.sling.query.selector.Option;
 
-public class OptionalElementIterator<T> extends AbstractIterator<OptionalElement<T>> {
+public class OptionalElementIterator<T> extends AbstractIterator<Option<T>> {
 
 	private final Iterator<T> iterator;
 
-	private final T source;
-
 	private boolean empty;
 
-	public OptionalElementIterator(Iterator<T> iterator, T source) {
+	public OptionalElementIterator(Iterator<T> iterator) {
 		this.iterator = iterator;
-		this.source = source;
 		this.empty = !iterator.hasNext();
 	}
 
 	@Override
-	protected OptionalElement<T> getElement() {
+	protected Option<T> getElement() {
 		if (iterator.hasNext()) {
-			return new OptionalElement<T>(iterator.next(), source);
+			T element = iterator.next();
+			return new Option<T>(element);
 		}
 		if (empty) {
 			empty = false;
-			return new OptionalElement<T>(null, source);
+			return new Option<T>();
 		}
 		return null;
 	}

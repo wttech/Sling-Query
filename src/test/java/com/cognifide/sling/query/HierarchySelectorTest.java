@@ -15,25 +15,25 @@ public class HierarchySelectorTest {
 	@Test
 	public void testChildrenWithAttribute() {
 		SlingQuery query = $(tree.getChild("home")).children("cq:Page > cq:PageContent[jcr:title=Java]");
-		assertResourceSetEquals(query.iterator(), "jcr:content");
+		assertResourceSetEquals(query.iterator(), "java");
 	}
 
 	@Test
 	public void testDescendant() {
 		SlingQuery query = $(tree.getChild("home")).children(
 				"cq:Page [jcr:title=E-mail] demo/core/components/richtext");
-		assertResourceSetEquals(query.iterator(), "richtext");
+		assertResourceSetEquals(query.iterator(), "java");
 	}
 
 	@Test
 	public void testNextAdjacent() {
 		SlingQuery query = $(tree).children("cq:PageContent + cq:Page");
-		assertResourceSetEquals(query.iterator(), "application");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 
 	@Test
 	public void testNextSiblings() {
 		SlingQuery query = $(tree).children("cq:PageContent ~ cq:Page");
-		assertResourceSetEquals(query.iterator(), "application", "home");
+		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 }
