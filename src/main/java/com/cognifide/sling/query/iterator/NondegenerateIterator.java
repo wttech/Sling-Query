@@ -1,17 +1,18 @@
 package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
 
-import com.cognifide.sling.query.api.Function;
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
-import com.cognifide.sling.query.function.CompositeFunction;
-import com.cognifide.sling.query.selector.Option;
 
-public class CompositeIterator<T> extends AbstractIterator<Option<T>> {
+/**
+ * This class modifies the input iterator, removing all elements that are mapped to an empty value by the
+ * function.
+ */
+public class NondegenerateIterator<T> extends AbstractIterator<Option<T>> {
 
-	private final ListIterator<T> input;
+	private final ListIterator<Option<T>> input;
 
 	private final Iterator<Option<T>> output;
 
@@ -19,10 +20,10 @@ public class CompositeIterator<T> extends AbstractIterator<Option<T>> {
 
 	private boolean finished = false;
 
-	public CompositeIterator(ListIterator<T> iterator, List<Function<?, ?>> functions) {
-		this.input = iterator;
-		OptionIteratorToIteratorFunction<T> function = new CompositeFunction<T>(functions);
-		output = function.apply(new OptionalElementIterator<T>(iterator));
+	public NondegenerateIterator(ListIterator<Option<T>> iterator,
+			OptionIteratorToIteratorFunction<T> function) {
+		input = iterator;
+		output = function.apply(iterator);
 	}
 
 	@Override
@@ -48,11 +49,11 @@ public class CompositeIterator<T> extends AbstractIterator<Option<T>> {
 
 	private Option<T> getResult(boolean empty) {
 		if (empty) {
-			return new Option<T>();
+			return Option.empty();
 		} else {
-			T previous = input.previous();
+			Option<T> previous = input.previous();
 			input.next();
-			return new Option<T>(previous);
+			return previous;
 		}
 	}
 }

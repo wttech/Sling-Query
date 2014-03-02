@@ -3,9 +3,12 @@ package com.cognifide.sling.query.iterator;
 import java.util.Iterator;
 
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
-import com.cognifide.sling.query.selector.Option;
+import com.cognifide.sling.query.api.function.Option;
 
-public class OptionFunctionIterator<T> extends AbstractIterator<Option<T>> {
+/**
+ * This iterator evaluates each element from the source iterator, expanding it using given function.
+ */
+public class ExpandingIterator<T> extends AbstractIterator<Option<T>> {
 
 	private final ElementToIteratorFunction<T> function;
 
@@ -13,15 +16,16 @@ public class OptionFunctionIterator<T> extends AbstractIterator<Option<T>> {
 
 	private Iterator<T> currentIterator;
 
-	public OptionFunctionIterator(ElementToIteratorFunction<T> function, Iterator<Option<T>> parentIterator) {
-		this.function = function;
-		this.parentIterator = parentIterator;
+	public ExpandingIterator(ElementToIteratorFunction<T> expandingFunction,
+			Iterator<Option<T>> sourceIterator) {
+		this.function = expandingFunction;
+		this.parentIterator = sourceIterator;
 	}
 
 	@Override
 	protected Option<T> getElement() {
 		if (currentIterator != null && currentIterator.hasNext()) {
-			return new Option<T>(currentIterator.next());
+			return Option.of(currentIterator.next());
 		}
 		while (parentIterator.hasNext()) {
 			Option<T> parentElement = parentIterator.next();
@@ -32,7 +36,7 @@ public class OptionFunctionIterator<T> extends AbstractIterator<Option<T>> {
 			if (currentIterator.hasNext()) {
 				return getElement();
 			} else {
-				return new Option<T>();
+				return Option.empty();
 			}
 		}
 		return null;

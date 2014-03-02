@@ -7,8 +7,8 @@ import org.apache.commons.lang.StringUtils;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
-import com.cognifide.sling.query.selector.Option;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
 public class FunctionWithSelector<T> implements OptionIteratorToIteratorFunction<T> {

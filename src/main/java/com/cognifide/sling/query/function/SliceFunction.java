@@ -2,9 +2,9 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.SliceIterator;
-import com.cognifide.sling.query.selector.Option;
 
 public class SliceFunction<T> implements OptionIteratorToIteratorFunction<T> {
 

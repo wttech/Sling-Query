@@ -3,10 +3,10 @@ package com.cognifide.sling.query.function;
 import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Function;
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
-import com.cognifide.sling.query.iterator.OptionFunctionIterator;
-import com.cognifide.sling.query.selector.Option;
+import com.cognifide.sling.query.iterator.ExpandingIterator;
 
 public class IteratorToIteratorFunctionWrapper<T> implements OptionIteratorToIteratorFunction<T> {
 
@@ -30,7 +30,7 @@ public class IteratorToIteratorFunctionWrapper<T> implements OptionIteratorToIte
 
 	private static <T> Iterator<Option<T>> getOptionIterator(ElementToIteratorFunction<T> function,
 			Iterator<Option<T>> parentIterator) {
-		return new OptionFunctionIterator<T>((ElementToIteratorFunction<T>) function, parentIterator);
+		return new ExpandingIterator<T>((ElementToIteratorFunction<T>) function, parentIterator);
 	}
 
 	private static <T> Iterator<Option<T>> getOptionIterator(OptionIteratorToIteratorFunction<T> function,

@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import com.cognifide.sling.query.LazyList;
-import com.cognifide.sling.query.selector.Option;
+import com.cognifide.sling.query.api.function.Option;
 
 public class LastIterator<T> extends AbstractIterator<Option<T>> {
 
@@ -32,10 +32,10 @@ public class LastIterator<T> extends AbstractIterator<Option<T>> {
 		initializeLastIndex();
 		if (lastIndex == -1) {
 			finished = true;
-			return new Option<T>();
+			return Option.empty();
 		}
 
-		Option<T> candidate = new Option<T>();
+		Option<T> candidate = Option.empty();
 		if (iterator.hasNext()) {
 			candidate = iterator.next();
 		} else {
@@ -45,7 +45,7 @@ public class LastIterator<T> extends AbstractIterator<Option<T>> {
 			finished = true;
 			return candidate;
 		} else {
-			return new Option<T>();
+			return Option.empty();
 		}
 	}
 

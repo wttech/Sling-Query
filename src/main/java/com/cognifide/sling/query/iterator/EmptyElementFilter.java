@@ -2,9 +2,9 @@ package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 
-import com.cognifide.sling.query.selector.Option;
+import com.cognifide.sling.query.api.function.Option;
 
-public class EmptyElementFilter<T> extends AbstractIterator<T> {
+public class EmptyElementFilter<T> extends AbstractIterator<Option<T>> {
 
 	private final Iterator<Option<T>> input;
 
@@ -13,11 +13,11 @@ public class EmptyElementFilter<T> extends AbstractIterator<T> {
 	}
 
 	@Override
-	protected T getElement() {
+	protected Option<T> getElement() {
 		while (input.hasNext()) {
 			Option<T> element = input.next();
 			if (!element.isEmpty()) {
-				return element.getElement();
+				return element;
 			}
 		}
 		return null;

@@ -6,8 +6,8 @@ import com.cognifide.sling.query.IteratorUtils;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.iterator.EmptyElementFilter;
-import com.cognifide.sling.query.selector.Option;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
 public class HasFunction<T> implements ElementToIteratorFunction<T> {
@@ -23,7 +23,7 @@ public class HasFunction<T> implements ElementToIteratorFunction<T> {
 
 	@Override
 	public Iterator<T> apply(T input) {
-		Iterator<Option<T>> iterator = IteratorUtils.singleElementIterator(new Option<T>(input));
+		Iterator<Option<T>> iterator = IteratorUtils.singleElementIterator(Option.of(input));
 		iterator = new IteratorToIteratorFunctionWrapper<T>(findFunction).apply(iterator);
 		iterator = selector.apply(iterator);
 		if (new EmptyElementFilter<T>(iterator).hasNext()) {

@@ -3,7 +3,7 @@ package com.cognifide.sling.query.iterator;
 import java.util.Iterator;
 
 import com.cognifide.sling.query.LazyList;
-import com.cognifide.sling.query.selector.Option;
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
 public class ReverseIterator<T> extends AbstractIterator<Option<T>> {
@@ -26,7 +26,7 @@ public class ReverseIterator<T> extends AbstractIterator<Option<T>> {
 			if (filteredElement.isEmpty()) {
 				return originalElement;
 			} else {
-				return new Option<T>();
+				return Option.empty();
 			}
 		}
 		return null;

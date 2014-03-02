@@ -9,6 +9,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.LazyList;
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
@@ -29,9 +30,9 @@ import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.iterator.AdaptToIterator;
 import com.cognifide.sling.query.iterator.EmptyElementFilter;
+import com.cognifide.sling.query.iterator.OptionStrippingIterator;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
 import com.cognifide.sling.query.resource.ResourceTreeProvider;
-import com.cognifide.sling.query.selector.Option;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
 /**
@@ -74,7 +75,7 @@ public class SlingQuery implements Iterable<Resource> {
 		this.provider = provider;
 		this.resources = new ArrayList<Option<Resource>>();
 		for (Resource r : resources) {
-			this.resources.add(new Option<Resource>(r));
+			this.resources.add(Option.of(r));
 		}
 		this.searchStrategy = SearchStrategy.DFS;
 	}
@@ -97,7 +98,8 @@ public class SlingQuery implements Iterable<Resource> {
 	public Iterator<Resource> iterator() {
 		OptionIteratorToIteratorFunction<Resource> f = new CompositeFunction<Resource>(functions);
 		Iterator<Option<Resource>> iterator = f.apply(resources.iterator());
-		return new EmptyElementFilter<Resource>(iterator);
+		iterator = new EmptyElementFilter<Resource>(iterator);
+		return new OptionStrippingIterator<Resource>(iterator);
 	}
 
 	/**

@@ -3,7 +3,7 @@ package com.cognifide.sling.query.iterator;
 import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Predicate;
-import com.cognifide.sling.query.selector.Option;
+import com.cognifide.sling.query.api.function.Option;
 
 public class FilteringIterator<T> extends AbstractIterator<Option<T>> {
 
@@ -26,7 +26,7 @@ public class FilteringIterator<T> extends AbstractIterator<Option<T>> {
 			if (predicate.accepts(element.getElement())) {
 				return element;
 			} else {
-				return new Option<T>();
+				return Option.empty();
 			}
 		}
 		return null;

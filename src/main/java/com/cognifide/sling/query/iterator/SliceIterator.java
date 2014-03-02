@@ -2,7 +2,7 @@ package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 
-import com.cognifide.sling.query.selector.Option;
+import com.cognifide.sling.query.api.function.Option;
 
 public class SliceIterator<T> extends AbstractIterator<Option<T>> {
 
@@ -35,7 +35,7 @@ public class SliceIterator<T> extends AbstractIterator<Option<T>> {
 			if (++current >= from && current <= to) {
 				return element;
 			} else {
-				return new Option<T>();
+				return Option.empty();
 			}
 		}
 		return null;
