@@ -56,6 +56,9 @@ public class ResourcePredicate implements Predicate<Resource> {
 		if (resource.isResourceType(resourceType)) {
 			return true;
 		}
+		if (resourceType.contains("/") || !resourceType.contains(":")) {
+			return false;
+		}
 		Node node = resource.adaptTo(Node.class);
 		try {
 			if (node != null) {
