@@ -114,7 +114,7 @@ public class ResourceMock implements Resource {
 
 	@Override
 	public ResourceResolver getResourceResolver() {
-		throw new UnsupportedOperationException();
+		return null;
 	}
 
 	@Override

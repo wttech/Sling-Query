@@ -34,8 +34,8 @@ public class ResourceTreeProvider implements TreeProvider<Resource> {
 	}
 
 	@Override
-	public Iterator<Resource> query(SelectorSegment selector, Resource resource) {
-		return new JcrQueryIterator(selector, resource);
+	public Iterator<Resource> query(List<SelectorSegment> segments, Resource resource) {
+		return new JcrQueryIterator(segments, resource);
 	}
 
 }

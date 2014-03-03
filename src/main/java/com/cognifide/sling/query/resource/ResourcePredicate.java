@@ -8,10 +8,13 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.sling.query.api.Predicate;
+import com.cognifide.sling.query.resource.jcr.JcrTypeResolver;
+import com.cognifide.sling.query.resource.jcr.SessionJcrTypeResolver;
 import com.cognifide.sling.query.selector.parser.Attribute;
 
 public class ResourcePredicate implements Predicate<Resource> {
@@ -23,6 +26,8 @@ public class ResourcePredicate implements Predicate<Resource> {
 	private final String resourceName;
 
 	private final List<Predicate<Resource>> subPredicates;
+
+	private JcrTypeResolver cachedTypeResolver;
 
 	public ResourcePredicate(String resourceType, String resourceName, List<Attribute> attributes) {
 		this.resourceType = resourceType;
@@ -49,14 +54,14 @@ public class ResourcePredicate implements Predicate<Resource> {
 		return true;
 	}
 
-	private static boolean isResourceType(Resource resource, String resourceType) {
+	private boolean isResourceType(Resource resource, String resourceType) {
 		if (StringUtils.isBlank(resourceType)) {
 			return true;
 		}
 		if (resource.isResourceType(resourceType)) {
 			return true;
 		}
-		if (resourceType.contains("/") || !resourceType.contains(":")) {
+		if (!isValidType(resourceType, resource.getResourceResolver())) {
 			return false;
 		}
 		Node node = resource.adaptTo(Node.class);
@@ -68,5 +73,12 @@ public class ResourcePredicate implements Predicate<Resource> {
 			LOG.error("Can't check node type", e);
 		}
 		return false;
+	}
+
+	private boolean isValidType(String type, ResourceResolver resourceResolver) {
+		if (cachedTypeResolver == null) {
+			cachedTypeResolver = new SessionJcrTypeResolver(resourceResolver);
+		}
+		return cachedTypeResolver.isJcrType(type);
 	}
 }
