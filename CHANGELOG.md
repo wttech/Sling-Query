@@ -2,8 +2,11 @@
 
 * `not()` function is now lazy (eg. `$(resourceResolver).not('cq:InvalidType').first()` return results immediately)
 * multiple selectors can be joined with comma: `$('[jcr:title=Foo], [jcr:title=Bar])`
-* fixed `javax.jcr.RepositoryException: invalid node type name` bug (reported by Dawid Jędraszek)
 * removed support for the `:last` modifier
+
+## SlingQuery 1.3.1
+
+* fixed `javax.jcr.RepositoryException: invalid node type name` bug (reported by Dawid Jędraszek)
 
 ## SlingQuery 1.3.0
 
