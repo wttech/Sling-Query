@@ -1,37 +1,55 @@
 package com.cognifide.sling.query.function;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
+import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.iterator.tree.BfsTreeIterator;
 import com.cognifide.sling.query.iterator.tree.DfsTreeIterator;
+import com.cognifide.sling.query.selector.parser.Selector;
+import com.cognifide.sling.query.selector.parser.SelectorParser;
+import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
-public class FindFunction<T> implements ResourceToIteratorFunction<T> {
+public class FindFunction<T> implements ElementToIteratorFunction<T> {
 
-	private final String preFilteringSelector;
+	private final List<SelectorSegment> preFilteringSelector;
 
 	private final TreeProvider<T> provider;
 
 	private final SearchStrategy strategy;
 
-	public FindFunction(String preFilteringSelector, SearchStrategy searchStrategy, TreeProvider<T> provider) {
-		this.preFilteringSelector = preFilteringSelector;
+	public FindFunction(SearchStrategy searchStrategy, TreeProvider<T> provider,
+			SelectorSegment preFilteringSelector) {
 		this.strategy = searchStrategy;
 		this.provider = provider;
+		this.preFilteringSelector = Arrays.asList(preFilteringSelector);
+	}
+
+	public FindFunction(SearchStrategy searchStrategy, TreeProvider<T> provider, String preFilteringSelector) {
+		this.strategy = searchStrategy;
+		this.provider = provider;
+		List<Selector> selectors = SelectorParser.parse(preFilteringSelector);
+		this.preFilteringSelector = SelectorParser.getFirstSegmentFromEachSelector(selectors);
 	}
 
 	@Override
 	public Iterator<T> apply(T resource) {
+		Iterator<T> iterator;
 		switch (strategy) {
 			case BFS:
-				return new BfsTreeIterator<T>(resource, provider);
+				iterator = new BfsTreeIterator<T>(resource, provider);
+				break;
 			case QUERY:
-				return provider.query(preFilteringSelector, resource);
+				iterator = provider.query(preFilteringSelector, resource);
+				break;
 			case DFS:
 			default:
-				return new DfsTreeIterator<T>(resource, provider);
+				iterator = new DfsTreeIterator<T>(resource, provider);
+				break;
 		}
+		return iterator;
 	}
 }

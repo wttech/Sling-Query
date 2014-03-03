@@ -1,9 +1,12 @@
 package com.cognifide.sling.query.selector.parser;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.cognifide.sling.query.resource.jcr.JcrSelectorParser;
+import com.cognifide.sling.query.mock.MockTypeResolver;
+import com.cognifide.sling.query.resource.jcr.JcrQueryBuilder;
 
 public class JcrSelectorTest {
 	@Test
@@ -97,7 +100,9 @@ public class JcrSelectorTest {
 		Assert.assertEquals(jcrQuery, parse(selector, "/content"));
 	}
 
-	private static String parse(String selector, String root) {
-		return JcrSelectorParser.parse(selector, root);
+	static String parse(String selector, String root) {
+		List<Selector> selectors = SelectorParser.parse(selector);
+		List<SelectorSegment> segments = SelectorParser.getFirstSegmentFromEachSelector(selectors);
+		return new JcrQueryBuilder(new MockTypeResolver()).buildQuery(segments, root);
 	}
 }

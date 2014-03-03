@@ -2,19 +2,24 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
-import com.cognifide.sling.query.iterator.ExcludingIterator;
+import com.cognifide.sling.query.iterator.EmptyElementFilter;
+import com.cognifide.sling.query.iterator.ReverseIterator;
+import com.cognifide.sling.query.selector.SelectorFunction;
 
 public class NotFunction<T> implements IteratorToIteratorFunction<T> {
 
-	private final IteratorToIteratorFunction<T> function;
+	private SelectorFunction<T> selector;
 
-	public NotFunction(IteratorToIteratorFunction<T> function) {
-		this.function = function;
+	public NotFunction(SelectorFunction<T> selector) {
+		this.selector = selector;
 	}
 
 	@Override
-	public Iterator<T> apply(Iterator<T> input) {
-		return new ExcludingIterator<T>(input, function);
+	public Iterator<Option<T>> apply(Iterator<Option<T>> input) {
+		Iterator<Option<T>> filtered = new EmptyElementFilter<T>(input);
+		return new ReverseIterator<T>(selector, filtered);
 	}
+
 }

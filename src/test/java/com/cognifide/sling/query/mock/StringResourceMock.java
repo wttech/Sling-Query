@@ -1,12 +1,11 @@
 package com.cognifide.sling.query.mock;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceMetadata;
 import org.apache.sling.api.resource.ResourceResolver;
-
-import com.cognifide.sling.query.iterator.EmptyIterator;
 
 public class StringResourceMock implements Resource {
 
@@ -53,7 +52,7 @@ public class StringResourceMock implements Resource {
 
 	@Override
 	public Iterator<Resource> listChildren() {
-		return EmptyIterator.INSTANCE;
+		return Arrays.<Resource> asList().iterator();
 	}
 
 	@Override

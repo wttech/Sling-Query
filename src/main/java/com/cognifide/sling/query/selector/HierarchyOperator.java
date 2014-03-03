@@ -8,36 +8,37 @@ import com.cognifide.sling.query.function.FindFunction;
 import com.cognifide.sling.query.function.IdentityFunction;
 import com.cognifide.sling.query.function.NextFunction;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
+import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
 public enum HierarchyOperator {
 //@formatter:off
 	CHILD('>') {
 		@Override
-		public <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeProvider<T> provider) {
+		public <T> Function<?, ?> getFunction(SelectorSegment segment, SearchStrategy strategy, TreeProvider<T> provider) {
 			return new ChildrenFunction<T>(provider);
 		}
 	},
 	DESCENDANT(' ') {
 		@Override
-		public <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeProvider<T> provider) {
-			return new FindFunction<T>("", strategy, provider);
+		public <T> Function<?, ?> getFunction(SelectorSegment segment, SearchStrategy strategy, TreeProvider<T> provider) {
+			return new FindFunction<T>(strategy, provider, segment);
 		}
 	},
 	NEXT_ADJACENT('+') {
 		@Override
-		public <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeProvider<T> provider) {
+		public <T> Function<?, ?> getFunction(SelectorSegment segment, SearchStrategy strategy, TreeProvider<T> provider) {
 			return new NextFunction<T>(null, provider);
 		}
 	},
 	NEXT_SIBLINGS('~') {
 		@Override
-		public <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeProvider<T> provider) {
+		public <T> Function<?, ?> getFunction(SelectorSegment segment, SearchStrategy strategy, TreeProvider<T> provider) {
 			return new NextFunction<T>(new RejectingPredicate<T>(), provider);
 		}
 	},
 	NOOP((char)0) {
 		@Override
-		public <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeProvider<T> provider) {
+		public <T> Function<?, ?> getFunction(SelectorSegment segment, SearchStrategy strategy, TreeProvider<T> provider) {
 			return new IdentityFunction<T>();
 		}
 	};
@@ -49,7 +50,8 @@ public enum HierarchyOperator {
 		this.c = c;
 	}
 
-	public abstract <T> Function<?, ?> getFunction(SearchStrategy strategy, TreeProvider<T> provider);
+	public abstract <T> Function<?, ?> getFunction(SelectorSegment segment, SearchStrategy strategy,
+			TreeProvider<T> provider);
 
 	public static HierarchyOperator findByCharacter(char c) {
 		for (HierarchyOperator operator : values()) {

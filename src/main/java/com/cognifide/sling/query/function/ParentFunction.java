@@ -1,9 +1,12 @@
 package com.cognifide.sling.query.function;
 
-import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
+import java.util.Iterator;
 
-public class ParentFunction<T> implements ResourceToResourceFunction<T> {
+import com.cognifide.sling.query.IteratorUtils;
+import com.cognifide.sling.query.api.TreeProvider;
+import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
+
+public class ParentFunction<T> implements ElementToIteratorFunction<T> {
 
 	private final TreeProvider<T> provider;
 
@@ -12,8 +15,13 @@ public class ParentFunction<T> implements ResourceToResourceFunction<T> {
 	}
 
 	@Override
-	public T apply(T resource) {
-		return provider.getParent(resource);
+	public Iterator<T> apply(T element) {
+		T parent = provider.getParent(element);
+		if (parent == null) {
+			return IteratorUtils.emptyIterator();
+		} else {
+			return IteratorUtils.singleElementIterator(parent);
+		}
 	}
 
 }

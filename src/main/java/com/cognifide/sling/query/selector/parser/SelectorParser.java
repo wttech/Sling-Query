@@ -1,5 +1,6 @@
 package com.cognifide.sling.query.selector.parser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,4 +22,15 @@ public final class SelectorParser {
 		context.getState().process(context, (char) 0);
 		return context.getSelectors();
 	}
+
+	public static List<SelectorSegment> getFirstSegmentFromEachSelector(List<Selector> selectors) {
+		List<SelectorSegment> segments = new ArrayList<SelectorSegment>();
+		for (Selector selector : selectors) {
+			if (!selector.getSegments().isEmpty()) {
+				segments.add(selector.getSegments().get(0));
+			}
+		}
+		return segments;
+	}
+
 }

@@ -1,12 +1,15 @@
 package com.cognifide.sling.query.function;
 
-import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
+import java.util.Iterator;
 
-public class IdentityFunction<T> implements ResourceToResourceFunction<T> {
+import com.cognifide.sling.query.api.function.Option;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+
+public class IdentityFunction<T> implements IteratorToIteratorFunction<T> {
 
 	@Override
-	public T apply(T element) {
-		return element;
+	public Iterator<Option<T>> apply(Iterator<Option<T>> input) {
+		return input;
 	}
 
 }

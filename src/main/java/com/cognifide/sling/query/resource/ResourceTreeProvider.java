@@ -9,6 +9,7 @@ import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.resource.jcr.JcrQueryIterator;
 import com.cognifide.sling.query.selector.parser.Attribute;
+import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
 public class ResourceTreeProvider implements TreeProvider<Resource> {
 
@@ -33,8 +34,8 @@ public class ResourceTreeProvider implements TreeProvider<Resource> {
 	}
 
 	@Override
-	public Iterator<Resource> query(String selector, Resource resource) {
-		return new JcrQueryIterator(selector, resource);
+	public Iterator<Resource> query(List<SelectorSegment> segments, Resource resource) {
+		return new JcrQueryIterator(segments, resource);
 	}
 
 }

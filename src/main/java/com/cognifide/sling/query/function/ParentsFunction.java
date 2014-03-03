@@ -4,10 +4,10 @@ import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.ResourceToIteratorFunction;
+import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.iterator.ParentsIterator;
 
-public class ParentsFunction<T> implements ResourceToIteratorFunction<T> {
+public class ParentsFunction<T> implements ElementToIteratorFunction<T> {
 
 	private final Predicate<T> until;
 

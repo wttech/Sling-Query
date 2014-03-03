@@ -29,8 +29,8 @@ public final class TestUtils {
 		}
 	}
 
-	public static List<Resource> iteratorToList(Iterator<Resource> iterator) {
-		List<Resource> list = new ArrayList<Resource>();
+	public static <T> List<T> iteratorToList(Iterator<T> iterator) {
+		List<T> list = new ArrayList<T>();
 		while (iterator.hasNext()) {
 			list.add(iterator.next());
 		}

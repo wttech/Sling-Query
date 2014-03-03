@@ -2,9 +2,9 @@ package com.cognifide.sling.query.predicate;
 
 import java.util.Iterator;
 
+import com.cognifide.sling.query.IteratorUtils;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.Predicate;
-import com.cognifide.sling.query.iterator.ArrayIterator;
 
 public class FunctionPredicate<T> implements Predicate<T> {
 
@@ -14,10 +14,9 @@ public class FunctionPredicate<T> implements Predicate<T> {
 		this.function = function;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean accepts(T value) {
-		return function.apply(new ArrayIterator<T>(value)).hasNext();
+		return function.apply(IteratorUtils.singleElementIterator(value)).hasNext();
 	}
 
 }

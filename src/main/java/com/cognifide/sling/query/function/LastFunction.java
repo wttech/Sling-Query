@@ -2,19 +2,15 @@ package com.cognifide.sling.query.function;
 
 import java.util.Iterator;
 
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
-import com.cognifide.sling.query.iterator.ArrayIterator;
+import com.cognifide.sling.query.iterator.LastIterator;
 
 public class LastFunction<T> implements IteratorToIteratorFunction<T> {
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Iterator<T> apply(Iterator<T> input) {
-		T lastElement = null;
-		while (input.hasNext()) {
-			lastElement = input.next();
-		}
-		return new ArrayIterator<T>(lastElement);
+	public Iterator<Option<T>> apply(Iterator<Option<T>> input) {
+		return new LastIterator<T>(input);
 	}
 
 }

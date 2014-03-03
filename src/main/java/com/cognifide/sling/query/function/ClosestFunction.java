@@ -1,10 +1,13 @@
 package com.cognifide.sling.query.function;
 
+import java.util.Iterator;
+
+import com.cognifide.sling.query.IteratorUtils;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.ResourceToResourceFunction;
+import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 
-public class ClosestFunction<T> implements ResourceToResourceFunction<T> {
+public class ClosestFunction<T> implements ElementToIteratorFunction<T> {
 
 	private final Predicate<T> predicate;
 
@@ -16,14 +19,14 @@ public class ClosestFunction<T> implements ResourceToResourceFunction<T> {
 	}
 
 	@Override
-	public T apply(T resource) {
+	public Iterator<T> apply(T resource) {
 		T current = resource;
 		while (current != null) {
 			if (predicate.accepts(current)) {
-				return current;
+				return IteratorUtils.singleElementIterator(current);
 			}
 			current = provider.getParent(current);
 		}
-		return null;
+		return IteratorUtils.emptyIterator();
 	}
 }

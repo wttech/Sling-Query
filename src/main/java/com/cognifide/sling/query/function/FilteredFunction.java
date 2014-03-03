@@ -7,16 +7,16 @@ import org.apache.commons.lang.StringUtils;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
-import com.cognifide.sling.query.iterator.IteratorFactory;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
-public class FunctionWithSelector<T> implements IteratorToIteratorFunction<T> {
+public class FilteredFunction<T> implements IteratorToIteratorFunction<T> {
 	private final Function<?, ?> function;
 
 	private final SelectorFunction<T> selector;
 
-	public FunctionWithSelector(Function<?, ?> function, String selector, SearchStrategy strategy,
+	public FilteredFunction(Function<?, ?> function, String selector, SearchStrategy strategy,
 			TreeProvider<T> provider) {
 		this.function = function;
 		if (StringUtils.isBlank(selector)) {
@@ -27,11 +27,12 @@ public class FunctionWithSelector<T> implements IteratorToIteratorFunction<T> {
 	}
 
 	@Override
-	public Iterator<T> apply(Iterator<T> input) {
-		Iterator<T> newIterator = IteratorFactory.getIterator(function, input);
+	public Iterator<Option<T>> apply(Iterator<Option<T>> input) {
+		Iterator<Option<T>> result = new IteratorToIteratorFunctionWrapper<T>(function).apply(input);
 		if (selector != null) {
-			newIterator = selector.apply(newIterator);
+			result = selector.apply(result);
 		}
-		return newIterator;
+		return result;
+
 	}
 }
