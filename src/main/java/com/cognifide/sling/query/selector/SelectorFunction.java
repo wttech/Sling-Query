@@ -3,7 +3,6 @@ package com.cognifide.sling.query.selector;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import com.cognifide.sling.query.IteratorUtils;
 import com.cognifide.sling.query.LazyList;
@@ -12,33 +11,42 @@ import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.Option;
-import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.function.CompositeFunction;
 import com.cognifide.sling.query.function.FilterFunction;
+import com.cognifide.sling.query.iterator.AlternativeIterator;
 import com.cognifide.sling.query.iterator.NondegenerateIterator;
 import com.cognifide.sling.query.iterator.EmptyElementFilter;
 import com.cognifide.sling.query.selector.parser.Modifier;
+import com.cognifide.sling.query.selector.parser.Selector;
 import com.cognifide.sling.query.selector.parser.SelectorParser;
 import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
-public class SelectorFunction<T> implements OptionIteratorToIteratorFunction<T>, Predicate<T> {
+public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predicate<T> {
 
-	private final OptionIteratorToIteratorFunction<T> function;
+	private final List<IteratorToIteratorFunction<T>> functions;
 
-	public SelectorFunction(List<SelectorSegment> segments, TreeProvider<T> provider, SearchStrategy strategy) {
-		this.function = createFunction(segments, provider, strategy);
+	public SelectorFunction(List<Selector> selectors, TreeProvider<T> provider, SearchStrategy strategy) {
+		functions = new ArrayList<IteratorToIteratorFunction<T>>();
+		for (Selector selector : selectors) {
+			functions.add(createFunction(selector.getSegments(), provider, strategy));
+		}
 	}
 
 	public static <T> SelectorFunction<T> parse(String selector, SearchStrategy strategy,
 			TreeProvider<T> provider) {
-		List<SelectorSegment> segments = SelectorParser.parse(selector).get(0).getSegments();
-		return new SelectorFunction<T>(segments, provider, strategy);
+		List<Selector> selectors = SelectorParser.parse(selector);
+		return new SelectorFunction<T>(selectors, provider, strategy);
 	}
 
 	@Override
 	public Iterator<Option<T>> apply(Iterator<Option<T>> input) {
 		LazyList<Option<T>> list = new LazyList<Option<T>>(input);
-		return applyListIterator(list.listIterator());
+		List<Iterator<Option<T>>> iterators = new ArrayList<Iterator<Option<T>>>();
+		for (IteratorToIteratorFunction<T> function : functions) {
+			iterators.add(new NondegenerateIterator<T>(list.listIterator(), function));
+		}
+		return new AlternativeIterator<T>(iterators);
 	}
 
 	@Override
@@ -47,11 +55,7 @@ public class SelectorFunction<T> implements OptionIteratorToIteratorFunction<T>,
 		return new EmptyElementFilter<T>(result).hasNext();
 	}
 
-	public Iterator<Option<T>> applyListIterator(ListIterator<Option<T>> input) {
-		return new NondegenerateIterator<T>(input, function);
-	}
-
-	private OptionIteratorToIteratorFunction<T> createFunction(List<SelectorSegment> segments,
+	private IteratorToIteratorFunction<T> createFunction(List<SelectorSegment> segments,
 			TreeProvider<T> provider, SearchStrategy strategy) {
 		List<Function<?, ?>> functions = new ArrayList<Function<?, ?>>();
 		for (SelectorSegment segment : segments) {

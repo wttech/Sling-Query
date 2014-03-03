@@ -127,6 +127,7 @@ public class ParserContext {
 		modifiers.clear();
 		hierarchyOperator = ' ';
 		type = null;
+		name = null;
 	}
 
 	void finishSelector() {

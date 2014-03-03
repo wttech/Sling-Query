@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import com.cognifide.sling.query.api.function.Option;
-import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 
 /**
  * This class modifies the input iterator, removing all elements that are mapped to an empty value by the
@@ -21,7 +21,7 @@ public class NondegenerateIterator<T> extends AbstractIterator<Option<T>> {
 	private boolean finished = false;
 
 	public NondegenerateIterator(ListIterator<Option<T>> iterator,
-			OptionIteratorToIteratorFunction<T> function) {
+			IteratorToIteratorFunction<T> function) {
 		input = iterator;
 		output = function.apply(iterator);
 	}
@@ -39,11 +39,15 @@ public class NondegenerateIterator<T> extends AbstractIterator<Option<T>> {
 			} else {
 				// all remaining input elements should be mapped to `empty`
 				if (input.hasNext()) {
-					input.next();
-					return Option.empty();
+					Option<T> result = input.next();
+					if (emptyResult) {
+						return Option.empty();
+					} else {
+						return result;
+					}
 				} else {
 					finished = true;
-					break;
+					return null;
 				}
 			}
 		} while (currentElement == input.nextIndex());

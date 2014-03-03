@@ -4,10 +4,10 @@ import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.function.Option;
-import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.FilteringIterator;
 
-public class EvenFunction<T> implements OptionIteratorToIteratorFunction<T> {
+public class EvenFunction<T> implements IteratorToIteratorFunction<T> {
 
 	private final boolean even;
 

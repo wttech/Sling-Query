@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.function.Option;
-import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 
-public class CompositeFunction<T> implements OptionIteratorToIteratorFunction<T> {
+public class CompositeFunction<T> implements IteratorToIteratorFunction<T> {
 
 	private final List<Function<?, ?>> functions;
 

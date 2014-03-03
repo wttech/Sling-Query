@@ -3,12 +3,12 @@ package com.cognifide.sling.query.function;
 import java.util.Iterator;
 
 import com.cognifide.sling.query.api.function.Option;
-import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.EmptyElementFilter;
 import com.cognifide.sling.query.iterator.ReverseIterator;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
-public class NotFunction<T> implements OptionIteratorToIteratorFunction<T> {
+public class NotFunction<T> implements IteratorToIteratorFunction<T> {
 
 	private SelectorFunction<T> selector;
 

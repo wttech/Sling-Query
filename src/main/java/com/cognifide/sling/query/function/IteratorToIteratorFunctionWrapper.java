@@ -4,11 +4,11 @@ import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.function.Option;
-import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.iterator.ExpandingIterator;
 
-public class IteratorToIteratorFunctionWrapper<T> implements OptionIteratorToIteratorFunction<T> {
+public class IteratorToIteratorFunctionWrapper<T> implements IteratorToIteratorFunction<T> {
 
 	private final Function<?, ?> function;
 
@@ -22,7 +22,7 @@ public class IteratorToIteratorFunctionWrapper<T> implements OptionIteratorToIte
 		if (isEtoI(function)) {
 			return getOptionIterator((ElementToIteratorFunction<T>) function, parentIterator);
 		} else if (isOptionItoI(function)) {
-			return getOptionIterator((OptionIteratorToIteratorFunction<T>) function, parentIterator);
+			return getOptionIterator((IteratorToIteratorFunction<T>) function, parentIterator);
 		} else {
 			throw new IllegalArgumentException("Don't know how to handle " + function.toString());
 		}
@@ -33,7 +33,7 @@ public class IteratorToIteratorFunctionWrapper<T> implements OptionIteratorToIte
 		return new ExpandingIterator<T>((ElementToIteratorFunction<T>) function, parentIterator);
 	}
 
-	private static <T> Iterator<Option<T>> getOptionIterator(OptionIteratorToIteratorFunction<T> function,
+	private static <T> Iterator<Option<T>> getOptionIterator(IteratorToIteratorFunction<T> function,
 			Iterator<Option<T>> parentIterator) {
 		return function.apply(parentIterator);
 	}
@@ -43,7 +43,7 @@ public class IteratorToIteratorFunctionWrapper<T> implements OptionIteratorToIte
 	}
 
 	private static boolean isOptionItoI(Function<?, ?> function) {
-		return function instanceof OptionIteratorToIteratorFunction;
+		return function instanceof IteratorToIteratorFunction;
 	}
 
 }

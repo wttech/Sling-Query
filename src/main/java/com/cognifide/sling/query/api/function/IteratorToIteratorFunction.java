@@ -4,5 +4,5 @@ import java.util.Iterator;
 
 import com.cognifide.sling.query.api.Function;
 
-public interface OptionIteratorToIteratorFunction<T> extends Function<Iterator<Option<T>>, Iterator<Option<T>>> {
+public interface IteratorToIteratorFunction<T> extends Function<Iterator<Option<T>>, Iterator<Option<T>>> {
 }

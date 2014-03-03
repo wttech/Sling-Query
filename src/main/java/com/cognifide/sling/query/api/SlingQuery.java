@@ -10,7 +10,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.LazyList;
 import com.cognifide.sling.query.api.function.Option;
-import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
@@ -96,7 +96,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 */
 	@Override
 	public Iterator<Resource> iterator() {
-		OptionIteratorToIteratorFunction<Resource> f = new CompositeFunction<Resource>(functions);
+		IteratorToIteratorFunction<Resource> f = new CompositeFunction<Resource>(functions);
 		Iterator<Option<Resource>> iterator = f.apply(resources.iterator());
 		iterator = new EmptyElementFilter<Resource>(iterator);
 		return new OptionStrippingIterator<Resource>(iterator);
@@ -208,7 +208,7 @@ public class SlingQuery implements Iterable<Resource> {
 	 * a selector string.
 	 * 
 	 * @param function Object implementing one of the interfaces: {@link ElementToElementFunction},
-	 * {@link ElementToIteratorFunction} or {@link OptionIteratorToIteratorFunction}
+	 * {@link ElementToIteratorFunction} or {@link IteratorToIteratorFunction}
 	 * @param selector Result filter
 	 * @return a {@link SlingQuery} object transformed by this operation
 	 */
@@ -500,7 +500,7 @@ public class SlingQuery implements Iterable<Resource> {
 		return function(new SliceFunction<Resource>(from, to));
 	}
 
-	private SlingQuery function(OptionIteratorToIteratorFunction<Resource> function) {
+	private SlingQuery function(IteratorToIteratorFunction<Resource> function) {
 		SlingQuery newQuery = new SlingQuery(this);
 		newQuery.functions.add(function);
 		return newQuery;

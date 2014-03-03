@@ -8,10 +8,10 @@ import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.Option;
-import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
-public class FilteredFunction<T> implements OptionIteratorToIteratorFunction<T> {
+public class FilteredFunction<T> implements IteratorToIteratorFunction<T> {
 	private final Function<?, ?> function;
 
 	private final SelectorFunction<T> selector;

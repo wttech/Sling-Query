@@ -3,10 +3,10 @@ package com.cognifide.sling.query.function;
 import java.util.Iterator;
 
 import com.cognifide.sling.query.api.function.Option;
-import com.cognifide.sling.query.api.function.OptionIteratorToIteratorFunction;
+import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.iterator.SliceIterator;
 
-public class SliceFunction<T> implements OptionIteratorToIteratorFunction<T> {
+public class SliceFunction<T> implements IteratorToIteratorFunction<T> {
 
 	private final int from;
 
