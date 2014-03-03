@@ -20,8 +20,7 @@ public class NondegenerateIterator<T> extends AbstractIterator<Option<T>> {
 
 	private boolean finished = false;
 
-	public NondegenerateIterator(ListIterator<Option<T>> iterator,
-			IteratorToIteratorFunction<T> function) {
+	public NondegenerateIterator(ListIterator<Option<T>> iterator, IteratorToIteratorFunction<T> function) {
 		input = iterator;
 		output = function.apply(iterator);
 	}
@@ -39,12 +38,8 @@ public class NondegenerateIterator<T> extends AbstractIterator<Option<T>> {
 			} else {
 				// all remaining input elements should be mapped to `empty`
 				if (input.hasNext()) {
-					Option<T> result = input.next();
-					if (emptyResult) {
-						return Option.empty();
-					} else {
-						return result;
-					}
+					input.next();
+					return Option.empty();
 				} else {
 					finished = true;
 					return null;
