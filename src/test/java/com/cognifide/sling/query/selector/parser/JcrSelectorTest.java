@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.cognifide.sling.query.mock.MockTypeResolver;
-import com.cognifide.sling.query.resource.jcr.JcrQueryBuilder;
+import com.cognifide.sling.query.resource.jcr.query.JcrQueryBuilder;
 
 public class JcrSelectorTest {
 	@Test
@@ -89,14 +89,14 @@ public class JcrSelectorTest {
 	@Test
 	public void parseMultipleConditions() {
 		final String selector = "[key1=value1][key2=value2]";
-		final String jcrQuery = "SELECT * FROM [nt:base] AS s WHERE s.[key1] = 'value1' AND s.[key2] = 'value2'";
+		final String jcrQuery = "SELECT * FROM [nt:base] AS s WHERE (s.[key1] = 'value1' AND s.[key2] = 'value2')";
 		Assert.assertEquals(jcrQuery, parse(selector, "/"));
 	}
 
 	@Test
 	public void parseMultipleConditionsWithResourceTypeAndPath() {
 		final String selector = "foundation/components/parsys[key1=value1][key2=value2]";
-		final String jcrQuery = "SELECT * FROM [nt:base] AS s WHERE ISDESCENDANTNODE([/content]) AND s.[sling:resourceType] = 'foundation/components/parsys' AND s.[key1] = 'value1' AND s.[key2] = 'value2'";
+		final String jcrQuery = "SELECT * FROM [nt:base] AS s WHERE (ISDESCENDANTNODE([/content]) AND (s.[sling:resourceType] = 'foundation/components/parsys' AND s.[key1] = 'value1' AND s.[key2] = 'value2'))";
 		Assert.assertEquals(jcrQuery, parse(selector, "/content"));
 	}
 
