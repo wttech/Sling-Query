@@ -71,10 +71,10 @@ public class SlingQuery implements Iterable<Resource> {
 		return $(resolver.getResource("/"));
 	}
 
-	private SlingQuery(TreeProvider<Resource> provider, Resource[] resources) {
+	private SlingQuery(TreeProvider<Resource> provider, Resource[] initialResources) {
 		this.provider = provider;
 		this.resources = new ArrayList<Option<Resource>>();
-		for (Resource r : resources) {
+		for (Resource r : initialResources) {
 			this.resources.add(Option.of(r));
 		}
 		this.searchStrategy = SearchStrategy.DFS;

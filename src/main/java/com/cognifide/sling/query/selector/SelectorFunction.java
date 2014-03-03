@@ -57,11 +57,11 @@ public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predi
 
 	private IteratorToIteratorFunction<T> createFunction(List<SelectorSegment> segments,
 			TreeProvider<T> provider, SearchStrategy strategy) {
-		List<Function<?, ?>> functions = new ArrayList<Function<?, ?>>();
+		List<Function<?, ?>> segmentFunctions = new ArrayList<Function<?, ?>>();
 		for (SelectorSegment segment : segments) {
-			functions.addAll(createSegmentFunction(segment, provider, strategy));
+			segmentFunctions.addAll(createSegmentFunction(segment, provider, strategy));
 		}
-		return new CompositeFunction<T>(functions);
+		return new CompositeFunction<T>(segmentFunctions);
 	}
 
 	public static <T> List<Function<?, ?>> createSegmentFunction(SelectorSegment segment,

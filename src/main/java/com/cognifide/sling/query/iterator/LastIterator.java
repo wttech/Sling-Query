@@ -25,7 +25,7 @@ public class LastIterator<T> extends AbstractIterator<Option<T>> {
 
 	@Override
 	protected Option<T> getElement() {
-		if (finished == true) {
+		if (finished) {
 			return null;
 		}
 
