@@ -22,7 +22,7 @@ public class FilteredFunction<T> implements IteratorToIteratorFunction<T> {
 		if (StringUtils.isBlank(selector)) {
 			this.selector = null;
 		} else {
-			this.selector = SelectorFunction.parse(selector, strategy, provider);
+			this.selector = new SelectorFunction<T>(selector, provider, strategy);
 		}
 	}
 

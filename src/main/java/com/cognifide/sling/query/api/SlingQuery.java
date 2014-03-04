@@ -507,6 +507,6 @@ public class SlingQuery implements Iterable<Resource> {
 	}
 
 	private SelectorFunction<Resource> parse(String selector) {
-		return SelectorFunction.parse(selector, searchStrategy, provider);
+		return new SelectorFunction<Resource>(selector, provider, searchStrategy);
 	}
 }

@@ -99,7 +99,7 @@ public enum FunctionType {
 		@Override
 		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
 				TreeProvider<T> provider) {
-			return new NotFunction<T>(SelectorFunction.parse(argument, strategy, provider));
+			return new NotFunction<T>(new SelectorFunction<T>(argument, provider, strategy));
 		}
 	};
 

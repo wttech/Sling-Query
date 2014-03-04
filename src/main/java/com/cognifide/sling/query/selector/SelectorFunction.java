@@ -26,17 +26,18 @@ public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predi
 
 	private final List<IteratorToIteratorFunction<T>> functions;
 
-	public SelectorFunction(List<Selector> selectors, TreeProvider<T> provider, SearchStrategy strategy) {
-		functions = new ArrayList<IteratorToIteratorFunction<T>>();
-		for (Selector selector : selectors) {
-			functions.add(createFunction(selector.getSegments(), provider, strategy));
-		}
-	}
+	private final TreeProvider<T> provider;
 
-	public static <T> SelectorFunction<T> parse(String selector, SearchStrategy strategy,
-			TreeProvider<T> provider) {
+	private final SearchStrategy strategy;
+
+	public SelectorFunction(String selector, TreeProvider<T> provider, SearchStrategy strategy) {
+		this.provider = provider;
+		this.strategy = strategy;
 		List<Selector> selectors = SelectorParser.parse(selector);
-		return new SelectorFunction<T>(selectors, provider, strategy);
+		functions = new ArrayList<IteratorToIteratorFunction<T>>();
+		for (Selector s : selectors) {
+			functions.add(createSelectorFunction(s.getSegments()));
+		}
 	}
 
 	@Override
@@ -55,17 +56,15 @@ public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predi
 		return new EmptyElementFilter<T>(result).hasNext();
 	}
 
-	private IteratorToIteratorFunction<T> createFunction(List<SelectorSegment> segments,
-			TreeProvider<T> provider, SearchStrategy strategy) {
+	private IteratorToIteratorFunction<T> createSelectorFunction(List<SelectorSegment> segments) {
 		List<Function<?, ?>> segmentFunctions = new ArrayList<Function<?, ?>>();
 		for (SelectorSegment segment : segments) {
-			segmentFunctions.addAll(createSegmentFunction(segment, provider, strategy));
+			segmentFunctions.addAll(createSegmentFunction(segment));
 		}
 		return new CompositeFunction<T>(segmentFunctions);
 	}
 
-	public static <T> List<Function<?, ?>> createSegmentFunction(SelectorSegment segment,
-			TreeProvider<T> provider, SearchStrategy strategy) {
+	private List<Function<?, ?>> createSegmentFunction(SelectorSegment segment) {
 		List<Function<?, ?>> functions = new ArrayList<Function<?, ?>>();
 		HierarchyOperator operator = HierarchyOperator.findByCharacter(segment.getHierarchyOperator());
 		functions.add(operator.getFunction(segment, strategy, provider));
