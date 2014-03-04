@@ -39,7 +39,7 @@ public class NondegenerativeTest {
 
 	private Iterator<Option<String>> nondegenerative(ListIterator<Option<String>> iterator,
 			IteratorToIteratorFunction<String> function) {
-		return new NondegenerateIterator<String>(iterator, function);
+		return new SuppIterator<String>(iterator, function);
 	}
 
 	private ListIterator<Option<String>> iterator(String... args) {

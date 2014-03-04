@@ -10,7 +10,7 @@ import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
  * This class modifies the input iterator, removing all elements that are mapped to an empty value by the
  * function.
  */
-public class NondegenerateIterator<T> extends AbstractIterator<Option<T>> {
+public class SuppIterator<T> extends AbstractIterator<Option<T>> {
 
 	private final ListIterator<Option<T>> input;
 
@@ -20,7 +20,7 @@ public class NondegenerateIterator<T> extends AbstractIterator<Option<T>> {
 
 	private boolean finished = false;
 
-	public NondegenerateIterator(ListIterator<Option<T>> iterator, IteratorToIteratorFunction<T> function) {
+	public SuppIterator(ListIterator<Option<T>> iterator, IteratorToIteratorFunction<T> function) {
 		input = iterator;
 		output = function.apply(iterator);
 	}

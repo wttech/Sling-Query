@@ -15,7 +15,7 @@ import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.function.CompositeFunction;
 import com.cognifide.sling.query.function.FilterFunction;
 import com.cognifide.sling.query.iterator.AlternativeIterator;
-import com.cognifide.sling.query.iterator.NondegenerateIterator;
+import com.cognifide.sling.query.iterator.SuppIterator;
 import com.cognifide.sling.query.iterator.EmptyElementFilter;
 import com.cognifide.sling.query.selector.parser.Modifier;
 import com.cognifide.sling.query.selector.parser.Selector;
@@ -44,7 +44,7 @@ public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predi
 		LazyList<Option<T>> list = new LazyList<Option<T>>(input);
 		List<Iterator<Option<T>>> iterators = new ArrayList<Iterator<Option<T>>>();
 		for (IteratorToIteratorFunction<T> function : functions) {
-			iterators.add(new NondegenerateIterator<T>(list.listIterator(), function));
+			iterators.add(new SuppIterator<T>(list.listIterator(), function));
 		}
 		return new AlternativeIterator<T>(iterators);
 	}
