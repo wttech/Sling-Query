@@ -1,7 +1,7 @@
 package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
-import java.util.ListIterator;
+import java.util.List;
 
 import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
@@ -12,52 +12,19 @@ import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
  */
 public class SuppIterator<T> extends AbstractIterator<Option<T>> {
 
-	private final ListIterator<Option<T>> input;
+	private final List<Option<T>> input;
 
 	private final Iterator<Option<T>> output;
 
-	private int currentElement = 0;
+	private int currentIndex = 0;
 
-	private boolean finished = false;
-
-	public SuppIterator(ListIterator<Option<T>> iterator, IteratorToIteratorFunction<T> function) {
-		input = iterator;
-		output = function.apply(iterator);
+	public SuppIterator(List<Option<T>> input, IteratorToIteratorFunction<T> function) {
+		this.input = input;
+		this.output = function.apply(new ArgumentResettingIterator<T>(input.iterator()));
 	}
 
 	@Override
 	protected Option<T> getElement() {
-		if (finished) {
-			return null;
-		}
-
-		boolean emptyResult = true;
-		do {
-			if (output.hasNext()) {
-				emptyResult = output.next().isEmpty() && emptyResult;
-			} else {
-				// all remaining input elements should be mapped to `empty`
-				if (input.hasNext()) {
-					input.next();
-					return Option.empty();
-				} else {
-					finished = true;
-					return null;
-				}
-			}
-		} while (currentElement == input.nextIndex());
-
-		currentElement = input.previousIndex();
-		return getResult(emptyResult);
-	}
-
-	private Option<T> getResult(boolean empty) {
-		if (empty) {
-			return Option.empty();
-		} else {
-			Option<T> previous = input.previous();
-			input.next();
-			return previous;
-		}
+		return Option.empty(0);
 	}
 }

@@ -78,6 +78,7 @@ public class SelectorFunctionTest {
 	@Test
 	public void testComplexNot() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":not(:first)");
-		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1", "configvalue_2");
+		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1",
+				"configvalue_2");
 	}
 }

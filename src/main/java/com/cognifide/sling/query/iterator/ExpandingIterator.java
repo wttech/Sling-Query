@@ -14,6 +14,8 @@ public class ExpandingIterator<T> extends AbstractIterator<Option<T>> {
 
 	private final Iterator<Option<T>> parentIterator;
 
+	private Option<T> parentElement;
+
 	private Iterator<T> currentIterator;
 
 	public ExpandingIterator(ElementToIteratorFunction<T> expandingFunction,
@@ -25,10 +27,10 @@ public class ExpandingIterator<T> extends AbstractIterator<Option<T>> {
 	@Override
 	protected Option<T> getElement() {
 		if (currentIterator != null && currentIterator.hasNext()) {
-			return Option.of(currentIterator.next());
+			return Option.of(currentIterator.next(), parentElement.getArgumentId());
 		}
 		while (parentIterator.hasNext()) {
-			Option<T> parentElement = parentIterator.next();
+			parentElement = parentIterator.next();
 			if (parentElement.isEmpty()) {
 				return parentElement;
 			}
@@ -36,7 +38,7 @@ public class ExpandingIterator<T> extends AbstractIterator<Option<T>> {
 			if (currentIterator.hasNext()) {
 				return getElement();
 			} else {
-				return Option.empty();
+				return Option.empty(parentElement.getArgumentId());
 			}
 		}
 		return null;

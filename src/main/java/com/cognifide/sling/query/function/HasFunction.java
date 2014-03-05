@@ -23,7 +23,7 @@ public class HasFunction<T> implements ElementToIteratorFunction<T> {
 
 	@Override
 	public Iterator<T> apply(T input) {
-		Iterator<Option<T>> iterator = IteratorUtils.singleElementIterator(Option.of(input));
+		Iterator<Option<T>> iterator = IteratorUtils.singleElementIterator(Option.of(input, 0));
 		iterator = new IteratorToIteratorFunctionWrapper<T>(findFunction).apply(iterator);
 		iterator = selector.apply(iterator);
 		if (new EmptyElementFilter<T>(iterator).hasNext()) {

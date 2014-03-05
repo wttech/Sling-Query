@@ -1,6 +1,7 @@
 package com.cognifide.sling.query.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.iterator.AdaptToIterator;
 import com.cognifide.sling.query.iterator.EmptyElementFilter;
+import com.cognifide.sling.query.iterator.OptionDecoratingIterator;
 import com.cognifide.sling.query.iterator.OptionStrippingIterator;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
 import com.cognifide.sling.query.resource.ResourceTreeProvider;
@@ -45,7 +47,7 @@ import com.cognifide.sling.query.selector.SelectorFunction;
 public class SlingQuery implements Iterable<Resource> {
 	private final List<Function<?, ?>> functions = new ArrayList<Function<?, ?>>();
 
-	private final List<Option<Resource>> resources;
+	private final List<Resource> resources;
 
 	private final SearchStrategy searchStrategy;
 
@@ -73,10 +75,7 @@ public class SlingQuery implements Iterable<Resource> {
 
 	private SlingQuery(TreeProvider<Resource> provider, Resource[] initialResources) {
 		this.provider = provider;
-		this.resources = new ArrayList<Option<Resource>>();
-		for (Resource r : initialResources) {
-			this.resources.add(Option.of(r));
-		}
+		this.resources = new ArrayList<Resource>(Arrays.asList(initialResources));
 		this.searchStrategy = SearchStrategy.DFS;
 	}
 
@@ -86,7 +85,7 @@ public class SlingQuery implements Iterable<Resource> {
 
 	private SlingQuery(SlingQuery original, SearchStrategy searchStrategy) {
 		this.functions.addAll(original.functions);
-		this.resources = new ArrayList<Option<Resource>>(original.resources);
+		this.resources = new ArrayList<Resource>(original.resources);
 		this.searchStrategy = searchStrategy;
 		this.provider = original.provider;
 	}
@@ -97,7 +96,7 @@ public class SlingQuery implements Iterable<Resource> {
 	@Override
 	public Iterator<Resource> iterator() {
 		IteratorToIteratorFunction<Resource> f = new CompositeFunction<Resource>(functions);
-		Iterator<Option<Resource>> iterator = f.apply(resources.iterator());
+		Iterator<Option<Resource>> iterator = f.apply(new OptionDecoratingIterator<Resource>(resources.iterator()));
 		iterator = new EmptyElementFilter<Resource>(iterator);
 		return new OptionStrippingIterator<Resource>(iterator);
 	}

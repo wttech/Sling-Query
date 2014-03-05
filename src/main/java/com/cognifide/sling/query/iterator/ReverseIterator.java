@@ -22,14 +22,14 @@ public class ReverseIterator<T> extends AbstractIterator<Option<T>> {
 	protected Option<T> getElement() {
 		if (original.hasNext()) {
 			Option<T> originalElement = original.next();
-			Option<T> filteredElement = Option.empty();
+			Option<T> filteredElement = null;
 			if (filtered.hasNext()) {
 				filteredElement = filtered.next();
 			}
-			if (filteredElement.isEmpty()) {
+			if (filteredElement == null || filteredElement.isEmpty()) {
 				return originalElement;
 			} else {
-				return Option.empty();
+				return Option.empty(originalElement.getArgumentId());
 			}
 		}
 		return null;

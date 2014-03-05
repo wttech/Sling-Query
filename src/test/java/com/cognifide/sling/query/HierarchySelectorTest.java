@@ -27,7 +27,7 @@ public class HierarchySelectorTest {
 
 	@Test
 	public void testNextAdjacent() {
-		SlingQuery query = $(tree).children("cq:PageContent + cq:Page");
+		SlingQuery query = $(tree).children().filter("cq:PageContent + cq:Page");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
 	}
 

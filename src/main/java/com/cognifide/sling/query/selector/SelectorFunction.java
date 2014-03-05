@@ -45,14 +45,14 @@ public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predi
 		LazyList<Option<T>> list = new LazyList<Option<T>>(input);
 		List<Iterator<Option<T>>> iterators = new ArrayList<Iterator<Option<T>>>();
 		for (IteratorToIteratorFunction<T> function : functions) {
-			iterators.add(new SuppIterator<T>(list.listIterator(), function));
+			iterators.add(new SuppIterator<T>(list, function));
 		}
 		return new AlternativeIterator<T>(iterators);
 	}
 
 	@Override
 	public boolean accepts(T resource) {
-		Iterator<Option<T>> result = apply(IteratorUtils.singleElementIterator(Option.of(resource)));
+		Iterator<Option<T>> result = apply(IteratorUtils.singleElementIterator(Option.of(resource, 0)));
 		return new EmptyElementFilter<T>(result).hasNext();
 	}
 

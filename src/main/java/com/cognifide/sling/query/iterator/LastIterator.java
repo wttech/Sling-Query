@@ -30,22 +30,19 @@ public class LastIterator<T> extends AbstractIterator<Option<T>> {
 		}
 
 		initializeLastIndex();
-		if (lastIndex == -1) {
-			finished = true;
-			return Option.empty();
-		}
 
-		Option<T> candidate = Option.empty();
+		Option<T> candidate;
 		if (iterator.hasNext()) {
 			candidate = iterator.next();
 		} else {
 			finished = true;
+			return null;
 		}
 		if (iterator.previousIndex() == lastIndex) {
 			finished = true;
 			return candidate;
 		} else {
-			return Option.empty();
+			return Option.empty(candidate.getArgumentId());
 		}
 	}
 

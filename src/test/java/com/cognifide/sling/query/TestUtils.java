@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.sling.api.resource.Resource;
 import org.junit.Assert;
 
+import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.mock.json.JsonToResource;
 
 public final class TestUtils {
@@ -37,7 +38,16 @@ public final class TestUtils {
 		return list;
 	}
 
-	public static void assertEmptyIterator(Iterator<Resource> iterator) {
+	public static <T> List<Option<T>> optionList(List<T> list) {
+		List<Option<T>> result = new ArrayList<Option<T>>();
+		int index = 0;
+		for (T element : list) {
+			result.add(Option.of(element, index++));
+		}
+		return result;
+	}
+
+	public static void assertEmptyIterator(Iterator<?> iterator) {
 		if (iterator.hasNext()) {
 			Assert.fail(String.format("Iterator should be empty, but %s is returned", iterator.next()
 					.toString()));
@@ -52,6 +62,10 @@ public final class TestUtils {
 
 	public static void assertResourceListEquals(Iterator<Resource> iterator, String... names) {
 		Assert.assertEquals(Arrays.asList(names), getResourceNames(iterator));
+	}
+
+	public static List<String> l(String... args) {
+		return Arrays.asList(args);
 	}
 
 	private static List<String> getResourceNames(Iterator<Resource> iterator) {

@@ -34,12 +34,12 @@ public class SliceIterator<T> extends AbstractIterator<Option<T>> {
 		if (iterator.hasNext()) {
 			Option<T> element = iterator.next();
 			if (element.isEmpty()) {
-				return Option.empty();
+				return element;
 			}
 			if (++current >= from && current <= to) {
 				return element;
 			} else {
-				return Option.empty();
+				return Option.empty(element.getArgumentId());
 			}
 		}
 		return null;

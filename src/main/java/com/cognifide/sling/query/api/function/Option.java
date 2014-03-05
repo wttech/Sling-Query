@@ -6,16 +6,23 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class Option<T> {
 	private final T element;
 
-	private Option(T element) {
+	private final int argumentId;
+
+	private Option(T element, int argumentId) {
 		this.element = element;
+		this.argumentId = argumentId;
 	}
 
-	public static <T> Option<T> of(T element) {
-		return new Option<T>(element);
+	public static <T> Option<T> of(T element, int argumentId) {
+		return new Option<T>(element, argumentId);
 	}
 
-	public static <T> Option<T> empty() {
-		return new Option<T>(null);
+	public static <T> Option<T> empty(int argumentId) {
+		return new Option<T>(null, argumentId);
+	}
+
+	public int getArgumentId() {
+		return argumentId;
 	}
 
 	public T getElement() {

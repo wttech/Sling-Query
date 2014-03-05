@@ -20,13 +20,10 @@ public class FilteringIterator<T> extends AbstractIterator<Option<T>> {
 	protected Option<T> getElement() {
 		while (iterator.hasNext()) {
 			Option<T> element = iterator.next();
-			if (element.isEmpty()) {
-				continue;
-			}
-			if (predicate.accepts(element.getElement())) {
+			if (element.isEmpty() || predicate.accepts(element.getElement())) {
 				return element;
 			} else {
-				return Option.empty();
+				return Option.empty(element.getArgumentId());
 			}
 		}
 		return null;
