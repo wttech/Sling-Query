@@ -32,7 +32,7 @@ public class SuppTest {
 
 	@Test
 	public void testNoSecond() {
-		testExpanding(l("a", "---"), l("a", null));
+		testExpanding(l("a", "---"), l("a"));
 	}
 
 	@Test
@@ -42,17 +42,17 @@ public class SuppTest {
 
 	@Test
 	public void testNoLast() {
-		test(l("a", "b", "c", "d", "e"), l("a", "b", "c", "d", null), new SliceFunction<String>(0, 3));
+		test(l("a", "b", "c", "d", "e"), l("a", "b", "c", "d"), new SliceFunction<String>(0, 3));
 	}
 
 	@Test
 	public void testNoTwoLast() {
-		test(l("a", "b", "c", "d", "e"), l("a", "b", "c", null, null), new SliceFunction<String>(0, 2));
+		test(l("a", "b", "c", "d", "e"), l("a", "b", "c"), new SliceFunction<String>(0, 2));
 	}
 
 	@Test
 	public void testJustFirst() {
-		test(l("a", "b", "c", "d", "e"), l("a", null, null, null, null), new SliceFunction<String>(0, 0));
+		test(l("a", "b", "c", "d", "e"), l("a"), new SliceFunction<String>(0, 0));
 	}
 
 	@Test
@@ -84,8 +84,8 @@ public class SuppTest {
 
 	@Test
 	public void testRemoveLast() {
-		testExpanding(l("a", "b", "c", "d", "-"), l("a", "b", "c", "d", null));
-		testExpanding(l("a", "b", "c", "d", "---"), l("a", "b", "c", "d", null));
+		testExpanding(l("a", "b", "c", "d", "-"), l("a", "b", "c", "d"));
+		testExpanding(l("a", "b", "c", "d", "---"), l("a", "b", "c", "d"));
 	}
 
 	private static void testExpanding(List<String> input, List<String> output) {
