@@ -24,7 +24,7 @@ import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
 public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predicate<T> {
 
-	private final List<IteratorToIteratorFunction<T>> functions;
+	private final List<IteratorToIteratorFunction<T>> selectorFunctions;
 
 	private final TreeProvider<T> provider;
 
@@ -34,9 +34,9 @@ public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predi
 		this.provider = provider;
 		this.strategy = strategy;
 		List<Selector> selectors = SelectorParser.parse(selector);
-		functions = new ArrayList<IteratorToIteratorFunction<T>>();
+		selectorFunctions = new ArrayList<IteratorToIteratorFunction<T>>();
 		for (Selector s : selectors) {
-			functions.add(createSelectorFunction(s.getSegments()));
+			selectorFunctions.add(createSelectorFunction(s.getSegments()));
 		}
 	}
 
@@ -44,7 +44,7 @@ public class SelectorFunction<T> implements IteratorToIteratorFunction<T>, Predi
 	public Iterator<Option<T>> apply(Iterator<Option<T>> input) {
 		LazyList<Option<T>> list = new LazyList<Option<T>>(input);
 		List<Iterator<Option<T>>> iterators = new ArrayList<Iterator<Option<T>>>();
-		for (IteratorToIteratorFunction<T> function : functions) {
+		for (IteratorToIteratorFunction<T> function : selectorFunctions) {
 			iterators.add(new SuppIterator<T>(list, function));
 		}
 		return new AlternativeIterator<T>(iterators);
