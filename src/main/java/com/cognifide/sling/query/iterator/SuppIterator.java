@@ -28,7 +28,7 @@ public class SuppIterator<T> extends AbstractIterator<Option<T>> {
 	@Override
 	protected Option<T> getElement() {
 		if (outputElement != null) {
-			int outputIndex = outputElement.getArgumentId();
+			final int outputIndex = outputElement.getArgumentId();
 			if (currentIndex < outputIndex) {
 				return Option.empty(input.get(currentIndex++).getArgumentId());
 			} else if (currentIndex == outputIndex && !outputElement.isEmpty()) {
@@ -38,14 +38,8 @@ public class SuppIterator<T> extends AbstractIterator<Option<T>> {
 
 		while (output.hasNext()) {
 			outputElement = output.next();
-			int outputIndex = outputElement.getArgumentId();
-			if (outputIndex < currentIndex) {
-				continue;
-			} else if (outputIndex == currentIndex && outputElement.isEmpty()) {
-				continue;
-			} else if (outputIndex == currentIndex && !outputElement.isEmpty()) {
-				return input.get(currentIndex++);
-			} else if (outputIndex > currentIndex) {
+			final int outputIndex = outputElement.getArgumentId();
+			if ((outputIndex == currentIndex && !outputElement.isEmpty()) || outputIndex > currentIndex) {
 				return getElement();
 			}
 		}
