@@ -2,7 +2,6 @@
 
 * `not()` function is now lazy (eg. `$(resourceResolver).not('cq:InvalidType').first()` return results immediately)
 * multiple selectors can be joined with comma: `$('[jcr:title=Foo], [jcr:title=Bar])`
-* removed support for the `:last` modifier
 
 ## SlingQuery 1.3.1
 
