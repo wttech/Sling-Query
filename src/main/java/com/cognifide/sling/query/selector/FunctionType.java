@@ -1,17 +1,16 @@
 package com.cognifide.sling.query.selector;
 
-import java.util.Iterator;
-
-import com.cognifide.sling.query.IteratorUtils;
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
-import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.function.EvenFunction;
+import com.cognifide.sling.query.function.FilterFunction;
 import com.cognifide.sling.query.function.HasFunction;
 import com.cognifide.sling.query.function.LastFunction;
 import com.cognifide.sling.query.function.NotFunction;
 import com.cognifide.sling.query.function.SliceFunction;
+import com.cognifide.sling.query.predicate.ParentPredicate;
+import com.cognifide.sling.query.predicate.RejectingPredicate;
 
 public enum FunctionType {
 	EQ {
@@ -61,32 +60,14 @@ public enum FunctionType {
 		@Override
 		public <T> Function<?, ?> getFunction(String selector, SearchStrategy strategy,
 				final TreeProvider<T> provider) {
-			return new ElementToIteratorFunction<T>() {
-				@Override
-				public Iterator<T> apply(T resource) {
-					if (provider.listChildren(resource).hasNext()) {
-						return IteratorUtils.singleElementIterator(resource);
-					} else {
-						return IteratorUtils.emptyIterator();
-					}
-				}
-			};
+			return new FilterFunction<T>(new ParentPredicate<T>(provider));
 		}
 	},
 	EMPTY {
 		@Override
 		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
 				final TreeProvider<T> provider) {
-			return new ElementToIteratorFunction<T>() {
-				@Override
-				public Iterator<T> apply(T resource) {
-					if (provider.listChildren(resource).hasNext()) {
-						return IteratorUtils.emptyIterator();
-					} else {
-						return IteratorUtils.singleElementIterator(resource);
-					}
-				}
-			};
+			return new FilterFunction<T>(new RejectingPredicate<T>(new ParentPredicate<T>(provider)));
 		}
 	},
 	ODD {
