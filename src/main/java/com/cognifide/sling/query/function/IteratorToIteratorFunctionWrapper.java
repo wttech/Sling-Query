@@ -19,10 +19,10 @@ public class IteratorToIteratorFunctionWrapper<T> implements IteratorToIteratorF
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterator<Option<T>> apply(Iterator<Option<T>> parentIterator) {
-		if (isEtoI(function)) {
+		if (function instanceof ElementToIteratorFunction) {
 			return getOptionIterator((ElementToIteratorFunction<T>) function, parentIterator);
-		} else if (isOptionItoI(function)) {
-			return getOptionIterator((IteratorToIteratorFunction<T>) function, parentIterator);
+		} else if (function instanceof IteratorToIteratorFunction) {
+			return ((IteratorToIteratorFunction<T>) function).apply(parentIterator);
 		} else {
 			throw new IllegalArgumentException("Don't know how to handle " + function.toString());
 		}
@@ -32,18 +32,4 @@ public class IteratorToIteratorFunctionWrapper<T> implements IteratorToIteratorF
 			Iterator<Option<T>> parentIterator) {
 		return new ExpandingIterator<T>((ElementToIteratorFunction<T>) function, parentIterator);
 	}
-
-	private static <T> Iterator<Option<T>> getOptionIterator(IteratorToIteratorFunction<T> function,
-			Iterator<Option<T>> parentIterator) {
-		return function.apply(parentIterator);
-	}
-
-	private static boolean isEtoI(Function<?, ?> function) {
-		return function instanceof ElementToIteratorFunction;
-	}
-
-	private static boolean isOptionItoI(Function<?, ?> function) {
-		return function instanceof IteratorToIteratorFunction;
-	}
-
 }
