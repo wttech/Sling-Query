@@ -33,6 +33,12 @@ public class SelectorFunctionTest {
 	}
 
 	@Test
+	public void testLast() {
+		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":last");
+		assertResourceSetEquals(query.iterator(), "configvalue_2");
+	}
+
+	@Test
 	public void testGt() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":gt(2)");
 		assertResourceSetEquals(query.iterator(), "configvalue_1", "configvalue_2");
@@ -76,9 +82,21 @@ public class SelectorFunctionTest {
 	}
 
 	@Test
-	public void testComplexNot() {
+	public void testNotFirst() {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":not(:first)");
 		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1",
 				"configvalue_2");
+	}
+
+	@Test
+	public void testNotLast() {
+		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":not(:last)");
+		assertResourceSetEquals(query.iterator(), "richtext", "configvalue", "configvalue_0", "configvalue_1");
+	}
+
+	@Test
+	public void testComplexNot() {
+		SlingQuery query = $(tree.getChild(PAR_PATH)).children(":not(:first):not(:last)");
+		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1");
 	}
 }

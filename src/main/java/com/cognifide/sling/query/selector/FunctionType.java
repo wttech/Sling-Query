@@ -9,6 +9,7 @@ import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.function.EvenFunction;
 import com.cognifide.sling.query.function.HasFunction;
+import com.cognifide.sling.query.function.LastFunction;
 import com.cognifide.sling.query.function.NotFunction;
 import com.cognifide.sling.query.function.SliceFunction;
 
@@ -26,6 +27,13 @@ public enum FunctionType {
 		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
 				TreeProvider<T> provider) {
 			return new SliceFunction<T>(0, 0);
+		}
+	},
+	LAST {
+		@Override
+		public <T> Function<?, ?> getFunction(String argument, SearchStrategy strategy,
+				TreeProvider<T> provider) {
+			return new LastFunction<T>();
 		}
 	},
 	GT {
