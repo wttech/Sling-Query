@@ -1,9 +1,13 @@
 package com.cognifide.sling.query.api;
 
+import java.util.Iterator;
+
+import org.apache.sling.api.adapter.Adaptable;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.JavaQuery;
+import com.cognifide.sling.query.iterator.AdaptToIterator;
 import com.cognifide.sling.query.resource.ResourceTreeProvider;
 
 /**
@@ -28,6 +32,23 @@ public class SlingQuery extends JavaQuery<Resource, SlingQuery> {
 
 	public static SlingQuery $(ResourceResolver resolver) {
 		return new SlingQuery(resolver.getResource("/"));
+	}
+
+	/**
+	 * Transform the whole collection to a new {@link Iterable} object, invoking
+	 * {@link Adaptable#adaptTo(Class)} method on each Resource. If some Resource can't be adapted to the
+	 * class (eg. {@code adaptTo()} returns {@code null}), it will be skipped.
+	 * 
+	 * @param clazz Class used to adapt the Resources
+	 * @return new iterable containing succesfully adapted Resources
+	 */
+	public <E> Iterable<E> map(final Class<? extends E> clazz) {
+		return new Iterable<E>() {
+			@Override
+			public Iterator<E> iterator() {
+				return new AdaptToIterator<Resource, E>(SlingQuery.this.iterator(), clazz);
+			}
+		};
 	}
 
 	@Override

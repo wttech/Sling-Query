@@ -5,15 +5,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.sling.api.adapter.Adaptable;
-
 import com.cognifide.sling.query.api.Function;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
-import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
 import com.cognifide.sling.query.function.FilterFunction;
@@ -30,7 +27,6 @@ import com.cognifide.sling.query.function.ParentsFunction;
 import com.cognifide.sling.query.function.PrevFunction;
 import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
-import com.cognifide.sling.query.iterator.AdaptToIterator;
 import com.cognifide.sling.query.iterator.EmptyElementFilter;
 import com.cognifide.sling.query.iterator.OptionDecoratingIterator;
 import com.cognifide.sling.query.iterator.OptionStrippingIterator;
@@ -39,7 +35,7 @@ import com.cognifide.sling.query.selector.SelectorFunction;
 
 public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterable<T> {
 
-	private final List<Function<?, ?>> functions = new ArrayList<Function<?, ?>>();
+	protected final List<Function<?, ?>> functions = new ArrayList<Function<?, ?>>();
 
 	private final List<T> Ts;
 
@@ -81,16 +77,16 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Get list of the children for each T in the collection.
+	 * Get list of the children for each Resource in the collection.
 	 * 
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q children() {
-		return children("");
+		return function(new ChildrenFunction<T>(provider));
 	}
 
 	/**
-	 * Get list of the children for each T in the collection.
+	 * Get list of the children for each Resource in the collection.
 	 * 
 	 * @param selector Children filter
 	 * @return new SlingQuery object transformed by this operation
@@ -100,18 +96,18 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * For each T in the collection, return the first element matching the selector testing the T itself and
-	 * traversing up its ancestors.
+	 * For each Resource in the collection, return the first element matching the selector testing the
+	 * Resource itself and traversing up its ancestors.
 	 * 
 	 * @param selector Ancestor filter
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q closest(String selector) {
-		return functionWithSelector(new ClosestFunction<T>(parse(selector), provider), "");
+		return function(new ClosestFunction<T>(parse(selector), provider));
 	}
 
 	/**
-	 * Reduce T collection to the one T at the given 0-based index.
+	 * Reduce Resource collection to the one Resource at the given 0-based index.
 	 * 
 	 * @param index 0-based index
 	 * @return new SlingQuery object transformed by this operation
@@ -121,7 +117,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Filter T collection using given predicate object.
+	 * Filter Resource collection using given predicate object.
 	 * 
 	 * @param predicate Collection filter
 	 * @return new SlingQuery object transformed by this operation
@@ -131,7 +127,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Filter T collection using given selector.
+	 * Filter Resource collection using given selector.
 	 * 
 	 * @param selector Selector
 	 * @return new SlingQuery object transformed by this operation
@@ -141,18 +137,20 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * For each T in collection use depth-first search to return all its descendants. Please notice that
-	 * invoking this method on a T being a root of a large subtree may and will cause performance problems.
+	 * For each Resource in collection use depth-first search to return all its descendants. Please notice
+	 * that invoking this method on a Resource being a root of a large subtree may and will cause performance
+	 * problems.
 	 * 
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q find() {
-		return find("");
+		return function(new FindFunction<T>(searchStrategy, provider, ""));
 	}
 
 	/**
-	 * For each T in collection use breadth-first search to return all its descendants. Please notice that
-	 * invoking this method on a T being a root of a large subtree may and will cause performance problems.
+	 * For each Resource in collection use breadth-first search to return all its descendants. Please notice
+	 * that invoking this method on a Resource being a root of a large subtree may and will cause performance
+	 * problems.
 	 * 
 	 * @param selector descendants filter
 	 * @return new SlingQuery object transformed by this operation
@@ -162,7 +160,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Filter T collection to the first element. Equivalent to {@code eq(0)} or {@code slice(0, 0)}.
+	 * Filter Resource collection to the first element. Equivalent to {@code eq(0)} or {@code slice(0, 0)}.
 	 * 
 	 * @return new SlingQuery object transformed by this operation
 	 */
@@ -171,66 +169,36 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * This method allows to process T collection using custom function and then filter the results by a
-	 * selector string.
-	 * 
-	 * @param function Object implementing one of the interfaces: {@link ElementToElementFunction},
-	 * {@link ElementToIteratorFunction} or {@link IteratorToIteratorFunction}
-	 * @param selector Result filter
-	 * @return new SlingQuery object transformed by this operation
-	 */
-	public Q functionWithSelector(Function<?, ?> function, String selector) {
-		return function(new FilteredFunction<T>(function, selector, searchStrategy, provider));
-	}
-
-	/**
-	 * Pick such Ts from the collection that have descendant matching the selector.
+	 * Pick such Resources from the collection that have descendant matching the selector.
 	 * 
 	 * @param selector Descendant selector
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q has(String selector) {
-		return functionWithSelector(new HasFunction<T>(selector, searchStrategy, provider), "");
+		return function(new HasFunction<T>(selector, searchStrategy, provider));
 	}
 
 	/**
-	 * Filter T collection to the last element.
+	 * Filter Resource collection to the last element.
 	 * 
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q last() {
-		return functionWithSelector(new LastFunction<T>(), "");
+		return function(new LastFunction<T>());
 	}
 
 	/**
-	 * Transform the whole collection to a new {@link Iterable} object, invoking
-	 * {@link Adaptable#adaptTo(Class)} method on each T. If some T can't be adapted to the class (eg.
-	 * {@code adaptTo()} returns {@code null}), it will be skipped.
-	 * 
-	 * @param clazz Class used to adapt the Ts
-	 * @return new iterable containing succesfully adapted Ts
-	 */
-	public <E> Iterable<E> map(final Class<? extends E> clazz) {
-		return new Iterable<E>() {
-			@Override
-			public Iterator<E> iterator() {
-				return new AdaptToIterator<T, E>(Q.this.iterator(), clazz);
-			}
-		};
-	}
-
-	/**
-	 * Return the next sibling for each T in the collection.
+	 * Return the next sibling for each Resource in the collection.
 	 * 
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q next() {
-		return next("");
+		return function(new NextFunction<T>(null, provider));
 	}
 
 	/**
-	 * Return the next sibling for each T in the collection and filter it by a selector. If the next sibling
-	 * doesn't match it, empty collection will be returned.
+	 * Return the next sibling for each Resource in the collection and filter it by a selector. If the next
+	 * sibling doesn't match it, empty collection will be returned.
 	 * 
 	 * @param selector Next sibling filter
 	 * @return new SlingQuery object transformed by this operation
@@ -240,16 +208,16 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Return all following siblings for each T in the collection.
+	 * Return all following siblings for each Resource in the collection.
 	 * 
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q nextAll() {
-		return nextAll("");
+		return function(new NextFunction<T>(new RejectingPredicate<T>(), provider));
 	}
 
 	/**
-	 * Return all following siblings for each T in the collection, filtering them by a selector.
+	 * Return all following siblings for each Resource in the collection, filtering them by a selector.
 	 * 
 	 * @param selector Following siblings filter
 	 * @return new SlingQuery object transformed by this operation
@@ -259,19 +227,19 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Return all following siblings for each T in the collection up to, but not including, T matched by a
-	 * selector.
+	 * Return all following siblings for each Resource in the collection up to, but not including, Resource
+	 * matched by a selector.
 	 * 
 	 * @param until Selector marking when the operation should stop
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q nextUntil(String until) {
-		return nextUntil(until, "");
+		return function(new NextFunction<T>(parse(until), provider));
 	}
 
 	/**
-	 * Return all following siblings for each T in the collection up to, but not including, T matched by a
-	 * selector.
+	 * Return all following siblings for each Resource in the collection up to, but not including, Resource
+	 * matched by a selector.
 	 * 
 	 * @param until Selector marking when the operation should stop
 	 * @param selector Following siblings filter
@@ -297,7 +265,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q parent() {
-		return functionWithSelector(new ParentFunction<T>(provider), "");
+		return function(new ParentFunction<T>(provider));
 	}
 
 	/**
@@ -306,7 +274,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q parents() {
-		return parents("");
+		return function(new ParentsFunction<T>(new RejectingPredicate<T>(), provider));
 	}
 
 	/**
@@ -326,7 +294,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q parentsUntil(String until) {
-		return functionWithSelector(new ParentsFunction<T>(parse(until), provider), "");
+		return function(new ParentsFunction<T>(parse(until), provider));
 	}
 
 	/**
@@ -342,17 +310,17 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Return the previous sibling for each T in the collection.
+	 * Return the previous sibling for each Resource in the collection.
 	 * 
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q prev() {
-		return prev("");
+		return function(new PrevFunction<T>(provider));
 	}
 
 	/**
-	 * Return the previous sibling for each T in the collection and filter it by a selector. If the previous
-	 * sibling doesn't match it, empty collection will be returned.
+	 * Return the previous sibling for each Resource in the collection and filter it by a selector. If the
+	 * previous sibling doesn't match it, empty collection will be returned.
 	 * 
 	 * @param selector Previous sibling filter
 	 * @return new SlingQuery object transformed by this operation
@@ -362,16 +330,16 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Return all previous siblings for each T in the collection.
+	 * Return all previous siblings for each Resource in the collection.
 	 * 
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q prevAll() {
-		return prevAll("");
+		return function(new PrevFunction<T>(new RejectingPredicate<T>(), provider));
 	}
 
 	/**
-	 * Return all previous siblings for each T in the collection, filtering them by a selector.
+	 * Return all previous siblings for each Resource in the collection, filtering them by a selector.
 	 * 
 	 * @param selector Previous siblings filter
 	 * @return new SlingQuery object transformed by this operation
@@ -381,19 +349,19 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Return all previous siblings for each T in the collection up to, but not including, T matched by a
-	 * selector.
+	 * Return all previous siblings for each Resource in the collection up to, but not including, Resource
+	 * matched by a selector.
 	 * 
 	 * @param until Selector marking when the operation should stop
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q prevUntil(String until) {
-		return prevUntil(until, "");
+		return function(new PrevFunction<T>(parse(until), provider));
 	}
 
 	/**
-	 * Return all previous siblings for each T in the collection up to, but not including, T matched by a
-	 * selector.
+	 * Return all previous siblings for each Resource in the collection up to, but not including, Resource
+	 * matched by a selector.
 	 * 
 	 * @param until Selector marking when the operation should stop
 	 * @param selector Previous siblings filter
@@ -423,7 +391,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Return siblings for the given Ts filtered by a selector.
+	 * Return siblings for the given Resources filtered by a selector.
 	 * 
 	 * @param selector Siblings filter
 	 * @return new SlingQuery object transformed by this operation
@@ -433,9 +401,9 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	/**
-	 * Filter out first {@code from} Ts from the collection.
+	 * Filter out first {@code from} Resources from the collection.
 	 * 
-	 * @param from How many Ts to cut out
+	 * @param from How many Resources to cut out
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q slice(int from) {
@@ -463,7 +431,11 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 		return function(new SliceFunction<T>(from, to));
 	}
 
-	private Q function(IteratorToIteratorFunction<T> function) {
+	private Q functionWithSelector(Function<?, ?> function, String selector) {
+		return function(new FilteredFunction<T>(function, selector, searchStrategy, provider));
+	}
+
+	private Q function(Function<?, ?> function) {
 		Q newQuery = clone(this, this.searchStrategy);
 		newQuery.functions.add(function);
 		return newQuery;

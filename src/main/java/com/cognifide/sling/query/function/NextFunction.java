@@ -11,8 +11,12 @@ import com.cognifide.sling.query.iterator.SiblingsIterator.Type;
 public class NextFunction<T> implements ElementToIteratorFunction<T> {
 
 	private final Predicate<T> until;
-	
+
 	private final TreeProvider<T> provider;
+
+	public NextFunction(TreeProvider<T> provider) {
+		this(null, provider);
+	}
 
 	public NextFunction(Predicate<T> until, TreeProvider<T> provider) {
 		this.until = until;
