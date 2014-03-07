@@ -30,6 +30,13 @@ public class FindTest {
 	}
 
 	@Test
+	public void testFindWithResources() {
+		SlingQuery query = $(tree.getChild("home")).find(
+				$(tree.getChild("home/java"), tree.getChild("home/js"), tree.getChild("application")));
+		assertResourceSetEquals(query.iterator(), "java", "js");
+	}
+
+	@Test
 	public void testLeaveFind() {
 		SlingQuery query = $(
 				tree.getChild("application/configuration/labels/jcr:content/configParsys/tab/items/localizedtext/lang"))

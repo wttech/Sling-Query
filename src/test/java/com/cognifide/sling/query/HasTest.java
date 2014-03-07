@@ -19,4 +19,12 @@ public class HasTest {
 		SlingQuery query = $(tree.getChild(PAR_PATH)).children().has("demo/core/components/configValue");
 		assertResourceSetEquals(query.iterator(), "labels");
 	}
+
+	@Test
+	public void testHasResource() {
+		SlingQuery query = $(tree.getChild(PAR_PATH)).children().has(
+				$(tree.getChild("home/java/labels/jcr:content/par")));
+		assertResourceSetEquals(query.iterator(), "labels");
+	}
+
 }

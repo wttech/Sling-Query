@@ -4,6 +4,8 @@ import static com.cognifide.sling.query.TestUtils.assertEmptyIterator;
 import static com.cognifide.sling.query.TestUtils.assertResourceSetEquals;
 import static com.cognifide.sling.query.api.SlingQuery.$;
 
+import java.util.Collections;
+
 import org.apache.sling.api.resource.Resource;
 import org.junit.Test;
 
@@ -17,6 +19,19 @@ public class NotTest {
 	public void testNot() {
 		SlingQuery query = $(tree).children().not("cq:Page");
 		assertResourceSetEquals(query.iterator(), "jcr:content");
+	}
+
+	@Test
+	public void testNotResources() {
+		SlingQuery query = $(tree).children().not(
+				$(tree.getChild("jcr:content"), tree.getChild("application")));
+		assertResourceSetEquals(query.iterator(), "home");
+	}
+
+	@Test
+	public void testNotEmptyResources() {
+		SlingQuery query = $(tree).children().not(Collections.<Resource>emptyList());
+		assertResourceSetEquals(query.iterator(), "jcr:content", "application", "home");
 	}
 
 	@Test
