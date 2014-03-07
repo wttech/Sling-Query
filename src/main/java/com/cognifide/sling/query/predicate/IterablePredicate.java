@@ -1,5 +1,6 @@
 package com.cognifide.sling.query.predicate;
 
+import com.cognifide.sling.query.LazyList;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.TreeProvider;
 
@@ -10,7 +11,7 @@ public class IterablePredicate<T> implements Predicate<T> {
 	private final TreeProvider<T> provider;
 
 	public IterablePredicate(Iterable<T> iterable, TreeProvider<T> provider) {
-		this.iterable = iterable;
+		this.iterable = new LazyList<T>(iterable.iterator());
 		this.provider = provider;
 	}
 
