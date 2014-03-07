@@ -16,4 +16,6 @@ public interface TreeProvider<T> {
 	Predicate<T> getPredicate(String type, String name, List<Attribute> attributes);
 
 	Iterator<T> query(List<SelectorSegment> segment, T resource);
+
+	boolean sameElement(T o1, T o2);
 }

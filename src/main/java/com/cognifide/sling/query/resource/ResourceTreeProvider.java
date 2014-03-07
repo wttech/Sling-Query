@@ -38,4 +38,15 @@ public class ResourceTreeProvider implements TreeProvider<Resource> {
 		return new JcrQueryIterator(segments, resource);
 	}
 
+	@Override
+	public boolean sameElement(Resource o1, Resource o2) {
+		if (o1 == null && o2 == null) {
+			return true;
+		}
+		if (o1 == null || o2 == null) {
+			return false;
+		}
+		return o1.getPath().equals(o2.getPath());
+	}
+
 }

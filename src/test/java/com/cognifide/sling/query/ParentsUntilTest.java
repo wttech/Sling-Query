@@ -26,10 +26,4 @@ public class ParentsUntilTest {
 		assertResourceSetEquals(query.iterator(), "application", "configuration", "labels", "jcr:content", "configParsys", "tab", "/");
 	}
 
-	@Test
-	public void testParentsUntilFromRoot() {
-		SlingQuery query = $(tree).parentsUntil("cq:Page", "cq:Undefined");
-		assertResourceSetEquals(query.iterator());
-	}
-
 }

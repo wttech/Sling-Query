@@ -1,9 +1,7 @@
 package com.cognifide.sling.query.api;
 
-import org.apache.sling.api.resource.Resource;
-
 /**
- * ResourcePredicate determine true or false value for a given {@link Resource}.
+ * ResourcePredicate determine true or false value for a given T.
  * 
  * @author Tomasz Rękawek
  * 
@@ -12,8 +10,8 @@ public interface Predicate<T> {
 	/**
 	 * Accept or reject given resource.
 	 * 
-	 * @param resource Object to test
+	 * @param element Object to test
 	 * @return {@code true} or {@code false}
 	 */
-	boolean accepts(T resource);
+	boolean accepts(T element);
 }

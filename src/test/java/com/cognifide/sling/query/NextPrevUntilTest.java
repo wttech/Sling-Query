@@ -28,34 +28,6 @@ public class NextPrevUntilTest {
 	}
 
 	@Test
-	public void testNextUntilFiltered() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue")).nextUntil("[key=unknownKey]",
-				"demo/core/components/configValue");
-		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1");
-	}
-
-	@Test
-	public void testPrevUntilFiltered() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).prevUntil("[key=helloWorld]",
-				"demo/core/components/configValue");
-		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1");
-	}
-
-	@Test
-	public void testNextUntilInvalidFiltered() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue")).nextUntil("[key=unknownKey]",
-				"cq:Undefined");
-		assertEmptyIterator(query.iterator());
-	}
-
-	@Test
-	public void testPrevUntilInvalidFiltered() {
-		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).prevUntil("[key=helloWorld]",
-				"cq:Undefined");
-		assertEmptyIterator(query.iterator());
-	}
-
-	@Test
 	public void testNextUntilOnLast() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).nextUntil("[key=unknownKey]");
 		assertEmptyIterator(query.iterator());
@@ -89,7 +61,6 @@ public class NextPrevUntilTest {
 	@Test
 	public void testPrevUntilInvalid() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).prevUntil("cq:Undefined");
-		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1",
-				"richtext");
+		assertResourceSetEquals(query.iterator(), "configvalue", "configvalue_0", "configvalue_1", "richtext");
 	}
 }
