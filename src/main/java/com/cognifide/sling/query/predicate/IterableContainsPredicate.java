@@ -4,13 +4,13 @@ import com.cognifide.sling.query.LazyList;
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.TreeProvider;
 
-public class IterablePredicate<T> implements Predicate<T> {
+public class IterableContainsPredicate<T> implements Predicate<T> {
 
 	private final Iterable<T> iterable;
 
 	private final TreeProvider<T> provider;
 
-	public IterablePredicate(Iterable<T> iterable, TreeProvider<T> provider) {
+	public IterableContainsPredicate(Iterable<T> iterable, TreeProvider<T> provider) {
 		this.iterable = new LazyList<T>(iterable.iterator());
 		this.provider = provider;
 	}

@@ -13,6 +13,7 @@ import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
+import com.cognifide.sling.query.function.DescendantFunction;
 import com.cognifide.sling.query.function.FilterFunction;
 import com.cognifide.sling.query.function.HasFunction;
 import com.cognifide.sling.query.function.FindFunction;
@@ -29,7 +30,7 @@ import com.cognifide.sling.query.function.SliceFunction;
 import com.cognifide.sling.query.iterator.EmptyElementFilter;
 import com.cognifide.sling.query.iterator.OptionDecoratingIterator;
 import com.cognifide.sling.query.iterator.OptionStrippingIterator;
-import com.cognifide.sling.query.predicate.IterablePredicate;
+import com.cognifide.sling.query.predicate.IterableContainsPredicate;
 import com.cognifide.sling.query.predicate.RejectingPredicate;
 import com.cognifide.sling.query.selector.SelectorFunction;
 
@@ -134,7 +135,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q closest(Iterable<T> iterable) {
-		return closest(new IterablePredicate<T>(iterable, provider));
+		return closest(new IterableContainsPredicate<T>(iterable, provider));
 	}
 
 	/**
@@ -185,7 +186,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q filter(Iterable<T> iterable) {
-		return function(new FilterFunction<T>(new IterablePredicate<T>(iterable, provider)));
+		return function(new FilterFunction<T>(new IterableContainsPredicate<T>(iterable, provider)));
 	}
 
 	/**
@@ -232,7 +233,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q find(Iterable<T> iterable) {
-		return function(new FindFunction<T>(searchStrategy, provider, ""), iterable);
+		return function(new DescendantFunction<T>(new LazyList<T>(iterable.iterator()), provider));
 	}
 
 	/**
@@ -271,8 +272,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q has(Iterable<T> iterable) {
-		return function(new HasFunction<T>(new IterablePredicate<T>(iterable, provider), searchStrategy,
-				provider));
+		return function(new HasFunction<T>(iterable, provider));
 	}
 
 	/**
@@ -395,7 +395,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q nextUntil(Iterable<T> iterable) {
-		return nextUntil(new IterablePredicate<T>(iterable, provider));
+		return nextUntil(new IterableContainsPredicate<T>(iterable, provider));
 	}
 
 	/**
@@ -425,7 +425,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q not(Iterable<T> iterable) {
-		return not(new IterablePredicate<T>(iterable, provider));
+		return not(new IterableContainsPredicate<T>(iterable, provider));
 	}
 
 	/**
@@ -503,7 +503,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q parentsUntil(Iterable<T> iterable) {
-		return parentsUntil(new IterablePredicate<T>(iterable, provider));
+		return parentsUntil(new IterableContainsPredicate<T>(iterable, provider));
 	}
 
 	/**
@@ -617,7 +617,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	 * @return new SlingQuery object transformed by this operation
 	 */
 	public Q prevUntil(Iterable<T> iterable) {
-		return prevUntil(new IterablePredicate<T>(iterable, provider));
+		return prevUntil(new IterableContainsPredicate<T>(iterable, provider));
 	}
 
 	/**
@@ -703,7 +703,7 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	private Q function(Function<?, ?> function, Iterable<T> iterable) {
 		Q newQuery = clone(this, this.searchStrategy);
 		newQuery.functions.add(function);
-		newQuery.functions.add(new FilterFunction<T>(new IterablePredicate<T>(iterable, provider)));
+		newQuery.functions.add(new FilterFunction<T>(new IterableContainsPredicate<T>(iterable, provider)));
 		return newQuery;
 	}
 

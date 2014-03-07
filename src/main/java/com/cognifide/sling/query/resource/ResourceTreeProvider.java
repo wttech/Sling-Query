@@ -49,4 +49,12 @@ public class ResourceTreeProvider implements TreeProvider<Resource> {
 		return o1.getPath().equals(o2.getPath());
 	}
 
+	@Override
+	public boolean isDescendant(Resource root, Resource testedElement) {
+		if (root == null || testedElement == null) {
+			return false;
+		}
+		return testedElement.getPath().startsWith(root.getPath());
+	}
+
 }

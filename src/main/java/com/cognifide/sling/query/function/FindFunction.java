@@ -20,7 +20,7 @@ public class FindFunction<T> implements ElementToIteratorFunction<T> {
 	private final TreeProvider<T> provider;
 
 	private final SearchStrategy strategy;
-
+	
 	public FindFunction(SearchStrategy searchStrategy, TreeProvider<T> provider,
 			SelectorSegment preFilteringSelector) {
 		this.strategy = searchStrategy;
@@ -36,18 +36,18 @@ public class FindFunction<T> implements ElementToIteratorFunction<T> {
 	}
 
 	@Override
-	public Iterator<T> apply(T resource) {
+	public Iterator<T> apply(T input) {
 		Iterator<T> iterator;
 		switch (strategy) {
 			case BFS:
-				iterator = new BfsTreeIterator<T>(resource, provider);
+				iterator = new BfsTreeIterator<T>(input, provider);
 				break;
 			case QUERY:
-				iterator = provider.query(preFilteringSelector, resource);
+				iterator = provider.query(preFilteringSelector, input);
 				break;
 			case DFS:
 			default:
-				iterator = new DfsTreeIterator<T>(resource, provider);
+				iterator = new DfsTreeIterator<T>(input, provider);
 				break;
 		}
 		return iterator;
