@@ -33,17 +33,19 @@ public class DescendantsIterator<T> extends AbstractIterator<Option<T>> {
 				return null;
 			}
 		}
-		return getDescendant(current);
+		return getDescendant();
 	}
 
-	private Option<T> getDescendant(Option<T> ancestor) {
+	private Option<T> getDescendant() {
 		while (descendants.hasNext()) {
 			T descendantCandidate = descendants.next();
-			if (provider.isDescendant(ancestor.getElement(), descendantCandidate)) {
+			if (provider.isDescendant(current.getElement(), descendantCandidate)) {
 				descendants.remove();
-				return Option.of(descendantCandidate, ancestor.getArgumentId());
+				return Option.of(descendantCandidate, current.getArgumentId());
 			}
 		}
-		return Option.empty(ancestor.getArgumentId());
+		Option<T> result = Option.empty(current.getArgumentId());
+		current = null;
+		return result;
 	}
 }
