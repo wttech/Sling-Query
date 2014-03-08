@@ -22,8 +22,22 @@ public class NextPrevUntilTest {
 	}
 
 	@Test
+	public void testNextUntilResource() {
+		Resource resource = tree.getChild(PAR_PATH).getChild("configvalue_2");
+		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue")).nextUntil($(resource));
+		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1");
+	}
+
+	@Test
 	public void testPrevUntil() {
 		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).prevUntil("[key=helloWorld]");
+		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1");
+	}
+
+	@Test
+	public void testPrevUntilResource() {
+		Resource resource = tree.getChild(PAR_PATH).getChild("configvalue");
+		SlingQuery query = $(tree.getChild(PAR_PATH).getChild("configvalue_2")).prevUntil($(resource));
 		assertResourceSetEquals(query.iterator(), "configvalue_0", "configvalue_1");
 	}
 
