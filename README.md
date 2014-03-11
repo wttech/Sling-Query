@@ -23,6 +23,8 @@ Recommended way to find resources in the Sling repository is using tree-traversa
 
 SlingQuery is a tool that helps creating such queries in a more concise way. Above code could be written as:
 
+    import static com.cognifide.sling.query.api.SlingQuery.$;
+    // ...
     $(resource).closest("cq:Page[jcr:content/cq:template=my/template]")
 
 Dollar sign is a static method that takes the resource array and creates SlingQuery object. The `closest()` method returns the first ancestor matching the selector string passed as the argument.
