@@ -2,6 +2,7 @@
 
 * `not()` function is now lazy (eg. `$(resourceResolver).not('cq:InvalidType').first()` return results immediately)
 * multiple selectors can be joined with comma: `$('[jcr:title=Foo], [jcr:title=Bar])`
+* JCR query becomes the default SearchStrategy
 
 ## SlingQuery 1.3.1
 
