@@ -6,6 +6,7 @@ import static com.cognifide.sling.query.api.SlingQuery.$;
 import org.apache.sling.api.resource.Resource;
 import org.junit.Test;
 
+import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.SlingQuery;
 
 public class SelectorFunctionTest {
@@ -52,7 +53,8 @@ public class SelectorFunctionTest {
 
 	@Test
 	public void testHas() {
-		SlingQuery query = $(tree.getChild("home/java")).children(":has([key=helloWorld])");
+		SlingQuery query = $(tree.getChild("home/java")).searchStrategy(SearchStrategy.DFS).children(
+				":has([key=helloWorld])");
 		assertResourceSetEquals(query.iterator(), "labels");
 	}
 

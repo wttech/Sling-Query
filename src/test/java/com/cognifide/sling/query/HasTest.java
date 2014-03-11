@@ -6,6 +6,7 @@ import static com.cognifide.sling.query.api.SlingQuery.$;
 import org.apache.sling.api.resource.Resource;
 import org.junit.Test;
 
+import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.SlingQuery;
 
 public class HasTest {
@@ -16,7 +17,8 @@ public class HasTest {
 
 	@Test
 	public void testHas() {
-		SlingQuery query = $(tree.getChild(PAR_PATH)).children().has("demo/core/components/configValue");
+		SlingQuery query = $(tree.getChild(PAR_PATH)).searchStrategy(SearchStrategy.DFS).children()
+				.has("demo/core/components/configValue");
 		assertResourceSetEquals(query.iterator(), "labels");
 	}
 

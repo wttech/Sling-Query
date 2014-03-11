@@ -6,6 +6,7 @@ import static com.cognifide.sling.query.api.SlingQuery.$;
 import org.apache.sling.api.resource.Resource;
 import org.junit.Test;
 
+import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.SlingQuery;
 
 public class HierarchySelectorTest {
@@ -20,7 +21,7 @@ public class HierarchySelectorTest {
 
 	@Test
 	public void testDescendant() {
-		SlingQuery query = $(tree.getChild("home")).children(
+		SlingQuery query = $(tree.getChild("home")).searchStrategy(SearchStrategy.DFS).children(
 				"cq:Page demo/core/components/configValue");
 		assertResourceSetEquals(query.iterator(), "java");
 	}

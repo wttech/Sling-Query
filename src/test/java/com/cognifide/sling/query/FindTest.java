@@ -17,15 +17,16 @@ public class FindTest {
 
 	@Test
 	public void testFind() {
-		SlingQuery query = $(tree.getChild("application/configuration/labels")).find();
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).searchStrategy(
+				SearchStrategy.DFS).find();
 		assertResourceSetEquals(query.iterator(), "jcr:content", "configParsys", "tab", "tab_0", "items",
 				"items", "localizedtext", "text", "text_0", "text", "lang");
 	}
 
 	@Test
 	public void testFindWithFilter() {
-		SlingQuery query = $(tree.getChild("application/configuration/labels")).find(
-				"cq-commons/config/components/text");
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).searchStrategy(
+				SearchStrategy.DFS).find("cq-commons/config/components/text");
 		assertResourceSetEquals(query.iterator(), "text", "text");
 	}
 
@@ -40,13 +41,14 @@ public class FindTest {
 	public void testLeaveFind() {
 		SlingQuery query = $(
 				tree.getChild("application/configuration/labels/jcr:content/configParsys/tab/items/localizedtext/lang"))
-				.find();
+				.searchStrategy(SearchStrategy.DFS).find();
 		assertEmptyIterator(query.iterator());
 	}
 
 	@Test
 	public void testEmptyFind() {
-		SlingQuery query = $(tree.getChild("application/configuration/labels")).find("cq:Undefined");
+		SlingQuery query = $(tree.getChild("application/configuration/labels")).searchStrategy(
+				SearchStrategy.DFS).find("cq:Undefined");
 		assertEmptyIterator(query.iterator());
 	}
 

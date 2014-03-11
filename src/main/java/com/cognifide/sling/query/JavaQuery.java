@@ -44,10 +44,10 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 
 	private final TreeProvider<T> provider;
 
-	protected JavaQuery(TreeProvider<T> provider, T[] initialCollection) {
+	protected JavaQuery(TreeProvider<T> provider, T[] initialCollection, SearchStrategy strategy) {
 		this.provider = provider;
 		this.initialCollection = new ArrayList<T>(Arrays.asList(initialCollection));
-		this.searchStrategy = SearchStrategy.DFS;
+		this.searchStrategy = strategy;
 	}
 
 	protected JavaQuery(JavaQuery<T, Q> original, SearchStrategy searchStrategy) {

@@ -22,16 +22,16 @@ public class SlingQuery extends JavaQuery<Resource, SlingQuery> {
 		super(original, strategy);
 	}
 
-	private SlingQuery(Resource... resources) {
-		super(new ResourceTreeProvider(), resources);
+	private SlingQuery(Resource[] resources, SearchStrategy strategy) {
+		super(new ResourceTreeProvider(), resources, strategy);
 	}
 
 	public static SlingQuery $(Resource... resources) {
-		return new SlingQuery(resources);
+		return new SlingQuery(resources, SearchStrategy.QUERY);
 	}
 
 	public static SlingQuery $(ResourceResolver resolver) {
-		return new SlingQuery(resolver.getResource("/"));
+		return $(resolver.getResource("/"));
 	}
 
 	/**
