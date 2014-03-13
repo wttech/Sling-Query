@@ -112,6 +112,10 @@ public class JcrQueryBuilder {
 	}
 
 	private static String getAttributeCondition(Attribute attribute) {
+		if (attribute.getKey().contains("/")) {
+			return null;
+		}
+
 		JcrOperator operator = JcrOperator.getSelectorOperator(attribute.getOperator());
 		String value = StringUtils.replace(attribute.getValue(), "'", "''");
 		return operator.getJcrQueryFragment(attribute.getKey(), value);

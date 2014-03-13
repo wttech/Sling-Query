@@ -100,6 +100,13 @@ public class JcrSelectorTest {
 		Assert.assertEquals(jcrQuery, parse(selector, "/content"));
 	}
 
+	@Test
+	public void parseAttributeWithSubresource() {
+		final String selector = "cq:Page[jcr:content/cq:template=xyz]";
+		final String jcrQuery = "SELECT * FROM [cq:Page] AS s WHERE ISDESCENDANTNODE([/content])";
+		Assert.assertEquals(jcrQuery, parse(selector, "/content"));
+	}
+
 	static String parse(String selector, String root) {
 		List<Selector> selectors = SelectorParser.parse(selector);
 		List<SelectorSegment> segments = SelectorParser.getFirstSegmentFromEachSelector(selectors);
