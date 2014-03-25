@@ -11,6 +11,7 @@ import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.Option;
 import com.cognifide.sling.query.api.function.IteratorToIteratorFunction;
+import com.cognifide.sling.query.function.AddFunction;
 import com.cognifide.sling.query.function.ChildrenFunction;
 import com.cognifide.sling.query.function.ClosestFunction;
 import com.cognifide.sling.query.function.DescendantFunction;
@@ -66,6 +67,26 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 		Iterator<Option<T>> iterator = f.apply(new OptionDecoratingIterator<T>(initialCollection.iterator()));
 		iterator = new EmptyElementFilter<T>(iterator);
 		return new OptionStrippingIterator<T>(iterator);
+	}
+
+	/**
+	 * Include resources to the collection.
+	 * 
+	 * @param iterable Resources to include
+	 * @return new SlingQuery object transformed by this operation
+	 */
+	public Q add(T... resources) {
+		return function(new AddFunction<T>(Arrays.asList(resources)));
+	}
+
+	/**
+	 * Include resources to the collection.
+	 * 
+	 * @param iterable Resources to include
+	 * @return new SlingQuery object transformed by this operation
+	 */
+	public Q add(Iterable<T> iterable) {
+		return function(new AddFunction<T>(iterable));
 	}
 
 	/**
