@@ -1,3 +1,11 @@
+## SlingQuery 1.4.2
+
+* Added new add(...) method
+
+## SlingQuery 1.4.1
+
+* Fixed bug in the QUERY search strategy related
+
 ## SlingQuery 1.4.0
 
 * `not()` function is now lazy (eg. `$(resourceResolver).not('cq:InvalidType').first()` return results immediately)
