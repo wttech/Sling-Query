@@ -18,8 +18,7 @@ public class JcrQueryIterator extends AbstractIterator<Resource> {
 
 	private Iterator<Resource> currentIterator;
 
-	public JcrQueryIterator(List<SelectorSegment> segments, Resource root) {
-		JcrTypeResolver typeResolver = new SessionJcrTypeResolver(root.getResourceResolver());
+	public JcrQueryIterator(List<SelectorSegment> segments, Resource root, JcrTypeResolver typeResolver) {
 		JcrQueryBuilder builder = new JcrQueryBuilder(typeResolver);
 		query = builder.buildQuery(segments, root.getPath());
 		resolver = root.getResourceResolver();

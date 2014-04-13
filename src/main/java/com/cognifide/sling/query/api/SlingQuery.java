@@ -23,11 +23,15 @@ public class SlingQuery extends JavaQuery<Resource, SlingQuery> {
 	}
 
 	private SlingQuery(Resource[] resources, SearchStrategy strategy) {
-		super(new ResourceTreeProvider(), resources, strategy);
+		super(new ResourceTreeProvider(resources[0].getResourceResolver()), resources, strategy);
 	}
 
 	public static SlingQuery $(Resource... resources) {
-		return new SlingQuery(resources, SearchStrategy.QUERY);
+		if (resources.length == 0) {
+			throw new IllegalArgumentException("Initial collection can't be empty");
+		} else {
+			return new SlingQuery(resources, SearchStrategy.QUERY);
+		}
 	}
 
 	public static SlingQuery $(ResourceResolver resolver) {

@@ -23,7 +23,7 @@ public class LastTest {
 
 	@Test
 	public void testLastOnEmptyCollection() {
-		SlingQuery query = $().last();
+		SlingQuery query = $(tree).children("cq:Undefined").last();
 		assertEmptyIterator(query.iterator());
 	}
 }

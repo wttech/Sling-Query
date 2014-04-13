@@ -29,7 +29,7 @@ public class FilterTest {
 
 	@Test
 	public void testFilterOnEmptyCollection() {
-		SlingQuery query = $().filter(new Predicate<Resource>() {
+		SlingQuery query = $(tree).children("cq:Undefined").filter(new Predicate<Resource>() {
 			@Override
 			public boolean accepts(Resource resource) {
 				return true;

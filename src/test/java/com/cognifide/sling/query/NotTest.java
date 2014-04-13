@@ -42,7 +42,7 @@ public class NotTest {
 
 	@Test
 	public void testNotOnEmptyCollection() {
-		SlingQuery query = $().not("cq:Page");
+		SlingQuery query = $(tree).children("cq:Undefined").not("cq:Page");
 		assertEmptyIterator(query.iterator());
 	}
 }

@@ -8,13 +8,11 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.resource.jcr.JcrTypeResolver;
-import com.cognifide.sling.query.resource.jcr.SessionJcrTypeResolver;
 import com.cognifide.sling.query.selector.parser.Attribute;
 
 public class ResourcePredicate implements Predicate<Resource> {
@@ -27,15 +25,17 @@ public class ResourcePredicate implements Predicate<Resource> {
 
 	private final List<Predicate<Resource>> subPredicates;
 
-	private JcrTypeResolver cachedTypeResolver;
+	private JcrTypeResolver typeResolver;
 
-	public ResourcePredicate(String resourceType, String resourceName, List<Attribute> attributes) {
+	public ResourcePredicate(String resourceType, String resourceName, List<Attribute> attributes,
+			JcrTypeResolver typeResolver) {
 		this.resourceType = resourceType;
 		this.resourceName = resourceName;
 		this.subPredicates = new ArrayList<Predicate<Resource>>();
 		for (Attribute a : attributes) {
 			subPredicates.add(new ResourcePropertyPredicate(a));
 		}
+		this.typeResolver = typeResolver;
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class ResourcePredicate implements Predicate<Resource> {
 		if (resource.isResourceType(resourceType)) {
 			return true;
 		}
-		if (!isValidType(resourceType, resource.getResourceResolver())) {
+		if (!isValidType(resourceType)) {
 			return false;
 		}
 		Node node = resource.adaptTo(Node.class);
@@ -75,10 +75,7 @@ public class ResourcePredicate implements Predicate<Resource> {
 		return false;
 	}
 
-	private boolean isValidType(String type, ResourceResolver resourceResolver) {
-		if (cachedTypeResolver == null) {
-			cachedTypeResolver = new SessionJcrTypeResolver(resourceResolver);
-		}
-		return cachedTypeResolver.isJcrType(type);
+	private boolean isValidType(String type) {
+		return typeResolver.isJcrType(type);
 	}
 }

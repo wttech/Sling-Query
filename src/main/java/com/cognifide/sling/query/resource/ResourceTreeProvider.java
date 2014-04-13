@@ -4,14 +4,23 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 
 import com.cognifide.sling.query.api.Predicate;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.resource.jcr.JcrQueryIterator;
+import com.cognifide.sling.query.resource.jcr.JcrTypeResolver;
+import com.cognifide.sling.query.resource.jcr.SessionJcrTypeResolver;
 import com.cognifide.sling.query.selector.parser.Attribute;
 import com.cognifide.sling.query.selector.parser.SelectorSegment;
 
 public class ResourceTreeProvider implements TreeProvider<Resource> {
+
+	private final JcrTypeResolver typeResolver;
+
+	public ResourceTreeProvider(ResourceResolver resolver) {
+		this.typeResolver = new SessionJcrTypeResolver(resolver);
+	}
 
 	@Override
 	public Iterator<Resource> listChildren(Resource parent) {
@@ -30,12 +39,12 @@ public class ResourceTreeProvider implements TreeProvider<Resource> {
 
 	@Override
 	public Predicate<Resource> getPredicate(String type, String id, List<Attribute> attributes) {
-		return new ResourcePredicate(type, id, attributes);
+		return new ResourcePredicate(type, id, attributes, typeResolver);
 	}
 
 	@Override
 	public Iterator<Resource> query(List<SelectorSegment> segments, Resource resource) {
-		return new JcrQueryIterator(segments, resource);
+		return new JcrQueryIterator(segments, resource, typeResolver);
 	}
 
 	@Override

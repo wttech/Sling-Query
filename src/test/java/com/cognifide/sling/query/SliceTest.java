@@ -41,7 +41,7 @@ public class SliceTest {
 
 	@Test
 	public void testEqOnEmpty() {
-		SlingQuery query = $().eq(0);
+		SlingQuery query = $(tree).children("cq:Undefined").eq(0);
 		assertEmptyIterator(query.iterator());
 	}
 
@@ -53,7 +53,7 @@ public class SliceTest {
 
 	@Test
 	public void testFirstOnEmpty() {
-		SlingQuery query = $().first();
+		SlingQuery query = $(tree).children("cq:Undefined").first();
 		assertEmptyIterator(query.iterator());
 	}
 
