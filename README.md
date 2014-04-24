@@ -46,7 +46,7 @@ Add following Maven dependency to your `pom.xml`:
 	<dependency>
 		<groupId>com.cognifide.cq</groupId>
 		<artifactId>sling-query</artifactId>
-		<version>1.4.3</version>
+		<version>1.4.4</version>
 	</dependency>
 
 ## Documentation
