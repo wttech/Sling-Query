@@ -20,7 +20,7 @@ public class FindFunction<T> implements ElementToIteratorFunction<T> {
 	private final TreeProvider<T> provider;
 
 	private final SearchStrategy strategy;
-	
+
 	public FindFunction(SearchStrategy searchStrategy, TreeProvider<T> provider,
 			SelectorSegment preFilteringSelector) {
 		this.strategy = searchStrategy;
@@ -50,6 +50,6 @@ public class FindFunction<T> implements ElementToIteratorFunction<T> {
 				iterator = new DfsTreeIterator<T>(input, provider);
 				break;
 		}
-		return iterator;
+		return new WarningIterator<T>(iterator);
 	}
 }
