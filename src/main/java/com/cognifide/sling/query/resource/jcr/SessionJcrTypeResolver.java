@@ -32,6 +32,9 @@ public class SessionJcrTypeResolver implements JcrTypeResolver {
 		if (nodeTypeManager == null) {
 			return false;
 		}
+		if (name == null || name.contains("/")) {
+			return false;
+		}
 		try {
 			return nodeTypeManager.hasNodeType(name);
 		} catch (RepositoryException e) {
