@@ -7,6 +7,7 @@ import java.util.List;
 import com.cognifide.sling.query.api.SearchStrategy;
 import com.cognifide.sling.query.api.TreeProvider;
 import com.cognifide.sling.query.api.function.ElementToIteratorFunction;
+import com.cognifide.sling.query.iterator.WarningIterator;
 import com.cognifide.sling.query.iterator.tree.BfsTreeIterator;
 import com.cognifide.sling.query.iterator.tree.DfsTreeIterator;
 import com.cognifide.sling.query.selector.parser.Selector;

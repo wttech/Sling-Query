@@ -1,11 +1,9 @@
-package com.cognifide.sling.query.function;
+package com.cognifide.sling.query.iterator;
 
 import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.cognifide.sling.query.iterator.AbstractIterator;
 
 public class WarningIterator<T> extends AbstractIterator<T> {
 
