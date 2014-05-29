@@ -28,6 +28,7 @@ import com.cognifide.sling.query.function.ParentsFunction;
 import com.cognifide.sling.query.function.PrevFunction;
 import com.cognifide.sling.query.function.SiblingsFunction;
 import com.cognifide.sling.query.function.SliceFunction;
+import com.cognifide.sling.query.function.UniqueFunction;
 import com.cognifide.sling.query.iterator.EmptyElementFilter;
 import com.cognifide.sling.query.iterator.OptionDecoratingIterator;
 import com.cognifide.sling.query.iterator.OptionStrippingIterator;
@@ -719,6 +720,15 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 			throw new IllegalArgumentException();
 		}
 		return function(new SliceFunction<T>(from, to));
+	}
+
+	/**
+	 * Filter out repeated adjacent resources.
+	 * 
+	 * @return new SlingQuery object transformed by this operation
+	 */
+	public Q unique() {
+		return function(new UniqueFunction<T>(provider));
 	}
 
 	private Q function(Function<?, ?> function, Iterable<T> iterable) {
