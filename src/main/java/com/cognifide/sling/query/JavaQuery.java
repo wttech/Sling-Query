@@ -763,4 +763,21 @@ public abstract class JavaQuery<T, Q extends JavaQuery<T, Q>> implements Iterabl
 	}
 
 	protected abstract Q clone(JavaQuery<T, Q> original, SearchStrategy strategy);
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("$(");
+		Iterator<T> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			builder.append('[');
+			builder.append(iterator.next());
+			builder.append(']');
+			if (iterator.hasNext()) {
+				builder.append(", ");
+			}
+		}
+		builder.append(")");
+		return builder.toString();
+	}
 }
