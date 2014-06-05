@@ -51,6 +51,7 @@ Add following Maven dependency to your `pom.xml`:
 
 ## Documentation
 
+* [CIRCUIT 2014 presentation](http://cognifide.github.io/Sling-Query/circuit2014/)
 * [Basic ideas](https://github.com/Cognifide/Sling-Query/wiki/Basic-ideas)
 * [Method list](https://github.com/Cognifide/Sling-Query/wiki/Method-list)
 * [Selector syntax](https://github.com/Cognifide/Sling-Query/wiki/Selector-syntax)
