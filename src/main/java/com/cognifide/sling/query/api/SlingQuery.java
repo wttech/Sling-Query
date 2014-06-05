@@ -59,4 +59,20 @@ public class SlingQuery extends JavaQuery<Resource, SlingQuery> {
 	protected SlingQuery clone(JavaQuery<Resource, SlingQuery> original, SearchStrategy strategy) {
 		return new SlingQuery(original, strategy);
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("$(");
+		Iterator<Resource> iterator = this.iterator();
+		while (iterator.hasNext()) {
+			builder.append(iterator.next().getPath());
+			if (iterator.hasNext()) {
+				builder.append(", ");
+			}
+		}
+		builder.append(")");
+		return builder.toString();
+	}
+
 }
