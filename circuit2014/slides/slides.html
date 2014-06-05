@@ -1,0 +1,320 @@
+<h2 id="agenda">Agenda</h2>
+
+<ul>
+<li>accessing content</li>
+<li>JCR</li>
+<li>Sling</li>
+<li>SlingQuery introduction</li>
+<li>filters</li>
+<li>find method</li>
+<li>laziness</li>
+<li>questions</li>
+</ul>
+
+<h2 id="queryingcontent">Querying content</h2>
+
+<ul>
+<li>JCR</li>
+<li>XPath</li>
+<li>JCR-SQL and JCR-SQL2</li>
+<li>Sling</li>
+<li><code>getParent()</code>, <code>listChildren()</code></li>
+</ul>
+
+<h2 id="jcr">JCR</h2>
+
+<pre><code class="SQL">SELECT * FROM [cq:PageContent] WHERE [sling:resourceType] = 'geometrixx/components/homepage'
+</code></pre>
+
+<ul>
+<li>great for:</li>
+<li>looking for attribute values</li>
+<li>matching node types</li>
+<li>fulltext search</li>
+<li>problems:</li>
+<li>it&#8217;s hard to model tree relations</li>
+<li>we lose complex hierarchy</li>
+<li>repository may become a flat database</li>
+</ul>
+
+<h2 id="sling">Sling</h2>
+
+<pre><code class="java">Resource parent = myResource.getParent();
+  for (Resource child : parent.getChildren()) {
+    ValueMap map = child.adaptTo(ValueMap.class);
+    if (map.containsKey(&quot;myProperty&quot;)) {
+    //...
+    }
+}
+</code></pre>
+
+<ul>
+<li>efficient, especially for denormalized and well-structured content[1]</li>
+<li>we can use tree structure</li>
+<li>but:
+
+<ul>
+<li>a lot of <code>while()</code>s and iterators</li>
+<li>a lot of nullchecks</li>
+<li>boilerplate structures</li>
+<li>code complexity growth is fast</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<p>[1][Efficient content structures and queries in CRX](http://www.pro-vision.de/content/medialib/pro-vision/production/adaptto/2012/adaptto2012-efficient-content-structures-and-queries-in-crx-marc/_jcr_content/renditions/rendition.file/adaptto2012-efficient-content-structures-and-queries-in-crx-marcel-reutegger.pdf), Marcel Reutegger</p>
+
+<h2 id="slingexample">Sling example</h2>
+
+<p>For a given resource find the first parent page with a given template.</p>
+
+<pre><code class="java">final String path = &quot;/content/geometrixx/en/products/triangle/overview/jcr:content/par&quot;;
+final String homeTemplate = &quot;/apps/geometrixx/templates/homepage&quot;;
+
+Resource resource = resourceResolver.getResource(path);
+while ((resource = resource.getParent()) != null) {
+    if (!resource.isResourceType(&quot;cq:Page&quot;)) {
+        continue;
+    }
+    Resource template = resource.getChild(&quot;jcr:content/cq:template&quot;);
+    if (template != null
+        &amp;&amp; homeTemplate.equals(template.adaptTo(String.class))) {
+        break;
+    }
+}
+
+resource.getPath();
+</code></pre>
+
+<h2 id="slingqueryexample">SlingQuery example</h2>
+
+<pre><code class="java">import static com.cognifide.sling.query.api.SlingQuery.$;
+Resource resource = getResource(&quot;/content/geometrixx/en/products/triangle/overview/jcr:content/par&quot;);
+
+$(resource).closest(&quot;cq:Page[jcr:content/cq:template=/apps/geometrixx/templates/homepage]&quot;);
+</code></pre>
+
+<ul>
+<li><code>$()</code> is a valid method name in Java,</li>
+<li>it wraps resource(s) into an iterable SlingQuery collection</li>
+<li>each method transforms the existing collection into a new one</li>
+<li>API inspired by jQuery</li>
+</ul>
+
+<h2 id="getalltextcomponentsfromtheparsys">Get all text components from the parsys</h2>
+
+<pre><code class="java">r = getResource(&quot;/content/geometrixx/en/jcr:content/rightpar/teaser&quot;)
+
+SlingQuery collection = $(r)
+  .closest(&quot;cq:PageContent&quot;)
+  .find(&quot;foundation/components/parsys#par&quot;)
+  .children(&quot;foundation/components/text&quot;)
+
+for (Resource c : collection) {
+  println c.path
+}
+</code></pre>
+
+<h2 id="breadcrumbs">Breadcrumbs</h2>
+
+<pre><code class="java">r = getResource(&quot;/content/geometrixx/en/products/mandelbrot/overview/jcr:content/par&quot;)
+
+Iterable&lt;Page&gt; breadcrumbs = $(r)
+  .parents(&quot;cq:Page&quot;)
+  .not(&quot;[jcr:content/hideInNav=true]&quot;)
+  .map(Page.class)
+
+for (Page p : breadcrumbs) {
+  println p.title
+}
+</code></pre>
+
+<ul>
+<li><code>map()</code> method creates a new <code>Iterable&lt;&gt;</code> adapting each resource to a given class</li>
+<li><code>resource.adaptTo(Page.class)</code></li>
+<li>approach compatible with <a href="http://sling.apache.org/documentation/bundles/models.html">Sling Models</a></li>
+</ul>
+
+<h2 id="selectorstring">Selector string</h2>
+
+<pre><code class="java">r = getResource(&quot;/content/geometrixx/en/products/mandelbrot&quot;)
+
+$(r)
+  .children(&quot;cq:PageContent&quot;)
+  .children(&quot;foundation/components/parsys&quot;)
+  .children(&quot;#title[jcr:title=Best in class][type=large]:first&quot;)
+</code></pre>
+
+<ul>
+<li>selector format</li>
+<li>resource type or node type</li>
+<li><code>#resource-name</code></li>
+<li>attributes in <code>[]</code></li>
+<li>modifiers, each prepended by <code>:</code></li>
+<li>all elements are optional</li>
+</ul>
+
+<h2 id="advancedselectors">Advanced selectors</h2>
+
+<pre><code class="java">r = getResource(&quot;/content/geometrixx&quot;)
+
+$(r)
+  .find(&quot;[text*=square]:not(cq:PageContent):first&quot;)
+  .closest(&quot;cq:Page&quot;)
+  .find(&quot;#title, #image, #par:parent&quot;)
+</code></pre>
+
+<ul>
+<li><code>:not()</code> accepts any valid selector</li>
+<li><code>:not(:not(:not(:first)))</code></li>
+<li><code>:parent</code> - only resources having children</li>
+<li>there is a number of operators for square brackets</li>
+<li>alternatives can be separated with a comma</li>
+</ul>
+
+<h2 id="randomimage">Random image</h2>
+
+<pre><code class="java">rnd = new java.util.Random()
+r = getResource(&quot;/content/dam/geometrixx/travel&quot;)
+
+$(r)
+  .children(&quot;dam:Asset&quot;)
+  .filter({ rnd.nextFloat() &gt; 0.9 } as Predicate)
+  .first()
+</code></pre>
+
+<ul>
+<li>in Java it&#8217;d look like this:</li>
+</ul>
+
+<pre><code class="java">// ...
+  .filter(new Predicate&lt;Resource&gt;() {
+    @Override
+    public boolean accepts(Resource resource) {
+      return rnd.nextFloat() &gt; 0.9;
+    }
+  });
+</code></pre>
+
+<h2 id="siblingsbutnotme">Siblings but not me</h2>
+
+<pre><code class="java">r = getResource(&quot;/content/geometrixx/en/products/mandelbrot/jcr:content/par/image&quot;)
+
+myPage = $(r).closest(&quot;cq:Page&quot;)
+
+result = myPage
+  .siblings(&quot;cq:Page&quot;)
+  .not(myPage)
+</code></pre>
+
+<ul>
+<li>the SlingQuery collection is immutable</li>
+<li>each method returns a new collection</li>
+<li>any <code>Iterable&lt;Resource&gt;</code> may be used as a filter</li>
+</ul>
+
+<h2 id="findallpageswithgiventemplate">Find all pages with given template</h2>
+
+<pre><code class="java">$(resourceResolver)
+  .find(&quot;cq:PageContent[cq:template=/apps/geometrixx/templates/homepage]&quot;)
+  .parent()
+</code></pre>
+
+<ul>
+<li><code>$(resourceResolver)</code> creates a collection containing <code>/</code></li>
+<li><code>find()</code> iterates over the whole subtree</li>
+</ul>
+
+<h2 id="searchstrategy">Search strategy</h2>
+
+<pre><code class="java">r = getResource(&quot;/content/geometrixx/en&quot;)
+
+result = $(r)
+  .searchStrategy(DFS)
+  .find(&quot;cq:Page&quot;)
+
+for (Resource c : result) {
+  println c.path
+}
+</code></pre>
+
+<ul>
+<li>strategies: <code>DFS</code>, <code>BFS</code>, <code>QUERY</code></li>
+<li><code>QUERY</code> tries to rewrite <code>find()</code> selector into JCR-SQL2</li>
+<li>the result is filtered once more</li>
+</ul>
+
+<h2 id="findmethodvsjcr">Find method vs JCR</h2>
+
+<ul>
+<li><code>find()</code> is powerful but may be dangerous</li>
+<li>it should be used only for small subtrees</li>
+<li>if you want to query a large space, use JCR-SQL[2] or XPath</li>
+<li>if your SlingQuery processes more than 100 resources, you&#8217;ll get
+ a warning in the logs:</li>
+</ul>
+
+<pre><code>28.05.2014 13:35:49.942 *WARN* [0:0:0:0:0:0:0:1 [1401276949857] POST /bin/groovy
+console/post.json HTTP/1.1] SlingQuery Number of processed resources exceeded 10
+0. Consider using a JCR query instead of SlingQuery. More info here: http://git.
+io/h2HeUQ
+</code></pre>
+
+<h2 id="laziness">Laziness</h2>
+
+<pre><code class="java">result = $(resourceResolver)
+  .searchStrategy(DFS)
+  .find()
+  .slice(10, 20)
+
+result.toString()
+</code></pre>
+
+<ul>
+<li>we don&#8217;t query resources unless we need them</li>
+<li>invoking the SlingQuery method adds a new function to the chain</li>
+<li>functions are executed by the final iterator (like the one created by
+ the <code>for()</code> loop)</li>
+<li>all functions are lazy</li>
+<li>expect the <code>last()</code> function</li>
+</ul>
+
+<h2 id="lazylist">Lazy list</h2>
+
+<pre><code class="java">r = getResource(&quot;/content&quot;)
+
+List&lt;Resource&gt; list = $(r)
+  .find()
+  .asList()
+
+println list.get(0)
+println list.get(5)
+</code></pre>
+
+<ul>
+<li><code>asList()</code> returns the <code>List&lt;&gt;</code> object</li>
+<li>it&#8217;s a lazy list, wrapping the iterator</li>
+<li>the list advances the iterator only when it has to</li>
+<li>already iterated elements are cached in the internal array</li>
+<li>there are some eager methods though, like <code>size()</code> or <code>lastIndexOf()</code></li>
+</ul>
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+<li><a href="https://github.com/Cognifide/Sling-Query">https://github.com/Cognifide/Sling-Query</a></li>
+<li>code &amp; docs</li>
+<li>global Maven repository</li>
+</ul>
+
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.cognifide.cq&lt;/groupId&gt;
+    &lt;artifactId&gt;sling-query&lt;/artifactId&gt;
+    &lt;version&gt;1.4.4&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<h1 id="questions">Questions?</h1>
+
+<h1 id="thankyou">Thank you!</h1>

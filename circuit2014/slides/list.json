@@ -1,0 +1,30 @@
+[
+	[
+		"intro/sling-api.md",
+		"intro/sling-example.md"
+	],
+	[
+		"basics/get-site-root.md",
+		"basics/find-text-in-parsys.md",
+		"basics/breadcrumbs.md"
+	],
+	[
+		"selectors/filtering.md",
+		"selectors/modifiers.md",
+    "selectors/predicate.md",
+		"selectors/siblings.md"
+	],
+	[
+    "find/find.md",
+		"find/strategy.md",
+    "find/find-vs-jcr.md"
+	],
+	[
+		"laziness/slice.md"
+	],
+  [
+    "outro/resources.md",
+    "outro/qa.md",
+    "outro/thanks.md"
+  ]
+]

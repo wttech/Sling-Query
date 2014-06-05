@@ -1,0 +1,189 @@
+/**
+ * Default theme for reveal.js.
+ *
+ * Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
+ */
+.clearfix, header.mainHeader, .reveal .titleSlide .brandWrapper {
+  zoom: 1; }
+  .clearfix:before, header.mainHeader:before, .reveal .titleSlide .brandWrapper:before, .clearfix:after, header.mainHeader:after, .reveal .titleSlide .brandWrapper:after {
+    content: "\0020";
+    display: block;
+    height: 0;
+    overflow: hidden; }
+  .clearfix:after, header.mainHeader:after, .reveal .titleSlide .brandWrapper:after {
+    clear: both; }
+
+.hide {
+  display: none !important; }
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  margin: 0 0 20px 0;
+  color: #232a32;
+  font-family: "museo-slab", Serif;
+  line-height: 0.9em;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  text-shadow: 0;
+  font-weight: 100;
+  text-align: left; }
+
+.reveal h1 {
+  text-shadow: none; }
+
+.reveal {
+  font-family: "museo-slab", Serif; }
+  .reveal .slides {
+    text-align: left;
+    font-size: 1.6em; }
+
+header.mainHeader {
+  background-color: #232a32;
+  padding: 10px; }
+  header.mainHeader h2 {
+    float: left;
+    margin-bottom: 0;
+    color: #fff;
+    font-family: "brandon-grotesque", sans-serif; }
+  header.mainHeader .secondary {
+    float: left;
+    margin-left: 10px; }
+    header.mainHeader .secondary h5 {
+      margin-bottom: 2px;
+      color: #fff;
+      font-family: "brandon-grotesque", sans-serif; }
+  header.mainHeader .hashTag {
+    float: right;
+    color: #fff;
+    text-align: right;
+    font-weight: 100; }
+    header.mainHeader .hashTag p {
+      font-size: 1.4em;
+      margin: 3px 0 0 0; }
+
+footer.mainFooter {
+  position: absolute;
+  bottom: 0px;
+  margin: 10px; }
+  footer.mainFooter h3 {
+    margin: 0; }
+
+.reveal .titleSlide {
+  width: 100%; }
+  .reveal .titleSlide .brandWrapper .brand {
+    -webkit-box-sizing: border-box;
+    /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;
+    /* Firefox, other Gecko */
+    box-sizing: border-box;
+    float: left;
+    padding: 0 25px 0 0;
+    border-right: 1px solid #ffffff; }
+    .reveal .titleSlide .brandWrapper .brand h1 {
+      font-family: "brandon-grotesque", sans-serif;
+      text-transform: uppercase;
+      font-size: 5em;
+      color: #ffffff; }
+    .reveal .titleSlide .brandWrapper .brand h3 {
+      font-family: "brandon-grotesque", sans-serif;
+      margin-left: 5px;
+      font-size: 1.2em;
+      color: #ffffff; }
+      .reveal .titleSlide .brandWrapper .brand h3.citytech {
+        color: #F2B348;
+        margin-bottom: 0; }
+  .reveal .titleSlide .brandWrapper .presentationInfo {
+    -webkit-box-sizing: border-box;
+    /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;
+    /* Firefox, other Gecko */
+    box-sizing: border-box;
+    float: left;
+    margin-left: 25px;
+    padding: 5px 0 0 0;
+    max-width: 54%; }
+    .reveal .titleSlide .brandWrapper .presentationInfo h2, .reveal .titleSlide .brandWrapper .presentationInfo h3, .reveal .titleSlide .brandWrapper .presentationInfo h4 {
+      font-family: "museo-slab";
+      text-transform: none;
+      margin: 0px 0 0 0;
+      color: #C2C2C2; }
+    .reveal .titleSlide .brandWrapper .presentationInfo h2 {
+      font-size: 1.2em;
+      line-height: 1.32em; }
+      .reveal .titleSlide .brandWrapper .presentationInfo h2.long {
+        font-size: 1.1em; }
+    .reveal .titleSlide .brandWrapper .presentationInfo h4 {
+      font-size: 1em;
+      color: #9F9F9F;
+      margin-top: 10px; }
+    .reveal .titleSlide .brandWrapper .presentationInfo .presenter {
+      margin-bottom: 60px; }
+
+/*********************************************
+ * TITLE SLIDE NAVIGATION CONTROLS
+ *********************************************/
+.titleSlide .reveal .controls div.navigate-left,
+.titleSlide .reveal .controls div.navigate-left.enabled {
+  border-right-color: #f2b348; }
+.titleSlide .reveal .controls div.navigate-right,
+.titleSlide .reveal .controls div.navigate-right.enabled {
+  border-left-color: #f2b348; }
+.titleSlide .reveal .controls div.navigate-up,
+.titleSlide .reveal .controls div.navigate-up.enabled {
+  border-bottom-color: #f2b348; }
+.titleSlide .reveal .controls div.navigate-down,
+.titleSlide .reveal .controls div.navigate-down.enabled {
+  border-top-color: #f2b348; }
+.titleSlide .reveal .controls div.navigate-left.enabled:hover {
+  border-right-color: #f9dba7; }
+.titleSlide .reveal .controls div.navigate-right.enabled:hover {
+  border-left-color: #f9dba7; }
+.titleSlide .reveal .controls div.navigate-up.enabled:hover {
+  border-bottom-color: #f9dba7; }
+.titleSlide .reveal .controls div.navigate-down.enabled:hover {
+  border-top-color: #f9dba7; }
+
+/*********************************************
+* TITLE SLIDE NAVIGATION CONTROLS
+*********************************************/
+.reveal .controls div.navigate-left,
+.reveal .controls div.navigate-left.enabled {
+  border-right-color: #232a32; }
+
+.reveal .controls div.navigate-right,
+.reveal .controls div.navigate-right.enabled {
+  border-left-color: #232a32; }
+
+.reveal .controls div.navigate-up,
+.reveal .controls div.navigate-up.enabled {
+  border-bottom-color: #232a32; }
+
+.reveal .controls div.navigate-down,
+.reveal .controls div.navigate-down.enabled {
+  border-top-color: #232a32; }
+
+.reveal .controls div.navigate-left.enabled:hover {
+  border-right-color: #2e3741; }
+
+.reveal .controls div.navigate-right.enabled:hover {
+  border-left-color: #2e3741; }
+
+.reveal .controls div.navigate-up.enabled:hover {
+  border-bottom-color: #2e3741; }
+
+.reveal .controls div.navigate-down.enabled:hover {
+  border-top-color: #2e3741; }
+
+.reveal .slides section {
+  padding: 20px; }
+
+pre {
+  font-size: 0.9em !important;
+  width: 100% !important; }
+
+.print-pdf pre {
+  font-size: 0.50em !important; }
