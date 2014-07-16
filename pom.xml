@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cognifide.cq</groupId>
 	<artifactId>sling-query</artifactId>
-	<version>1.4.5-SNAPSHOT</version>
+	<version>1.4.5</version>
 	<packaging>bundle</packaging>
 	<name>sling-query</name>
 	<description>jQuery-inspired repository traversal tool for Sling</description>
