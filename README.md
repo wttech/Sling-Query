@@ -1,7 +1,12 @@
 # SlingQuery
-[![Build Status](https://travis-ci.org/Cognifide/Sling-Query.png?branch=master)](https://travis-ci.org/Cognifide/Sling-Query)
 
 SlingQuery is a Sling resource tree traversal tool inspired by the [jQuery](http://api.jquery.com/category/traversing/tree-traversal/).
+
+## Integrated with Sling
+
+SlingQuery project has been contributed to the Apache Sling project as
+[an extension](https://github.com/apache/sling/tree/trunk/contrib/extensions/sling-query).
+This Github project has been left as an information hub.
 
 ## Introduction
 
@@ -44,9 +49,9 @@ SlingQuery is inspired by the jQuery framework. jQuery is the source of method n
 Add following Maven dependency to your `pom.xml`:
 
 	<dependency>
-		<groupId>com.cognifide.cq</groupId>
-		<artifactId>sling-query</artifactId>
-		<version>1.4.5</version>
+		<groupId>org.apache.sling</groupId>
+		<artifactId>org.apache.sling.query</artifactId>
+		<version>2.0.0</version>
 	</dependency>
 
 ## Documentation
